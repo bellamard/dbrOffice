@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" styleClass="bgPanel" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.b2la.dbroffice.controller.HelloController">
+   <left>
+      <Pane prefWidth="370.0" styleClass="bgPanelSecond" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <Pane styleClass="bgPanelPrincipal" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="67.0" layoutY="14.0" prefHeight="35.0" prefWidth="140.0" text="DBR OFFICE" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+
+            <Label id="errorTitle" fx:id="errorTitle" layoutX="10.0" layoutY="335.0" lineSpacing="1.0" prefHeight="54.0" prefWidth="223.0" text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc." textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
+               <font>
+                  <Font name="Roboto Light" size="12.0" />
+               </font>
+            </Label>
+            <TextField layoutX="10.0" layoutY="158.0" prefHeight="25.0" prefWidth="227.0" promptText="USERNAME" />
+            <ImageView fitHeight="50.0" fitWidth="60.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/picture.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="40.0" layoutY="130.0" prefHeight="17.0" prefWidth="182.0" text="UTILISATEUR" textFill="#00bbff" />
+            <FontIcon iconColor="#00bbff" iconLiteral="fa-user" iconSize="24" layoutX="13.0" layoutY="144.0" />
+            <Label layoutX="40.0" layoutY="200.0" prefHeight="17.0" prefWidth="182.0" text="MOT DE PASSE" textFill="#00bbff" />
+            <FontIcon iconColor="#00bbff" iconLiteral="fa-lock" iconSize="24" layoutX="13.0" layoutY="214.0" />
+            <PasswordField layoutX="10.0" layoutY="229.0" prefHeight="25.0" prefWidth="227.0" promptText="*********" />
+            <Pane id="pannelLoading" fx:id="paneLoading" layoutX="10.0" layoutY="264.0" prefHeight="20.0" prefWidth="200.0" visible="false">
+               <children>
+                  <Label layoutX="30.0" prefHeight="17.0" prefWidth="168.0" text="LOADING" textFill="#00bbff" />
+                  <ProgressIndicator prefHeight="20.0" prefWidth="20.0" />
+               </children>
+            </Pane>
+            <Button id="btnConnexion" fx:id="btnConnexion" layoutX="10.0" layoutY="298.0" mnemonicParsing="false" onAction="#onConnexion" prefHeight="25.0" prefWidth="227.0" styleClass="btnLogin" text="CONNEXION" textFill="WHITE" />
+            <Label layoutX="67.0" layoutY="49.0" text="LOGIN" textFill="#00b2ff">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

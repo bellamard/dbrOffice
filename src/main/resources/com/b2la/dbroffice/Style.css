@@ -1,0 +1,57 @@
+.bgPanel{
+ -fx-background-radius:20;
+ -fx-border-radius:20;
+ -fx-border-style: solid inside;
+ -fx-background-color: transparent;
+
+}
+
+.bgPanelPrincipal{
+ -fx-background-color: linear-gradient(to top left, #02033A, #1f1f70);
+ -fx-background-radius:0 20 20 0;
+ -fx-border-radius:0 20 20 0;
+
+}
+
+.bgPanelSecond{
+-fx-background-image: url("images/bg.jpg");
+-fx-background-size: cover;
+-fx-background-repeat: no-repeat;
+-fx-background-position: center;
+-fx-background-radius:20;
+-fx-border-radius:20;
+-fx-background-color: transparent;
+}
+
+.imgLogin{
+-fx-fit-width:90px;
+-fx-fit-height:120px;
+-fx-background-radius:20 0 0 20;
+-fx-border-radius:20 0 0 20;
+-fx-background-color: transparent;
+}
+
+.titlePrincipal{
+  -fx-font-famille: "roboto", "arial";
+  -fx-font-weight: bold;
+  -fx-font-size:24;
+}
+
+
+.btnLogin{
+ -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #3BADED, #576FE6, #9844B7, #FF357F);
+}
+.btnLogin:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF357F, #9844B7, #576FE6, #3BADED);
+    -fx-text-fill: #ffffff;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+.btn:focused {
+         -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF357F, #9844B7, #576FE6, #3BADED);
+         -fx-text-fill: #fff48f;
+         -fx-scale-x: 1.05;
+         -fx-scale-y: 1.05;
+         -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2);
+
+     }
