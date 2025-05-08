@@ -8,7 +8,14 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" styleClass="bgPanel" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.b2la.dbroffice.controller.HelloController">
    <left>
-      <Pane prefWidth="370.0" styleClass="bgPanelSecond" BorderPane.alignment="CENTER" />
+      <Pane prefWidth="370.0" styleClass="bgPanelSecond" BorderPane.alignment="CENTER">
+         <children>
+            <Button id="btnClose" fx:id="btnClose" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#onClose" styleClass="btnClose" text="x" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+         </children></Pane>
    </left>
    <center>
       <Pane styleClass="bgPanelPrincipal" BorderPane.alignment="CENTER">
@@ -24,7 +31,7 @@
                   <Font name="Roboto Light" size="12.0" />
                </font>
             </Label>
-            <TextField layoutX="10.0" layoutY="158.0" prefHeight="25.0" prefWidth="227.0" promptText="USERNAME" />
+            <TextField id="fieldUsername" fx:id="fieldUsername" layoutX="10.0" layoutY="158.0" prefHeight="25.0" prefWidth="227.0" promptText="USERNAME" />
             <ImageView fitHeight="50.0" fitWidth="60.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/picture.png" />
@@ -34,7 +41,7 @@
             <FontIcon iconColor="#00bbff" iconLiteral="fa-user" iconSize="24" layoutX="13.0" layoutY="144.0" />
             <Label layoutX="40.0" layoutY="200.0" prefHeight="17.0" prefWidth="182.0" text="MOT DE PASSE" textFill="#00bbff" />
             <FontIcon iconColor="#00bbff" iconLiteral="fa-lock" iconSize="24" layoutX="13.0" layoutY="214.0" />
-            <PasswordField layoutX="10.0" layoutY="229.0" prefHeight="25.0" prefWidth="227.0" promptText="*********" />
+            <PasswordField id="fieldPassword" fx:id="fieldPassword" layoutX="10.0" layoutY="229.0" onKeyPressed="#handleKeyPressed" prefHeight="25.0" prefWidth="227.0" promptText="*********" />
             <Pane id="pannelLoading" fx:id="paneLoading" layoutX="10.0" layoutY="264.0" prefHeight="20.0" prefWidth="200.0" visible="false">
                <children>
                   <Label layoutX="30.0" prefHeight="17.0" prefWidth="168.0" text="LOADING" textFill="#00bbff" />
