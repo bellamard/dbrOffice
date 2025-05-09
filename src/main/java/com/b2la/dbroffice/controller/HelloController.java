@@ -1,12 +1,14 @@
 package com.b2la.dbroffice.controller;
 
-import com.b2la.dbroffice.DashboardApplication;
 import com.b2la.dbroffice.HelloApplication;
 import com.b2la.dbroffice.connexion.Api;
 import com.b2la.dbroffice.dao.LoginRequest;
 import com.b2la.dbroffice.dao.LoginResponse;
 import com.b2la.dbroffice.preference.Storage;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -14,6 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class HelloController {
     @FXML
@@ -57,7 +63,9 @@ public class HelloController {
         LoginResponse response=   Api.login(request);
         if(response!= null){
             Storage.saveLogin(response);
-
+            onEnterDashboard();
+            paneLoading.setVisible(false);
+            btnConnexion.setVisible(true);
         }else{
             fieldPassword.setText("");
             fieldUsername.setText("");
@@ -79,5 +87,22 @@ public class HelloController {
     protected void onClose() {
         Storage.removeLogin();
         System.exit(0);
+    }
+
+    private void onEnterDashboard(){
+        try {
+            FXMLLoader loader= new FXMLLoader(HelloApplication.class.getResource("dashboard-view.fxml"));
+            Parent root = loader.load();
+            Scene scene= new Scene(root, Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
+            Stage stage= (Stage)fieldUsername.getScene().getWindow();
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.setTitle("DASHBOARD");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        paneLoading.setVisible(false);
+        btnConnexion.setVisible(true);
     }
 }

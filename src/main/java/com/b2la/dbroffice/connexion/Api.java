@@ -4,6 +4,7 @@ import com.b2la.dbroffice.dao.LoginRequest;
 import com.b2la.dbroffice.dao.LoginResponse;
 import com.b2la.dbroffice.preference.Storage;
 import com.google.gson.Gson;
+import javafx.scene.control.Alert;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class Api {
 
@@ -19,7 +21,6 @@ public class Api {
         try {
             URL url= new URL("https://dbr.b2la.online/Users/connexion");
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
-
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
             con.setRequestProperty("Accept", "application/json");
@@ -30,7 +31,7 @@ public class Api {
 
 
             try(OutputStream os= con.getOutputStream()){
-                byte[] input=jsInput.getBytes("utf-8");
+                byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
             int responseCode=con.getResponseCode();
@@ -42,14 +43,20 @@ public class Api {
                     response.append(inputLine);
                 }
                 in.close();
-
                 return json.fromJson(response.toString(), LoginResponse.class);
             }
-
+            con.disconnect();
             return null;
 
         } catch (IOException e) {
+            Alert alert= new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur!!!");
+            alert.setHeaderText("Avertissement Erreur!!!");
+            alert.setContentText("Veuillez ressayer: \n"+e);
+            alert.showAndWait();
+            System.exit(0);
             throw new RuntimeException(e);
+
         }
 
     };

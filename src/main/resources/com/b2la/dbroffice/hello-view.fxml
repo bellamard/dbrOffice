@@ -31,7 +31,7 @@
                   <Font name="Roboto Light" size="12.0" />
                </font>
             </Label>
-            <TextField id="fieldUsername" fx:id="fieldUsername" layoutX="10.0" layoutY="158.0" prefHeight="25.0" prefWidth="227.0" promptText="USERNAME" />
+            <TextField id="fieldUsername" fx:id="fieldUsername" layoutX="10.0" layoutY="158.0" prefHeight="25.0" prefWidth="227.0" promptText="USERNAME" text="+243" />
             <ImageView fitHeight="50.0" fitWidth="60.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/picture.png" />
