@@ -54,6 +54,7 @@ public class Api {
             alert.setHeaderText("Avertissement Erreur!!!");
             alert.setContentText("Veuillez ressayer: \n"+e);
             alert.showAndWait();
+            System.out.println(e.toString());
             System.exit(0);
             throw new RuntimeException(e);
 
