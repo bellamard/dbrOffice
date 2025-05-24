@@ -41,23 +41,36 @@ public class HelloController {
         paneLoading.setVisible(true);
         btnConnexion.setVisible(false);
         errorTitle.setVisible(false);
-        if(fieldUsername.getText()==""||fieldUsername.getText()==null){
+
+
+        if(fieldUsername.getText().isEmpty() || fieldUsername.getText().equals("+243") ||fieldUsername.getText()==null){
             errorTitle.setText("le Champ Utilisateur ne peut pas etre vide !!!");
             errorTitle.setVisible(true);
             paneLoading.setVisible(false);
             btnConnexion.setVisible(true);
+            try {
+                Thread.sleep(3*1000);
+                errorTitle.setText("");
+                errorTitle.setVisible(false);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
-
-        if(fieldPassword.getText()==""||fieldUsername.getText()==null){
+        if(fieldPassword.getText().isEmpty()||fieldUsername.getText()==null){
             errorTitle.setText("le Champ Mot de passe ne peut pas etre vide");
             errorTitle.setVisible(true);
             paneLoading.setVisible(false);
             btnConnexion.setVisible(true);
+            try {
+                Thread.sleep(3*1000);
+                errorTitle.setText("");
+                errorTitle.setVisible(false);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
-
-
 
         LoginRequest request= new LoginRequest(fieldUsername.getText(), fieldPassword.getText());
         LoginResponse response=   Api.login(request);
@@ -66,13 +79,21 @@ public class HelloController {
             onEnterDashboard();
             paneLoading.setVisible(false);
             btnConnexion.setVisible(true);
-        }else{
+        }
+        else{
             fieldPassword.setText("");
-            fieldUsername.setText("");
+            fieldUsername.setText("+243");
             paneLoading.setVisible(false);
             btnConnexion.setVisible(true);
             errorTitle.setText("Erreur de connexion !!!");
             errorTitle.setVisible(true);
+            try {
+                Thread.sleep(3*1000);
+                errorTitle.setText("");
+                errorTitle.setVisible(false);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     };
 
@@ -102,7 +123,6 @@ public class HelloController {
             throw new RuntimeException(e);
         }
 
-        paneLoading.setVisible(false);
-        btnConnexion.setVisible(true);
+
     }
 }

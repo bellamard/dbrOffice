@@ -1,74 +1,158 @@
-.bgPanel{
- -fx-background-radius:20;
- -fx-border-radius:20;
- -fx-border-style: solid inside;
- -fx-background-color: transparent;
-
+.bgPanel {
+  -fx-background-radius: 20;
+  -fx-border-radius: 20;
+  -fx-border-style: solid inside;
+  -fx-background-color: transparent;
 }
 
-.bgPanelPrincipal{
- -fx-background-color: linear-gradient(to top left, #02033A, #1f1f70);
- -fx-background-radius:0 20 20 0;
- -fx-border-radius:0 20 20 0;
-
+.bgPanelPrincipal {
+  -fx-background-color: linear-gradient(to top left, #02033a, #1f1f70);
+  -fx-background-radius: 0 20 20 0;
+  -fx-border-radius: 0 20 20 0;
 }
 
-.bgPanelSecond{
--fx-background-image: url("images/bg.jpg");
--fx-background-size: cover;
--fx-background-repeat: no-repeat;
--fx-background-position: center;
--fx-background-radius:20;
--fx-border-radius:20;
--fx-background-color: transparent;
+.bgPaneDash {
+  -fx-background-color: linear-gradient(to top left, #02033a, #1f1f70);
+  -fx-padding: 8px;
+  -fx-weight: 180px;
 }
-
-.imgLogin{
--fx-fit-width:90px;
--fx-fit-height:120px;
--fx-background-radius:20 0 0 20;
--fx-border-radius:20 0 0 20;
--fx-background-color: transparent;
+.panelNav {
+  -fx-padding-top: 10px;
+  -fx-padding-bottom: 10px;
 }
-
-.titlePrincipal{
-  -fx-font-famille: "roboto", "arial";
+.btnNav {
+  -fx-background-color: transparent;
+  -fx-text-fill: #ffffff;
+  -fx-font-size: 14px;
   -fx-font-weight: bold;
-  -fx-font-size:24;
+  -fx-weight: 140px;
 }
-
-
-.btnLogin{
- -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #3BADED, #576FE6, #9844B7, #FF357F);
-}
-.btnLogin:hover {
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF357F, #9844B7, #576FE6, #3BADED);
-    -fx-text-fill: #ffffff;
+.btnNav:hover{
+    -fx-background-color: linear-gradient(
+        from 0% 0% to 100% 100%,
+        #ff357f,
+        #9844b7,
+        #576fe6,
+        #3baded
+    );
+    -fx-text-fill: #eeff00;
     -fx-scale-x: 1.02;
     -fx-scale-y: 1.02;
 }
+.btnNav:focused {
+  -fx-background-color: linear-gradient(
+    from 0% 0% to 100% 100%,    
+    #576fe6,
+    #3baded,
+    transparent,
+    transparent
+  );
+  -fx-text-fill: #ffffff;
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2);
+}
+
+.bgPanelSecond {
+  -fx-background-image: url("images/bg.jpg");
+  -fx-background-size: cover;
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center;
+  -fx-background-radius: 20;
+  -fx-border-radius: 20;
+  -fx-background-color: transparent;
+}
+
+.imgLogin {
+  -fx-fit-width: 90px;
+  -fx-fit-height: 120px;
+  -fx-background-radius: 20 0 0 20;
+  -fx-border-radius: 20 0 0 20;
+  -fx-background-color: transparent;
+}
+
+.titlePrincipal {
+  -fx-font-famille: "roboto", "arial";
+  -fx-font-weight: bold;
+  -fx-font-size: 24;
+}
+
+.btnLogin {
+  -fx-background-color: linear-gradient(
+    from 0% 0% to 100% 100%,
+    #3baded,
+    #576fe6,
+    #9844b7,
+    #ff357f
+  );
+}
+.btnLogin:hover {
+  -fx-background-color: linear-gradient(
+    from 0% 0% to 100% 100%,
+    #ff357f,
+    #9844b7,
+    #576fe6,
+    #3baded
+  );
+  -fx-text-fill: #ffffff;
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+}
 .btn:focused {
-         -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF357F, #9844B7, #576FE6, #3BADED);
-         -fx-text-fill: #fff48f;
-         -fx-scale-x: 1.05;
-         -fx-scale-y: 1.05;
-         -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2);
-
-     }
-.btnClose{
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF6B6B, #FF8E8E, #D9534F);
+  -fx-background-color: linear-gradient(
+    from 0% 0% to 100% 100%,
+    #ff357f,
+    #9844b7,
+    #576fe6,
+    #3baded
+  );
+  -fx-text-fill: #fff48f;
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2);
+}
+.btnClose {
+  -fx-background-color: linear-gradient(
+    from 0% 0% to 100% 100%,
+    #ff6b6b,
+    #ff8e8e,
+    #d9534f
+  );
 }
 
-.btnClose:hover{
-    -fx-background-color: linear-gradient(from 100% 100% to 0% 0%, #D9534F,#FF6B6B, #FF8E8E);
-    -fx-scale-x: 0.95;
-    -fx-scale-y: 0.95;
+.btnClose:hover {
+  -fx-background-color: linear-gradient(
+    from 100% 100% to 0% 0%,
+    #d9534f,
+    #ff6b6b,
+    #ff8e8e
+  );
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
 }
-.btnClose:focused{
-    -fx-background-color: linear-gradient(from 100% 0% to 100% 0%, #FF6B6B, #D9534F,#FF8E8E);
-    -fx-scale-x: 0.93;
-    -fx-scale-y: 0.93;
+.btnClose:focused {
+  -fx-background-color: linear-gradient(
+    from 100% 0% to 100% 0%,
+    #ff6b6b,
+    #d9534f,
+    #ff8e8e
+  );
+  -fx-scale-x: 0.93;
+  -fx-scale-y: 0.93;
 }
-.bgNavDash{
-    -fx-background-color:linear-gradient(from 100% 0% to 100% 0%, #FF6B6B, #D9534F,#FF8E8E);
+.bgNavDash {
+  -fx-background-color: linear-gradient(
+    from 100% 0% to 100% 0%,
+    #ff6b6b,
+    #d9534f,
+    #ff8e8e
+  );
+}
+.logoDash {
+  -fx-margin: 5px;
+  -fx-fit-width: 60px;
+  -fx-fit-height: 60px;
+  -fx-background-radius: 20;
+  -fx-border-radius: 20px, 20px, 20px, 20px;
+  -fx-background-color: transparent;
 }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <VBox alignment="TOP_CENTER" prefWidth="160.0" styleClass="bgPaneDash" stylesheets="@Style.css" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="logoDash">
+               <image>
+                  <Image url="@images/picture.png" />
+               </image>
+            </ImageView>
+            <VBox spacing="10.0" styleClass="panelNav">
+               <children>
+                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="HOME">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-home" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="AGENTS">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-users" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="OFFICIELS">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-user-secret" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="ADMIN">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-user" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="UTILISATEURS">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-users" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="170.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="OPERATIONS">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-file" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="210.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="COMMISIONS">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-percent" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="250.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="PAYEMENT">
+                     <graphic>
+                        <StackedFontIcon alignment="CENTER_LEFT">
+                           <children>
+                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-money" iconSize="32" selectionEnd="0" />
+                           </children>
+                        </StackedFontIcon>
+                     </graphic>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets top="50.0" />
+               </VBox.margin>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+</BorderPane>

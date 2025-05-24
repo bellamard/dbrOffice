@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import org.kordamp.ikonli.javafx.StackedFontIcon?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <left>
-      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="bgNavDash" BorderPane.alignment="CENTER" />
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="bgNavDash" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="100.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" styleClass="logoDash">
+               <image>
+                  <Image url="@images/picture.png" />
+               </image>
+            </ImageView>
+            <Button mnemonicParsing="false" text="Button">
+               <graphic>
+                  <StackedFontIcon>
+                     <children>
+
+                        <FontIcon iconColor="#5e1212" iconLiteral="fa-users" iconSize="32" selectionEnd="0" />
+                     </children>
+                  </StackedFontIcon>
+               </graphic>
+            </Button>
+
+
+         </children></VBox>
    </left>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="424.0" layoutY="14.0" mnemonicParsing="false" text="Username" />
+            <Group />
          </children>
       </AnchorPane>
    </center>
