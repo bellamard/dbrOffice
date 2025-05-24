@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
@@ -97,4 +98,59 @@
          </children>
       </VBox>
    </left>
+   <center>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" stylesheets="@Style.css" BorderPane.alignment="CENTER">
+         <content>
+            <AnchorPane maxWidth="1.7976931348623157E308" prefHeight="800.0">
+               <children>
+                  <HBox spacing="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+                     <children>
+                        <Pane prefHeight="200.0" prefWidth="200.0" styleClass="boxNews">
+                           <children>
+                              <Label layoutX="21.0" layoutY="14.0" text="XXXXXXXX" textAlignment="RIGHT">
+                                 <graphic>
+                                    <StackedFontIcon alignment="CENTER_LEFT">
+                                       <children>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-users" iconSize="32" selectionEnd="0" />
+                                       </children>
+                                    </StackedFontIcon>
+                                 </graphic>
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="137.0" layoutY="154.0" text="XX" textAlignment="RIGHT">
+                                 <graphic>
+                                    <StackedFontIcon alignment="CENTER_LEFT">
+                                       <children>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" selectionEnd="0" />
+                                       </children>
+                                    </StackedFontIcon>
+                                 </graphic>
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="76.0" layoutY="154.0" text="XX" textAlignment="RIGHT">
+                                 <graphic>
+                                    <StackedFontIcon alignment="CENTER_LEFT">
+                                       <children>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" selectionEnd="0" />
+                                       </children>
+                                    </StackedFontIcon>
+                                 </graphic>
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane prefHeight="200.0" prefWidth="200.0" styleClass="boxNews" />
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+   </center>
 </BorderPane>

@@ -52,6 +52,18 @@
   -fx-scale-y: 1.05;
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2);
 }
+.boxNews{
+    -fx-background-color: linear-gradient(
+        from 0% 0% to 100% 100%,
+        #ff357f,
+        #9844b7,
+        #576fe6,
+        #3baded
+    );
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 10px;
+}
 
 .bgPanelSecond {
   -fx-background-image: url("images/bg.jpg");
