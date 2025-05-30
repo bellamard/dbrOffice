@@ -112,7 +112,7 @@ public class HelloController {
 
     private void onEnterDashboard(){
         try {
-            FXMLLoader loader= new FXMLLoader(HelloApplication.class.getResource("dashboard-view.fxml"));
+            FXMLLoader loader= new FXMLLoader(HelloApplication.class.getResource("dashboard-view-v.fxml"));
             Parent root = loader.load();
             Scene scene= new Scene(root, Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
             Stage stage= (Stage)fieldUsername.getScene().getWindow();

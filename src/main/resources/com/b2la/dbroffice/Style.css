@@ -186,3 +186,29 @@
    -fx-border-width: 0 0 1 0;
    -fx-background-color: linear-gradient(#e66465 #9198e5);
 }
+
+.btnGrad {
+    -fx-background-color: linear-gradient(to right, #24C6DC 0%, #514A9D 51%, #24C6DC 100%);
+    -fx-background-size: 200% auto;
+    -fx-text-fill: white;
+    -fx-padding: 15px 45px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, #eeeeee, 20, 0.5, 0, 0);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-text-alignment: center;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase; /* pas directement supporté par JavaFX, à simuler via le code */
+    -fx-cursor: hand;
+    -fx-transition: all 0.5s ease; /* JavaFX ne supporte pas les transitions comme CSS, donc à gérer via animations */
+}
+
+.btnGrad:hover {
+    -fx-background-position: right center; /* Pas directement supporté, simuler avec animation */
+    -fx-text-fill: white;
+}
+
+
+
+
+

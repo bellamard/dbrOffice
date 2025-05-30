@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.b2la.dbroffice.controller.DashboardController">
    <children>
       <VBox alignment="TOP_CENTER" prefWidth="160.0" styleClass="bgPaneDash" stylesheets="@Style.css" BorderPane.alignment="CENTER">
          <children>
@@ -108,16 +109,31 @@
                               <Font name="Segoe UI Light" size="24.0" />
                            </font>
                         </Label>
-                        <Label layoutX="768.0" layoutY="8.0" text="USER">
+                        <Label layoutX="784.0" layoutY="8.0" text="USER" textAlignment="RIGHT">
                            <font>
                               <Font name="Segoe UI Black" size="14.0" />
                            </font>
                            <graphic>
-                              <StackedFontIcon alignment="CENTER_LEFT" />
+                              <StackedFontIcon alignment="CENTER_RIGHT">
+                                 <children>
+                                    <FontIcon iconLiteral="fa-user-circle-o" iconSize="32" layoutX="820.0" layoutY="36.0" selectionEnd="0" textAlignment="CENTER" />
+                                 </children>
+                              </StackedFontIcon>
                            </graphic>
+
+                           <contextMenu>
+                              <ContextMenu>
+                                 <items>
+                                    <MenuItem text="PROFIL" />
+                                    <MenuItem text="QUITTER" />
+                                 </items>
+                              </ContextMenu>
+                           </contextMenu>
                         </Label>
-                        <FontIcon iconLiteral="fa-user-circle-o" iconSize="32" layoutX="827.0" layoutY="29.0" selectionEnd="0" />
+
+
                         <Label layoutX="19.0" layoutY="32.0" text="dans la plateforme central DBR OFFICE" />
+
 
                      </children>
                      <VBox.margin>
@@ -295,7 +311,7 @@
                                  </font>
                               </Label>
                               <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="377.0" layoutY="138.0" selectionEnd="0" />
-                              <Label layoutX="362.0" layoutY="165.0" text="CLIENTS" textAlignment="RIGHT" textFill="#eaff00">
+                              <Label layoutX="356.0" layoutY="165.0" text="FACTURES" textAlignment="CENTER" textFill="#eaff00">
                                  <graphic>
                                     <StackedFontIcon alignment="CENTER_LEFT" />
                                  </graphic>
@@ -307,7 +323,7 @@
                         </Pane>
                      </children>
                   </HBox>
-                  <Pane>
+                  <Pane styleClass="panelTitle">
                      <children>
                         <Pane layoutX="14.0" layoutY="35.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
                            <children>
@@ -341,9 +357,9 @@
                               <Font name="Segoe UI Light" size="12.0" />
                            </font>
                         </Label>
-                        <Pane layoutX="10.0" layoutY="106.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                        <Pane layoutX="14.0" layoutY="113.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
                            <children>
-                              <Label layoutX="73.0" layoutY="11.0" text="RETRAIT">
+                              <Label layoutX="73.0" layoutY="11.0" text="RETRAITS">
                                  <font>
                                     <Font name="Segoe UI Bold" size="24.0" />
                                  </font>
@@ -368,9 +384,9 @@
                               <FontIcon iconLiteral="fa-credit-card-alt" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                            </children>
                         </Pane>
-                        <Pane layoutX="11.0" layoutY="175.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                        <Pane layoutX="14.0" layoutY="192.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
                            <children>
-                              <Label layoutX="73.0" layoutY="11.0" text="RETRAIT">
+                              <Label layoutX="73.0" layoutY="11.0" text="DEPOTS">
                                  <font>
                                     <Font name="Segoe UI Bold" size="24.0" />
                                  </font>
@@ -392,9 +408,38 @@
                                     <Font name="Segoe UI Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <FontIcon iconLiteral="fa-credit-card-alt" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                              <FontIcon iconLiteral="fa-suitcase" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                            </children>
                         </Pane>
+                        <Pane layoutX="470.0" layoutY="34.0" prefHeight="228.0" prefWidth="379.0" styleClass="bannerJournalier">
+                           <children>
+                              <AreaChart layoutX="8.0" layoutY="8.0" prefHeight="213.0" prefWidth="362.0">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis side="LEFT" />
+                                </yAxis>
+                              </AreaChart>
+                           </children>
+                        </Pane>
+                        <Label layoutX="495.0" layoutY="14.0" text="ECHELLE DE PERFORMANCE DE 7 JOURS">
+                           <font>
+                              <Font name="Segoe UI Light" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" />
+                     </padding>
+                  </Pane>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="34.0" layoutY="14.0" text="LISTE DES TAUX SUR LES OPERATION" />
+                        <TableView layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="460.0" />
+                        <Button layoutX="494.0" layoutY="31.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="350.0" styleClass="btnGrad" text="CREER TAUX" />
+                        <Button layoutX="494.0" layoutY="91.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="350.0" styleClass="btnGrad" text="MODIFIER TAUX" />
+                        <Button layoutX="494.0" layoutY="150.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="350.0" styleClass="btnGrad" text="SUPPRIMER TAUX" />
                      </children>
                   </Pane>
                </children>
