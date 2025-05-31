@@ -125,7 +125,7 @@
                               <ContextMenu>
                                  <items>
                                     <MenuItem text="PROFIL" />
-                                    <MenuItem text="QUITTER" />
+                                    <MenuItem text="QUITTER" onAction="#onClose"/>
                                  </items>
                               </ContextMenu>
                            </contextMenu>
@@ -435,11 +435,10 @@
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="34.0" layoutY="14.0" text="LISTE DES TAUX SUR LES OPERATION" />
-                        <TableView layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="460.0" />
-                        <Button layoutX="494.0" layoutY="31.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="350.0" styleClass="btnGrad" text="CREER TAUX" />
-                        <Button layoutX="494.0" layoutY="91.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="350.0" styleClass="btnGrad" text="MODIFIER TAUX" />
-                        <Button layoutX="494.0" layoutY="150.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="350.0" styleClass="btnGrad" text="SUPPRIMER TAUX" />
+                        <Label layoutX="34.0" layoutY="7.0" text="LISTE DES TAUX SUR LES OPERATION" />
+                        <TableView layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="653.0" />
+                        <Button layoutX="683.0" layoutY="88.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
+                        <TextField layoutX="681.0" layoutY="31.0" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
                      </children>
                   </Pane>
                </children>
