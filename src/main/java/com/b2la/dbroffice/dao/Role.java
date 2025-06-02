@@ -2,11 +2,11 @@ package com.b2la.dbroffice.dao;
 
 public class Role {
     private int id;
-    private String Libelle;
+    private String libelle;
 
     public Role(int id, String libelle) {
         this.id = id;
-        Libelle = libelle;
+        libelle = libelle;
     }
 
     public int getId() {
@@ -18,11 +18,11 @@ public class Role {
     }
 
     public String getLibelle() {
-        return Libelle;
+        return libelle;
     }
 
     public void setLibelle(String libelle) {
-        Libelle = libelle;
+        libelle = libelle;
     }
 
 

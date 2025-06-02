@@ -70,12 +70,6 @@ public class Api {
             con.setDoOutput(true);
             Gson json= new Gson();
 
-            String jsInput= json.toJson("");
-            try(OutputStream os= con.getOutputStream()){
-                byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
-
             int responseCode=con.getResponseCode();
             if(responseCode==HttpURLConnection.HTTP_OK){
                 BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));

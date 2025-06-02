@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="64.0" layoutY="14.0" text="OPERATIONS">
+         <font>
+            <Font name="Segoe UI Bold" size="24.0" />
+         </font>
+      </Label>
+      <TableView layoutX="251.0" layoutY="114.0" prefHeight="539.0" prefWidth="400.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+      <Pane layoutX="8.0" layoutY="114.0" prefHeight="296.0" prefWidth="439.0" AnchorPane.leftAnchor="8.0">
+         <children>
+            <AreaChart layoutX="8.0" prefHeight="292.0" prefWidth="433.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </AreaChart>
+         </children>
+      </Pane>
+      <Label id="operation" fx:id="operation" layoutX="14.0" layoutY="400.0" prefHeight="259.0" prefWidth="434.0" text="Description:" wrapText="true" />
+      <TextField layoutX="702.0" layoutY="93.0" promptText="RECHERCHE" />
+      <FontIcon iconLiteral="fa-file" iconSize="32" layoutX="23.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+   </children>
+</AnchorPane>

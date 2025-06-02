@@ -19,7 +19,7 @@
             </ImageView>
             <VBox spacing="10.0" styleClass="panelNav">
                <children>
-                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="HOME">
+                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToHome" styleClass="btnNav" text="HOME">
                      <graphic>
                         <StackedFontIcon alignment="CENTER_LEFT">
                            <children>
@@ -28,7 +28,7 @@
                         </StackedFontIcon>
                      </graphic>
                   </Button>
-                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="AGENTS">
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToUtilisateur" styleClass="btnNav" text="UTILISATEURS">
                      <graphic>
                         <StackedFontIcon alignment="CENTER_LEFT">
                            <children>
@@ -37,34 +37,7 @@
                         </StackedFontIcon>
                      </graphic>
                   </Button>
-                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="OFFICIELS">
-                     <graphic>
-                        <StackedFontIcon alignment="CENTER_LEFT">
-                           <children>
-                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-user-secret" iconSize="32" selectionEnd="0" />
-                           </children>
-                        </StackedFontIcon>
-                     </graphic>
-                  </Button>
-                  <Button alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="ADMIN">
-                     <graphic>
-                        <StackedFontIcon alignment="CENTER_LEFT">
-                           <children>
-                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-user" iconSize="32" selectionEnd="0" />
-                           </children>
-                        </StackedFontIcon>
-                     </graphic>
-                  </Button>
-                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="UTILISATEURS">
-                     <graphic>
-                        <StackedFontIcon alignment="CENTER_LEFT">
-                           <children>
-                              <FontIcon iconColor="#7dc4ff" iconLiteral="fa-users" iconSize="32" selectionEnd="0" />
-                           </children>
-                        </StackedFontIcon>
-                     </graphic>
-                  </Button>
-                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="170.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="OPERATIONS">
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="170.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToOperation" styleClass="btnNav" text="OPERATIONS">
                      <graphic>
                         <StackedFontIcon alignment="CENTER_LEFT">
                            <children>
@@ -109,7 +82,7 @@
                               <Font name="Segoe UI Light" size="24.0" />
                            </font>
                         </Label>
-                        <Label layoutX="784.0" layoutY="8.0" text="USER" textAlignment="RIGHT">
+                        <Label fx:id="username" layoutX="784.0" layoutY="8.0" text="USER" textAlignment="RIGHT">
                            <font>
                               <Font name="Segoe UI Black" size="14.0" />
                            </font>
@@ -125,7 +98,7 @@
                               <ContextMenu>
                                  <items>
                                     <MenuItem text="PROFIL" />
-                                    <MenuItem text="QUITTER" onAction="#onClose"/>
+                                    <MenuItem onAction="#onClose" text="QUITTER" />
                                  </items>
                               </ContextMenu>
                            </contextMenu>
@@ -141,306 +114,357 @@
                      </VBox.margin>
       
                   </Pane>
-                  <HBox spacing="5.0">
+                  <StackPane>
                      <children>
-                        <Pane prefHeight="200.0" prefWidth="430.0" styleClass="boxNews">
+
+                        <AnchorPane id="home" fx:id="home">
                            <children>
-                              <Label layoutX="381.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="381.0" layoutY="140.0" />
-                              <Label layoutX="368.0" layoutY="165.0" text="CLIENTS" textAlignment="CENTER" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="270.0" layoutY="146.0" text="XX" textAlignment="CENTER" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="270.0" layoutY="140.0" selectionEnd="0" />
-                              <Label layoutX="257.0" layoutY="165.0" text="AGENTS" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="136.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="136.0" layoutY="141.0" selectionEnd="0" />
-                              <Label layoutX="126.0" layoutY="166.0" text="OFFICE" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="22.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="22.0" layoutY="141.0" selectionEnd="0" />
-                              <Label layoutX="10.0" layoutY="166.0" text="ADMIN" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="286.0" layoutY="16.0" text="XXXXXXXX" textAlignment="RIGHT" textFill="#00d0ff">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Pane prefHeight="200.0" prefWidth="430.0" styleClass="boxNews">
+                                       <children>
+                                          <Label layoutX="381.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="381.0" layoutY="140.0" />
+                                          <Label layoutX="368.0" layoutY="165.0" text="CLIENTS" textAlignment="CENTER" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="270.0" layoutY="146.0" text="XX" textAlignment="CENTER" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="270.0" layoutY="140.0" selectionEnd="0" />
+                                          <Label layoutX="257.0" layoutY="165.0" text="AGENTS" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="136.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="136.0" layoutY="141.0" selectionEnd="0" />
+                                          <Label layoutX="126.0" layoutY="166.0" text="OFFICE" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="22.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-user" iconSize="32" layoutX="22.0" layoutY="141.0" selectionEnd="0" />
+                                          <Label layoutX="10.0" layoutY="166.0" text="ADMIN" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="286.0" layoutY="16.0" text="XXXXXXXX" textAlignment="RIGHT" textFill="#00d0ff">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-users" iconSize="32" layoutX="19.0" layoutY="45.0" selectionEnd="0" />
+                                          <Label layoutX="53.0" layoutY="27.0" text="UTILISATEURS" textAlignment="RIGHT" textFill="#00d0ff">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="Segoe UI Light" size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </Pane>
+                                    <Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="430.0" styleClass="boxNews">
+                                       <children>
+                                          <Label layoutX="286.0" layoutY="16.0" text="XXXXXXXX" textAlignment="RIGHT" textFill="#00d0ff">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-files-o" iconSize="32" layoutX="24.0" layoutY="38.0" selectionEnd="0" />
+                                          <Label layoutX="53.0" layoutY="27.0" text="OPERATIONS" textAlignment="RIGHT" textFill="#00d0ff">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="Segoe UI Light" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="40.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="36.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="29.0" layoutY="165.0" text="ENVOIS" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="156.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="154.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="140.0" layoutY="165.0" text="RETRAITS" textAlignment="CENTER" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="259.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="259.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="245.0" layoutY="165.0" text="DEPOTS" textAlignment="CENTER" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="376.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="377.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="356.0" layoutY="165.0" text="FACTURES" textAlignment="CENTER" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </HBox>
+                              <Pane layoutY="203.19999313354492" styleClass="panelTitle">
+                                 <children>
+                                    <Pane layoutX="14.0" layoutY="35.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                                       <children>
+                                          <Label layoutX="73.0" layoutY="11.0" text="ENVOIS">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENTS" />
+                                          <Label layoutX="381.0" layoutY="17.0" text="USD" />
+                                          <Label layoutX="382.0" layoutY="40.0" text="CDF">
+                                             <font>
+                                                <Font name="Segoe UI Light" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconLiteral="fa-retweet" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                       </children>
+                                    </Pane>
+                                    <Label layoutX="27.0" layoutY="14.0" text="MONTANT DES OPERATIONS JOURNALIER">
+                                       <font>
+                                          <Font name="Segoe UI Light" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Pane layoutX="14.0" layoutY="113.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                                       <children>
+                                          <Label layoutX="73.0" layoutY="11.0" text="RETRAITS">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENT ET AGENTS" />
+                                          <Label layoutX="381.0" layoutY="17.0" text="USD" />
+                                          <Label layoutX="382.0" layoutY="40.0" text="CDF">
+                                             <font>
+                                                <Font name="Segoe UI Light" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconLiteral="fa-credit-card-alt" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                       </children>
+                                    </Pane>
+                                    <Pane layoutX="14.0" layoutY="192.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                                       <children>
+                                          <Label layoutX="73.0" layoutY="11.0" text="DEPOTS">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENT ET AGENTS" />
+                                          <Label layoutX="381.0" layoutY="17.0" text="USD" />
+                                          <Label layoutX="382.0" layoutY="40.0" text="CDF">
+                                             <font>
+                                                <Font name="Segoe UI Light" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                             <font>
+                                                <Font name="Segoe UI Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconLiteral="fa-suitcase" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                       </children>
+                                    </Pane>
+                                    <Pane layoutX="470.0" layoutY="34.0" prefHeight="228.0" prefWidth="379.0" styleClass="bannerJournalier">
+                                       <children>
+                                          <AreaChart layoutX="8.0" layoutY="8.0" prefHeight="213.0" prefWidth="362.0">
+                                            <xAxis>
+                                              <CategoryAxis side="BOTTOM" />
+                                            </xAxis>
+                                            <yAxis>
+                                              <NumberAxis side="LEFT" />
+                                            </yAxis>
+                                          </AreaChart>
+                                       </children>
+                                    </Pane>
+                                    <Label layoutX="495.0" layoutY="14.0" text="ECHELLE DE PERFORMANCE DE 7 JOURS">
+                                       <font>
+                                          <Font name="Segoe UI Light" size="12.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" />
+                                 </padding>
+                              </Pane>
+                              <Pane layoutY="476.0000114440918" prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="34.0" layoutY="7.0" text="LISTE DES TAUX SUR LES OPERATION" />
+                                    <TableView layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="653.0" />
+                                    <Button layoutX="683.0" layoutY="88.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
+                                    <TextField layoutX="681.0" layoutY="31.0" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
+                                 </children>
+                              </Pane>
+                           </children>
+                        </AnchorPane>
+
+
+                        <AnchorPane id="utilisateur" fx:id="utilisateur" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4" visible="false">
+                           <children>
+                              <Label layoutX="72.0" layoutY="14.0" text="UTILISATEUR">
                                  <font>
                                     <Font name="System Bold" size="24.0" />
                                  </font>
                               </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-users" iconSize="32" layoutX="19.0" layoutY="45.0" selectionEnd="0" />
-                              <Label layoutX="53.0" layoutY="27.0" text="UTILISATEURS" textAlignment="RIGHT" textFill="#00d0ff">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="Segoe UI Light" size="14.0" />
-                                 </font>
-                              </Label>
+                              <TextField layoutX="659.0" layoutY="49.0" prefHeight="26.0" prefWidth="193.0" promptText="RECHERCHE" />
+                              <TableView fx:id="tableUtilisateur" layoutX="14.0" layoutY="83.0" prefHeight="303.0" prefWidth="572.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="83.0" />
+                              <Button fx:id="creerUtilisateur" layoutX="511.0" layoutY="49.0" mnemonicParsing="false" styleClass="btnGrad" text="CREER UTILISATEUR" />
+                              <FontIcon iconLiteral="fa-users" iconSize="32" layoutX="27.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                            </children>
-                        </Pane>
-                        <Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="430.0" styleClass="boxNews">
+                        </AnchorPane>
+
+
+                        <AnchorPane fx:id="operation" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4" visible="false">
                            <children>
-                              <Label layoutX="286.0" layoutY="16.0" text="XXXXXXXX" textAlignment="RIGHT" textFill="#00d0ff">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="24.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-files-o" iconSize="32" layoutX="24.0" layoutY="38.0" selectionEnd="0" />
-                              <Label layoutX="53.0" layoutY="27.0" text="OPERATIONS" textAlignment="RIGHT" textFill="#00d0ff">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="Segoe UI Light" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="40.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="36.0" layoutY="138.0" selectionEnd="0" />
-                              <Label layoutX="29.0" layoutY="165.0" text="ENVOIS" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="156.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="154.0" layoutY="138.0" selectionEnd="0" />
-                              <Label layoutX="140.0" layoutY="165.0" text="RETRAITS" textAlignment="CENTER" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="259.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="259.0" layoutY="138.0" selectionEnd="0" />
-                              <Label layoutX="245.0" layoutY="165.0" text="DEPOTS" textAlignment="CENTER" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="376.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="377.0" layoutY="138.0" selectionEnd="0" />
-                              <Label layoutX="356.0" layoutY="165.0" text="FACTURES" textAlignment="CENTER" textFill="#eaff00">
-                                 <graphic>
-                                    <StackedFontIcon alignment="CENTER_LEFT" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </Pane>
-                     </children>
-                  </HBox>
-                  <Pane styleClass="panelTitle">
-                     <children>
-                        <Pane layoutX="14.0" layoutY="35.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
-                           <children>
-                              <Label layoutX="73.0" layoutY="11.0" text="ENVOIS">
+                              <Label layoutX="64.0" layoutY="14.0" text="OPERATIONS">
                                  <font>
                                     <Font name="Segoe UI Bold" size="24.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENTS" />
-                              <Label layoutX="381.0" layoutY="17.0" text="USD" />
-                              <Label layoutX="382.0" layoutY="40.0" text="CDF">
-                                 <font>
-                                    <Font name="Segoe UI Light" size="12.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconLiteral="fa-retweet" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                              <TableView layoutX="251.0" layoutY="114.0" prefHeight="539.0" prefWidth="400.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                              <Pane layoutX="8.0" layoutY="114.0" prefHeight="296.0" prefWidth="439.0" AnchorPane.leftAnchor="8.0">
+                                 <children>
+                                    <AreaChart layoutX="8.0" prefHeight="292.0" prefWidth="433.0">
+                                       <xAxis>
+                                          <CategoryAxis side="BOTTOM" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis side="LEFT" />
+                                       </yAxis>
+                                    </AreaChart>
+                                 </children>
+                              </Pane>
+                              <Label id="operation" fx:id="titleOperation" layoutX="14.0" layoutY="400.0" prefHeight="259.0" prefWidth="434.0" text="Description:" wrapText="true" />
+                              <TextField layoutX="702.0" layoutY="93.0" promptText="RECHERCHE" />
+                              <FontIcon iconLiteral="fa-file" iconSize="32" layoutX="23.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                            </children>
-                        </Pane>
-                        <Label layoutX="27.0" layoutY="14.0" text="MONTANT DES OPERATIONS JOURNALIER">
-                           <font>
-                              <Font name="Segoe UI Light" size="12.0" />
-                           </font>
-                        </Label>
-                        <Pane layoutX="14.0" layoutY="113.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
-                           <children>
-                              <Label layoutX="73.0" layoutY="11.0" text="RETRAITS">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="24.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENT ET AGENTS" />
-                              <Label layoutX="381.0" layoutY="17.0" text="USD" />
-                              <Label layoutX="382.0" layoutY="40.0" text="CDF">
-                                 <font>
-                                    <Font name="Segoe UI Light" size="12.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconLiteral="fa-credit-card-alt" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                           </children>
-                        </Pane>
-                        <Pane layoutX="14.0" layoutY="192.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
-                           <children>
-                              <Label layoutX="73.0" layoutY="11.0" text="DEPOTS">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="24.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENT ET AGENTS" />
-                              <Label layoutX="381.0" layoutY="17.0" text="USD" />
-                              <Label layoutX="382.0" layoutY="40.0" text="CDF">
-                                 <font>
-                                    <Font name="Segoe UI Light" size="12.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <FontIcon iconLiteral="fa-suitcase" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                           </children>
-                        </Pane>
-                        <Pane layoutX="470.0" layoutY="34.0" prefHeight="228.0" prefWidth="379.0" styleClass="bannerJournalier">
-                           <children>
-                              <AreaChart layoutX="8.0" layoutY="8.0" prefHeight="213.0" prefWidth="362.0">
-                                <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
-                                </xAxis>
-                                <yAxis>
-                                  <NumberAxis side="LEFT" />
-                                </yAxis>
-                              </AreaChart>
-                           </children>
-                        </Pane>
-                        <Label layoutX="495.0" layoutY="14.0" text="ECHELLE DE PERFORMANCE DE 7 JOURS">
-                           <font>
-                              <Font name="Segoe UI Light" size="12.0" />
-                           </font>
-                        </Label>
+                        </AnchorPane>
                      </children>
-                     <padding>
-                        <Insets bottom="5.0" />
-                     </padding>
-                  </Pane>
-                  <Pane prefHeight="200.0" prefWidth="200.0">
-                     <children>
-                        <Label layoutX="34.0" layoutY="7.0" text="LISTE DES TAUX SUR LES OPERATION" />
-                        <TableView layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="653.0" />
-                        <Button layoutX="683.0" layoutY="88.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
-                        <TextField layoutX="681.0" layoutY="31.0" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
-                     </children>
-                  </Pane>
+                  </StackPane>
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

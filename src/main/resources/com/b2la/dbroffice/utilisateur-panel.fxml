@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<AnchorPane id="utilisateur" fx:id="utilisateur" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="72.0" layoutY="14.0" text="UTILISATEUR">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <TextField layoutX="659.0" layoutY="49.0" prefHeight="26.0" prefWidth="193.0" promptText="RECHERCHE" />
+      <TableView fx:id="tableUtilisateur" layoutX="14.0" layoutY="83.0" prefHeight="303.0" prefWidth="572.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="83.0" />
+      <Button fx:id="creerUtilisateur" layoutX="511.0" layoutY="49.0" mnemonicParsing="false" styleClass="btnGrad" text="CREER UTILISATEUR" />
+      <FontIcon iconLiteral="fa-users" iconSize="32" layoutX="27.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+   </children>
+</AnchorPane>

@@ -21,6 +21,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static javafx.application.Platform.runLater;
+
 public class HelloController {
     @FXML
     private Label welcomeText, errorTitle;
@@ -38,63 +40,66 @@ public class HelloController {
     @FXML
     protected void onConnexion(){
 
-        paneLoading.setVisible(true);
-        btnConnexion.setVisible(false);
-        errorTitle.setVisible(false);
+        runLater(()->{
+            paneLoading.setVisible(true);
+            btnConnexion.setVisible(false);
+            errorTitle.setVisible(false);
 
 
-        if(fieldUsername.getText().isEmpty() || fieldUsername.getText().equals("+243") ||fieldUsername.getText()==null){
-            errorTitle.setText("le Champ Utilisateur ne peut pas etre vide !!!");
-            errorTitle.setVisible(true);
-            paneLoading.setVisible(false);
-            btnConnexion.setVisible(true);
-            try {
-                Thread.sleep(3*1000);
-                errorTitle.setText("");
-                errorTitle.setVisible(false);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            if(fieldUsername.getText().isEmpty() || fieldUsername.getText().equals("+243") ||fieldUsername.getText()==null){
+                errorTitle.setText("le Champ Utilisateur ne peut pas etre vide !!!");
+                errorTitle.setVisible(true);
+                paneLoading.setVisible(false);
+                btnConnexion.setVisible(true);
+                try {
+                    Thread.sleep(3*1000);
+                    errorTitle.setText("");
+                    errorTitle.setVisible(false);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
             }
-            return;
-        }
-        if(fieldPassword.getText().isEmpty()||fieldUsername.getText()==null){
-            errorTitle.setText("le Champ Mot de passe ne peut pas etre vide");
-            errorTitle.setVisible(true);
-            paneLoading.setVisible(false);
-            btnConnexion.setVisible(true);
-            try {
-                Thread.sleep(3*1000);
-                errorTitle.setText("");
-                errorTitle.setVisible(false);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            if(fieldPassword.getText().isEmpty()||fieldUsername.getText()==null){
+                errorTitle.setText("le Champ Mot de passe ne peut pas etre vide");
+                errorTitle.setVisible(true);
+                paneLoading.setVisible(false);
+                btnConnexion.setVisible(true);
+                try {
+                    Thread.sleep(3*1000);
+                    errorTitle.setText("");
+                    errorTitle.setVisible(false);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
             }
-            return;
-        }
 
-        LoginRequest request= new LoginRequest(fieldUsername.getText(), fieldPassword.getText());
-        LoginResponse response=   Api.login(request);
-        if(response!= null){
-            Storage.saveLogin(response);
-            onEnterDashboard();
-            paneLoading.setVisible(false);
-            btnConnexion.setVisible(true);
-        }
-        else{
-            fieldPassword.setText("");
-            fieldUsername.setText("+243");
-            paneLoading.setVisible(false);
-            btnConnexion.setVisible(true);
-            errorTitle.setText("Erreur de connexion !!!");
-            errorTitle.setVisible(true);
-            try {
-                Thread.sleep(3*1000);
-                errorTitle.setText("");
-                errorTitle.setVisible(false);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            LoginRequest request= new LoginRequest(fieldUsername.getText(), fieldPassword.getText());
+            LoginResponse response=   Api.login(request);
+            if(response!= null){
+                Storage.saveLogin(response);
+                onEnterDashboard();
+                paneLoading.setVisible(false);
+                btnConnexion.setVisible(true);
             }
-        }
+            else{
+                fieldPassword.setText("");
+                fieldUsername.setText("+243");
+                paneLoading.setVisible(false);
+                btnConnexion.setVisible(true);
+                errorTitle.setText("Erreur de connexion !!!");
+                errorTitle.setVisible(true);
+                try {
+                    Thread.sleep(3*1000);
+                    errorTitle.setText("");
+                    errorTitle.setVisible(false);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
     };
 
     @FXML

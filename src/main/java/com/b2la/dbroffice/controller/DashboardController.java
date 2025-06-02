@@ -1,23 +1,33 @@
 package com.b2la.dbroffice.controller;
 
+import com.b2la.dbroffice.connexion.Api;
+import com.b2la.dbroffice.dao.CountUsers;
+import com.b2la.dbroffice.dao.LoginResponse;
+import com.b2la.dbroffice.dao.Role;
+import com.b2la.dbroffice.dao.User;
 import com.b2la.dbroffice.preference.Storage;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import static java.util.concurrent.CompletableFuture.runAsync;
+import static javafx.application.Platform.exit;
+import static javafx.application.Platform.runLater;
 
 public class DashboardController implements Initializable {
 
+    @FXML
     private Label username, countAdmin, countOffice, countAgents, countClients, countUsers,
             countSend, countWithdrawal, countDeposit, countFactory,
             amountSendUSD, amountWithdrawalUSD, amountDepositUSD,
             amountSendCDF, amountWithdrawalCDF, amountDepositCDF;
     private Button btnTaux;
+    @FXML
+    private AnchorPane home, operation, utilisateur;
     private TextField searchTaux;
     private TableView tableTaux;
 
@@ -26,11 +36,96 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+       profil();
     }
+
+    private CountUsers profil(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+        runAsync(()->{
+            try{
+                CountUsers cu=Api.solde(clef);
+                assert cu != null;
+                User usePerson=cu.getUser();
+                Role role= usePerson.getRole();
+                runLater(()->{
+                    username.setText(usePerson.getSurname()+" "+usePerson.getFirstname());
+
+//                    if (!role.getLibelle().equals("ADMIN")) {
+//                        Alert alert = new Alert(Alert.AlertType.ERROR);
+//                        alert.setTitle("Erreur!!!");
+//                        alert.setHeaderText("Avertissement Erreur!!!");
+//                        alert.setContentText("tu n'as pas access avec ce role " + role.getLibelle());
+//                        alert.showAndWait();
+//                        // Attention : mieux que System.exit(0) ici, il faut fermer proprement la fenêtre.
+//                        Platform.exit();
+//                    }
+                });
+
+
+            } catch (Exception e) {
+                runLater(() -> {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Erreur de connexion");
+                    errorAlert.setHeaderText("Impossible de contacter le serveur.");
+                    errorAlert.setContentText(e.getMessage());
+                    errorAlert.showAndWait();
+                    exit();
+                });
+                throw new RuntimeException(e);
+            }
+
+        });
+        return null;
+    }
+
 
     @FXML
     protected void onClose() {
         Storage.removeLogin();
         System.exit(0);
+    }
+
+
+
+    private void cardLayout(String Layout){
+        switch (Layout){
+            case "home": home.setVisible(true);
+            operation.setVisible(false);
+            utilisateur.setVisible(false);
+            break;
+            case "operation": home.setVisible(false);
+                operation.setVisible(true);
+                utilisateur.setVisible(false);
+                break;
+            case "utilisateur": home.setVisible(false);
+                operation.setVisible(false);
+                utilisateur.setVisible(true);
+                break;
+            default: home.setVisible(true);
+                operation.setVisible(false);
+                utilisateur.setVisible(false);
+        }
+    }
+
+
+    @FXML
+    protected void goToHome(){
+        String card="home";
+        cardLayout(card);
+
+    }
+
+    @FXML
+    protected void goToOperation(){
+        String card="operation";
+        cardLayout(card);
+
+    }
+    @FXML
+    protected void goToUtilisateur(){
+        String card="utilisateur";
+        cardLayout(card);
+
     }
 }
