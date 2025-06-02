@@ -191,7 +191,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="286.0" layoutY="16.0" text="XXXXXXXX" textAlignment="RIGHT" textFill="#00d0ff">
+                                          <Label fx:id="countUsers" layoutX="386.0" layoutY="16.0" text="XX" textAlignment="RIGHT" textFill="#00d0ff">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>

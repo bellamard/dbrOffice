@@ -6,12 +6,19 @@ import com.b2la.dbroffice.dao.LoginResponse;
 import com.b2la.dbroffice.dao.User;
 import com.b2la.dbroffice.preference.Storage;
 import com.google.gson.Gson;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.Alert;
 
 import java.io.*;
+
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 
 public class Api {
 
@@ -80,6 +87,40 @@ public class Api {
                 }
                 in.close();
                 return json.fromJson(response.toString(), CountUsers.class);
+            }
+            con.disconnect();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return null;
+    }
+
+    public static List<User> userPerson(LoginResponse bearer){
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/Users");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                Gson json= new GsonBuilder().create();
+                Type listeType= new TypeToken<List<User>>(){}.getType();
+                return json.fromJson(response.toString(), listeType);
             }
             con.disconnect();
 

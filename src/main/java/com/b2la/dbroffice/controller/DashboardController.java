@@ -13,7 +13,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
+import static com.b2la.dbroffice.connexion.Api.userPerson;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static javafx.application.Platform.exit;
 import static javafx.application.Platform.runLater;
@@ -35,8 +39,8 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-       profil();
+        profil();
+        userCount();
     }
 
     private CountUsers profil(){
@@ -77,6 +81,34 @@ public class DashboardController implements Initializable {
 
         });
         return null;
+    }
+
+    private void userCount(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+        runAsync(()->{
+            try {
+                List<User> userList=userPerson(clef);
+                assert userList != null;
+                runLater(()->{
+                    countUsers.setText(String.valueOf(userList.size()));
+                    System.out.println( userList.stream().filter(user->user.getRole().getLibelle().equals("CLIENT")).collect(Collectors.toList()).size());
+
+                });
+
+
+            } catch (Exception e) {
+                runLater(() -> {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Erreur de connexion");
+                    errorAlert.setHeaderText("Impossible de contacter le serveur.");
+                    errorAlert.setContentText(e.getMessage());
+                    errorAlert.showAndWait();
+                    exit();
+                });
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 
