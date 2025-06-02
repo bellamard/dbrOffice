@@ -123,7 +123,7 @@
                                  <children>
                                     <Pane prefHeight="200.0" prefWidth="430.0" styleClass="boxNews">
                                        <children>
-                                          <Label layoutX="381.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                          <Label fx:id="countClients" layoutX="381.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -140,7 +140,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="270.0" layoutY="146.0" text="XX" textAlignment="CENTER" textFill="#eaff00">
+                                          <Label fx:id="countAgents" layoutX="270.0" layoutY="146.0" text="XX" textAlignment="CENTER" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -157,7 +157,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="136.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                          <Label fx:id="countOffices" layoutX="136.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -174,7 +174,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="22.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                          <Label fx:id="countAdmin" layoutX="22.0" layoutY="147.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>

@@ -1,9 +1,6 @@
 package com.b2la.dbroffice.connexion;
 
-import com.b2la.dbroffice.dao.CountUsers;
-import com.b2la.dbroffice.dao.LoginRequest;
-import com.b2la.dbroffice.dao.LoginResponse;
-import com.b2la.dbroffice.dao.User;
+import com.b2la.dbroffice.dao.*;
 import com.b2la.dbroffice.preference.Storage;
 import com.google.gson.Gson;
 
@@ -98,7 +95,7 @@ public class Api {
         return null;
     }
 
-    public static List<User> userPerson(LoginResponse bearer){
+    public static List<StreamUser> userPerson(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
             URL url= new URL("https://dbr.b2la.online/Users");
@@ -119,7 +116,41 @@ public class Api {
                 }
                 in.close();
                 Gson json= new GsonBuilder().create();
-                Type listeType= new TypeToken<List<User>>(){}.getType();
+                Type listeType= new TypeToken<List<StreamUser>>(){}.getType();
+                return json.fromJson(response.toString(), listeType);
+            }
+            con.disconnect();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return null;
+    }
+
+    public static List<Operation> operationList(LoginResponse bearer){
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/Operations");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                Gson json= new GsonBuilder().create();
+                Type listeType= new TypeToken<List<Operation>>(){}.getType();
                 return json.fromJson(response.toString(), listeType);
             }
             con.disconnect();

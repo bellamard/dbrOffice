@@ -1,10 +1,7 @@
 package com.b2la.dbroffice.controller;
 
 import com.b2la.dbroffice.connexion.Api;
-import com.b2la.dbroffice.dao.CountUsers;
-import com.b2la.dbroffice.dao.LoginResponse;
-import com.b2la.dbroffice.dao.Role;
-import com.b2la.dbroffice.dao.User;
+import com.b2la.dbroffice.dao.*;
 import com.b2la.dbroffice.preference.Storage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -25,7 +22,7 @@ import static javafx.application.Platform.runLater;
 public class DashboardController implements Initializable {
 
     @FXML
-    private Label username, countAdmin, countOffice, countAgents, countClients, countUsers,
+    private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
             countSend, countWithdrawal, countDeposit, countFactory,
             amountSendUSD, amountWithdrawalUSD, amountDepositUSD,
             amountSendCDF, amountWithdrawalCDF, amountDepositCDF;
@@ -55,15 +52,15 @@ public class DashboardController implements Initializable {
                 runLater(()->{
                     username.setText(usePerson.getSurname()+" "+usePerson.getFirstname());
 
-//                    if (!role.getLibelle().equals("ADMIN")) {
-//                        Alert alert = new Alert(Alert.AlertType.ERROR);
-//                        alert.setTitle("Erreur!!!");
-//                        alert.setHeaderText("Avertissement Erreur!!!");
-//                        alert.setContentText("tu n'as pas access avec ce role " + role.getLibelle());
-//                        alert.showAndWait();
-//                        // Attention : mieux que System.exit(0) ici, il faut fermer proprement la fenêtre.
-//                        Platform.exit();
-//                    }
+                    if (!role.getLibelle().equals("OFFICE")) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Erreur!!!");
+                        alert.setHeaderText("Avertissement Erreur!!!");
+                        alert.setContentText("tu n'as pas access avec ce role " + role.getLibelle());
+                        alert.showAndWait();
+                        // Attention : mieux que System.exit(0) ici, il faut fermer proprement la fenêtre.
+                        Platform.exit();
+                    }
                 });
 
 
@@ -88,11 +85,36 @@ public class DashboardController implements Initializable {
         assert clef != null;
         runAsync(()->{
             try {
-                List<User> userList=userPerson(clef);
+                List<StreamUser> userList=userPerson(clef);
                 assert userList != null;
                 runLater(()->{
                     countUsers.setText(String.valueOf(userList.size()));
-                    System.out.println( userList.stream().filter(user->user.getRole().getLibelle().equals("CLIENT")).collect(Collectors.toList()).size());
+                    int nbreClients=0;
+                    int nbreAdmin=0;
+                    int nbreOffice=0;
+                    int nbreAgent=0;
+                    for(StreamUser client: userList){
+
+                        if(client.getType().equals("CLIENT")){
+                            nbreClients++;
+                        }
+
+                        if(client.getType().equals("ADMIN")){
+                            nbreAdmin++;
+                        }
+
+                        if(client.getType().equals("OFFICE")){
+                            nbreOffice++;
+                        }
+
+                        if(client.getType().equals("AGENT")){
+                            nbreAgent++;
+                        }
+                    }
+                    countAdmin.setText(String.valueOf(nbreAdmin));
+                    countAgents.setText(String.valueOf(nbreAgent));
+                    countOffices.setText(String.valueOf(nbreOffice));
+                    countClients.setText(String.valueOf(nbreClients));
 
                 });
 
@@ -111,11 +133,15 @@ public class DashboardController implements Initializable {
         });
     }
 
+    private void Operation(){
+
+    }
+
 
     @FXML
     protected void onClose() {
         Storage.removeLogin();
-        System.exit(0);
+        exit();
     }
 
 
