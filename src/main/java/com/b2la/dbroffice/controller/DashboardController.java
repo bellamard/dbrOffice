@@ -6,14 +6,20 @@ import com.b2la.dbroffice.preference.Storage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static com.b2la.dbroffice.connexion.Api.operationList;
 import static com.b2la.dbroffice.connexion.Api.userPerson;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static javafx.application.Platform.exit;
@@ -23,14 +29,19 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
-            countSend, countWithdrawal, countDeposit, countFactory,
+            countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov,
             amountSendUSD, amountWithdrawalUSD, amountDepositUSD,
             amountSendCDF, amountWithdrawalCDF, amountDepositCDF;
     private Button btnTaux;
     @FXML
     private AnchorPane home, operation, utilisateur;
+    @FXML
     private TextField searchTaux;
+    @FXML
     private TableView tableTaux;
+    @FXML
+    private AreaChart<LocalDate, Number> diagram;
+
 
 
 
@@ -38,6 +49,8 @@ public class DashboardController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         profil();
         userCount();
+        Operation();
+        chart();
     }
 
     private CountUsers profil(){
@@ -58,7 +71,6 @@ public class DashboardController implements Initializable {
                         alert.setHeaderText("Avertissement Erreur!!!");
                         alert.setContentText("tu n'as pas access avec ce role " + role.getLibelle());
                         alert.showAndWait();
-                        // Attention : mieux que System.exit(0) ici, il faut fermer proprement la fenêtre.
                         Platform.exit();
                     }
                 });
@@ -134,6 +146,92 @@ public class DashboardController implements Initializable {
     }
 
     private void Operation(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+        runAsync(()->{
+            try {
+                List<Operation> operaList=operationList(clef);
+                assert operaList != null;
+                runLater(()->{
+                    countOpera.setText(String.valueOf(operaList.size()));
+                    int nbreSend=0;
+                    int nbreDrawl=0;
+                    int nbreDepot=0;
+                    int nbreDepotAg=0;
+                    int nbreDrawlAg=0;
+                    Role roleBen;
+                    Role roleExp;
+                    for(Operation Operat: operaList){
+                        roleBen=Operat.getBen().getUser().getRole();
+                        roleExp= Operat.getExp().getUser().getRole();
+
+                        if(roleBen.getLibelle().equals("CLIENT") && roleExp.getLibelle().equals("CLIENT")){
+                            nbreSend++;
+                        }
+
+                        if(roleBen.getLibelle().equals("AGENT") && roleExp.getLibelle().equals("CLIENT")){
+                            nbreDrawl++;
+                        }
+
+                        if(roleBen.getLibelle().equals("CLIENT") && roleExp.getLibelle().equals("AGENT")){
+                            nbreDepot++;
+                        }
+
+                        if(roleBen.getLibelle().equals("AGENT") && roleExp.getLibelle().equals("OFFICE")){
+                            nbreDepotAg++;
+                        }
+                        if(roleBen.getLibelle().equals("OFFICE") && roleExp.getLibelle().equals("AGENT")){
+                            nbreDrawlAg++;
+                        }
+                    }
+                    countSend.setText(String.valueOf(nbreSend));
+                    countWithdrawal.setText(String.valueOf(nbreDrawl));
+                    countDeposit.setText(String.valueOf(nbreDepot));
+                    countFactory.setText(String.valueOf(nbreDepotAg));
+                    countRecov.setText(String.valueOf(nbreDrawlAg));
+                });
+
+
+            } catch (Exception e) {
+                runLater(() -> {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Erreur de connexion");
+                    errorAlert.setHeaderText("Impossible de contacter le serveur.");
+                    errorAlert.setContentText(e.getMessage());
+                    errorAlert.showAndWait();
+                    exit();
+                });
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void chart(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+
+        runLater(()->{
+            try{
+                List<Operation> operaList=operationList(clef);
+                assert operaList != null;
+
+                XYChart.Series<LocalDate, Number> xyC= new XYChart.Series<>();
+
+                Map<LocalDate, List<Operation>> groupeDate=operaList.stream()
+                        .collect(Collectors.groupingBy(Oper->Oper.getDateoperation().toString()::toLoc));
+
+                groupeDate.forEach((date,liste)->{
+                    AtomicInteger nombre= new AtomicInteger();
+                    liste.forEach(op->{
+                        nombre.getAndIncrement();
+                    });
+                    xyC.getData().add(new XYChart.Data<>(date, nombre));
+                });
+                diagram.getData().add(xyC);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 

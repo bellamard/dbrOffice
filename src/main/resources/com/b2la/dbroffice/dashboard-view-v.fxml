@@ -212,7 +212,7 @@
                                     </Pane>
                                     <Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="430.0" styleClass="boxNews">
                                        <children>
-                                          <Label layoutX="286.0" layoutY="16.0" text="XXXXXXXX" textAlignment="RIGHT" textFill="#00d0ff">
+                                          <Label fx:id="countOpera" layoutX="386.0" layoutY="16.0" text="XX" textAlignment="RIGHT" textFill="#00d0ff">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -229,7 +229,7 @@
                                                 <Font name="Segoe UI Light" size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="40.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                          <Label fx:id="countSend" layoutX="40.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -246,7 +246,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="156.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                          <Label fx:id="countWithdrawal" layoutX="116.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -254,8 +254,8 @@
                                                 <Font name="System Bold" size="16.0" />
                                              </font>
                                           </Label>
-                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="154.0" layoutY="138.0" selectionEnd="0" />
-                                          <Label layoutX="140.0" layoutY="165.0" text="RETRAITS" textAlignment="CENTER" textFill="#eaff00">
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="114.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="100.0" layoutY="165.0" text="RETRAITS" textAlignment="CENTER" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -263,7 +263,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="259.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                          <Label fx:id="countDeposit" layoutX="199.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -271,8 +271,8 @@
                                                 <Font name="System Bold" size="16.0" />
                                              </font>
                                           </Label>
-                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="259.0" layoutY="138.0" selectionEnd="0" />
-                                          <Label layoutX="245.0" layoutY="165.0" text="DEPOTS" textAlignment="CENTER" textFill="#eaff00">
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="199.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="185.0" layoutY="165.0" text="DEPOTS" textAlignment="CENTER" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -280,7 +280,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="376.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                          <Label fx:id="countFactory" layoutX="287.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -288,8 +288,25 @@
                                                 <Font name="System Bold" size="16.0" />
                                              </font>
                                           </Label>
-                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="377.0" layoutY="138.0" selectionEnd="0" />
-                                          <Label layoutX="356.0" layoutY="165.0" text="FACTURES" textAlignment="CENTER" textFill="#eaff00">
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="288.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="267.0" layoutY="165.0" text="DEPOTS AG" textAlignment="CENTER" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="countRecov" layoutX="370.0" layoutY="146.0" text="XX" textAlignment="RIGHT" textFill="#eaff00">
+                                             <graphic>
+                                                <StackedFontIcon alignment="CENTER_LEFT" />
+                                             </graphic>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <FontIcon iconColor="#ffffff" iconLiteral="fa-file-text" iconSize="32" layoutX="371.0" layoutY="138.0" selectionEnd="0" />
+                                          <Label layoutX="350.0" layoutY="165.0" text="RECUP. AG" textAlignment="CENTER" textFill="#eaff00">
                                              <graphic>
                                                 <StackedFontIcon alignment="CENTER_LEFT" />
                                              </graphic>
@@ -391,7 +408,7 @@
                                     </Pane>
                                     <Pane layoutX="470.0" layoutY="34.0" prefHeight="228.0" prefWidth="379.0" styleClass="bannerJournalier">
                                        <children>
-                                          <AreaChart layoutX="8.0" layoutY="8.0" prefHeight="213.0" prefWidth="362.0">
+                                          <AreaChart fx:id="diagram" layoutX="8.0" layoutY="8.0" prefHeight="213.0" prefWidth="362.0">
                                             <xAxis>
                                               <CategoryAxis side="BOTTOM" />
                                             </xAxis>
