@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -30,8 +31,7 @@ public class DashboardController implements Initializable {
     @FXML
     private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
             countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov,
-            amountSendUSD, amountWithdrawalUSD, amountDepositUSD,
-            amountSendCDF, amountWithdrawalCDF, amountDepositCDF;
+            attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF;
     private Button btnTaux;
     @FXML
     private AnchorPane home, operation, utilisateur;
@@ -40,10 +40,7 @@ public class DashboardController implements Initializable {
     @FXML
     private TableView tableTaux;
     @FXML
-    private AreaChart<LocalDate, Number> diagram;
-
-
-
+    private AreaChart<String, Number> diagram;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -51,6 +48,7 @@ public class DashboardController implements Initializable {
         userCount();
         Operation();
         chart();
+        sommeOperation();
     }
 
     private CountUsers profil(){
@@ -164,25 +162,28 @@ public class DashboardController implements Initializable {
                     for(Operation Operat: operaList){
                         roleBen=Operat.getBen().getUser().getRole();
                         roleExp= Operat.getExp().getUser().getRole();
+                        if(Operat.getState().getLibelle().equals("VALIDER")){
+                            if(roleBen.getLibelle().equals("CLIENT") && roleExp.getLibelle().equals("CLIENT")){
+                                nbreSend++;
+                            }
 
-                        if(roleBen.getLibelle().equals("CLIENT") && roleExp.getLibelle().equals("CLIENT")){
-                            nbreSend++;
+                            if(roleBen.getLibelle().equals("AGENT") && roleExp.getLibelle().equals("CLIENT")){
+                                nbreDrawl++;
+                            }
+
+                            if(roleBen.getLibelle().equals("CLIENT") && roleExp.getLibelle().equals("AGENT")){
+                                nbreDepot++;
+                            }
+
+                            if(roleBen.getLibelle().equals("AGENT") && roleExp.getLibelle().equals("OFFICE")){
+                                nbreDepotAg++;
+                            }
+                            if(roleBen.getLibelle().equals("OFFICE") && roleExp.getLibelle().equals("AGENT")){
+                                nbreDrawlAg++;
+                            }
                         }
 
-                        if(roleBen.getLibelle().equals("AGENT") && roleExp.getLibelle().equals("CLIENT")){
-                            nbreDrawl++;
-                        }
 
-                        if(roleBen.getLibelle().equals("CLIENT") && roleExp.getLibelle().equals("AGENT")){
-                            nbreDepot++;
-                        }
-
-                        if(roleBen.getLibelle().equals("AGENT") && roleExp.getLibelle().equals("OFFICE")){
-                            nbreDepotAg++;
-                        }
-                        if(roleBen.getLibelle().equals("OFFICE") && roleExp.getLibelle().equals("AGENT")){
-                            nbreDrawlAg++;
-                        }
                     }
                     countSend.setText(String.valueOf(nbreSend));
                     countWithdrawal.setText(String.valueOf(nbreDrawl));
@@ -215,19 +216,103 @@ public class DashboardController implements Initializable {
                 List<Operation> operaList=operationList(clef);
                 assert operaList != null;
 
-                XYChart.Series<LocalDate, Number> xyC= new XYChart.Series<>();
+                XYChart.Series<String, Number> xyC= new XYChart.Series<>();
+                xyC.setName("CDF");
+                XYChart.Series<String, Number> xyU= new XYChart.Series<>();
+                xyU.setName("USD");
 
-                Map<LocalDate, List<Operation>> groupeDate=operaList.stream()
-                        .collect(Collectors.groupingBy(Oper->Oper.getDateoperation().toString()::toLoc));
+                Map<String, List<Operation>> groupeDate=operaList.stream()
+                        .collect(Collectors.groupingBy(Oper->LocalDate.parse(Oper.getDateoperation(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toString()
+                        ));
 
                 groupeDate.forEach((date,liste)->{
-                    AtomicInteger nombre= new AtomicInteger();
+                    AtomicInteger nombreUSD= new AtomicInteger();
+                    AtomicInteger nombreCDF= new AtomicInteger();
                     liste.forEach(op->{
-                        nombre.getAndIncrement();
+                        if(op.getState().getLibelle().equals("VALIDER")){
+                            if(op.getDevice().equals("usd")){
+                                nombreUSD.getAndIncrement();
+                            }
+                            if(op.getDevice().equals("cdf")){
+                                nombreCDF.getAndIncrement();
+                            }
+                        }
                     });
-                    xyC.getData().add(new XYChart.Data<>(date, nombre));
+
+                    xyC.getData().add(new XYChart.Data<>(date, nombreCDF));
+                    xyU.getData().add(new XYChart.Data<>(date, nombreUSD));
+                    xyU.chartProperty();
                 });
+
                 diagram.getData().add(xyC);
+                diagram.getData().add(xyU);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+    private void sommeOperation(){
+
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+        runAsync(()->{
+            try{
+                List<Operation> operaList=operationList(clef);
+                assert operaList != null;
+
+                Map<String, List<Operation>> groupeDate=operaList.stream()
+                        .collect(Collectors.groupingBy(Oper->Oper.getState().getLibelle()));
+
+                groupeDate.forEach((date,liste)->{
+                    AtomicInteger sommeValiderCDF= new AtomicInteger();
+                    AtomicInteger sommeValiderUSD= new AtomicInteger();
+                    AtomicInteger sommeAnnulerCDF= new AtomicInteger();
+                    AtomicInteger sommeAnnulerUSD= new AtomicInteger();
+                    AtomicInteger sommeAttenteCDF= new AtomicInteger();
+                    AtomicInteger sommeAttenteUSD= new AtomicInteger();
+                    for(Operation op: liste){
+                        if(op.getState().getLibelle().equals("VALIDER")){
+
+                            if(op.getDevice().equals("usd")){
+                                sommeValiderUSD.getAndIncrement();
+                            }
+                            if(op.getDevice().equals("cdf")){
+                                sommeValiderCDF.getAndIncrement();
+                            }
+                        }
+                        if(op.getState().getLibelle().equals("ANNULER")){
+
+                            if(op.getDevice().equals("usd")){
+                                sommeAnnulerUSD.getAndIncrement();
+                            }
+                            if(op.getDevice().equals("cdf")){
+                                sommeAnnulerCDF.getAndIncrement();
+                            }
+                        }
+                        if(op.getState().getLibelle().equals("ATTENTE")){
+
+                            if(op.getDevice().equals("usd")){
+                                sommeAttenteUSD.getAndIncrement();
+                            }
+                            if(op.getDevice().equals("cdf")){
+                                sommeAttenteCDF.getAndIncrement();
+                            }
+                        }
+                    }
+
+                    attentCDF.setText(String.valueOf(55));
+                    attentUSD.setText(String.valueOf(50));
+                    validerUSD.setText(String.valueOf(50));
+                    validerCDF.setText(String.valueOf(40));
+                    annulersUSD.setText(String.valueOf(14));
+                    annulersCDF.setText(String.valueOf(85));
+
+
+                });
+
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

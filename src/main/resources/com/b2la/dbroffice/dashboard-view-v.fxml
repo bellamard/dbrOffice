@@ -320,97 +320,101 @@
                               </HBox>
                               <Pane layoutY="203.19999313354492" styleClass="panelTitle">
                                  <children>
-                                    <Pane layoutX="14.0" layoutY="35.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                                    <Pane layoutX="14.0" layoutY="35.0" prefHeight="71.0" prefWidth="392.0" styleClass="bannerJournalier">
                                        <children>
-                                          <Label layoutX="73.0" layoutY="11.0" text="ENVOIS">
+                                          <Label layoutX="73.0" layoutY="11.0" text="ATTENTES">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENTS" />
-                                          <Label layoutX="381.0" layoutY="17.0" text="USD" />
-                                          <Label layoutX="382.0" layoutY="40.0" text="CDF">
+                                          <Label layoutX="73.0" layoutY="41.0" text="OPERATIONS EN ATTENTES" />
+                                          <Label layoutX="361.0" layoutY="17.0" text="USD" />
+                                          <Label layoutX="362.0" layoutY="40.0" text="CDF">
                                              <font>
                                                 <Font name="Segoe UI Light" size="12.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="attentCDF" layoutX="300.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="attentUSD" layoutX="301.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <FontIcon iconLiteral="fa-retweet" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                          <FontIcon iconLiteral="fa-clock-o" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                                        </children>
                                     </Pane>
-                                    <Label layoutX="27.0" layoutY="14.0" text="MONTANT DES OPERATIONS JOURNALIER">
+                                    <Label layoutX="27.0" layoutY="14.0" text="OPERATIONS ETATS">
                                        <font>
                                           <Font name="Segoe UI Light" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Pane layoutX="14.0" layoutY="113.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                                    <Pane layoutX="14.0" layoutY="113.0" prefHeight="71.0" prefWidth="393.0" styleClass="bannerJournalier">
                                        <children>
-                                          <Label layoutX="73.0" layoutY="11.0" text="RETRAITS">
+                                          <Label layoutX="73.0" layoutY="11.0" text="VALIDERS">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENT ET AGENTS" />
-                                          <Label layoutX="381.0" layoutY="17.0" text="USD" />
-                                          <Label layoutX="382.0" layoutY="40.0" text="CDF">
+                                          <Label layoutX="73.0" layoutY="41.0" text="OPERATIONS VALIDER" />
+                                          <Label layoutX="361.0" layoutY="17.0" text="USD" />
+                                          <Label layoutX="362.0" layoutY="40.0" text="CDF">
                                              <font>
                                                 <Font name="Segoe UI Light" size="12.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="validerCDF" layoutX="300.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="validerUSD" layoutX="301.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <FontIcon iconLiteral="fa-credit-card-alt" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                          <FontIcon iconLiteral="fa-check-square" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                                        </children>
                                     </Pane>
-                                    <Pane layoutX="14.0" layoutY="192.0" prefHeight="71.0" prefWidth="423.0" styleClass="bannerJournalier">
+                                    <Pane layoutX="14.0" layoutY="192.0" prefHeight="71.0" prefWidth="393.0" styleClass="bannerJournalier">
                                        <children>
-                                          <Label layoutX="73.0" layoutY="11.0" text="DEPOTS">
+                                          <Label layoutX="73.0" layoutY="11.0" text="ANNULERS">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="24.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="73.0" layoutY="41.0" text="TRANSFERT ENTRE CLIENT ET AGENTS" />
-                                          <Label layoutX="381.0" layoutY="17.0" text="USD" />
-                                          <Label layoutX="382.0" layoutY="40.0" text="CDF">
+                                          <Label layoutX="73.0" layoutY="41.0" text="OPERATIONS ANNULERS" />
+                                          <Label layoutX="361.0" layoutY="17.0" text="USD" />
+                                          <Label layoutX="362.0" layoutY="40.0" text="CDF">
                                              <font>
                                                 <Font name="Segoe UI Light" size="12.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="320.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="annulersCDF" layoutX="300.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="321.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="annulersUSD" layoutX="301.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <FontIcon iconLiteral="fa-suitcase" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                          <FontIcon iconLiteral="fa-times" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                                        </children>
                                     </Pane>
-                                    <Pane layoutX="470.0" layoutY="34.0" prefHeight="228.0" prefWidth="379.0" styleClass="bannerJournalier">
+                                    <Pane layoutX="413.0" layoutY="34.0" prefHeight="228.0" prefWidth="453.0" styleClass="bannerJournalier">
                                        <children>
-                                          <AreaChart fx:id="diagram" layoutX="8.0" layoutY="8.0" prefHeight="213.0" prefWidth="362.0">
+                                          <AreaChart fx:id="diagram" horizontalZeroLineVisible="false" prefHeight="229.0" prefWidth="454.0" titleSide="BOTTOM">
                                             <xAxis>
-                                              <CategoryAxis side="BOTTOM" />
+                                              <CategoryAxis side="BOTTOM">
+                                                   <tickLabelFont>
+                                                      <Font size="5.0" />
+                                                   </tickLabelFont>
+                                                </CategoryAxis>
                                             </xAxis>
                                             <yAxis>
                                               <NumberAxis side="LEFT" />
@@ -418,7 +422,7 @@
                                           </AreaChart>
                                        </children>
                                     </Pane>
-                                    <Label layoutX="495.0" layoutY="14.0" text="ECHELLE DE PERFORMANCE DE 7 JOURS">
+                                    <Label layoutX="455.0" layoutY="14.0" text="ECHELLE DE PERFORMANCE ">
                                        <font>
                                           <Font name="Segoe UI Light" size="12.0" />
                                        </font>
@@ -428,13 +432,16 @@
                                     <Insets bottom="5.0" />
                                  </padding>
                               </Pane>
-                              <Pane layoutY="476.0000114440918" prefHeight="200.0" prefWidth="200.0">
+                              <Pane layoutY="476.0000114440918">
                                  <children>
                                     <Label layoutX="34.0" layoutY="7.0" text="LISTE DES TAUX SUR LES OPERATION" />
                                     <TableView layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="653.0" />
                                     <Button layoutX="683.0" layoutY="88.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
                                     <TextField layoutX="681.0" layoutY="31.0" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
                                  </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
                               </Pane>
                            </children>
                         </AnchorPane>
