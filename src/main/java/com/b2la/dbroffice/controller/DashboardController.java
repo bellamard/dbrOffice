@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
@@ -20,8 +21,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.b2la.dbroffice.connexion.Api.operationList;
-import static com.b2la.dbroffice.connexion.Api.userPerson;
+import static com.b2la.dbroffice.connexion.Api.*;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static javafx.application.Platform.exit;
 import static javafx.application.Platform.runLater;
@@ -38,7 +38,11 @@ public class DashboardController implements Initializable {
     @FXML
     private TextField searchTaux;
     @FXML
-    private TableView tableTaux;
+    private TableView tableauTaux;
+    @FXML
+    private TableColumn<Cost, String> TCdevices;
+    @FXML
+    private TableColumn<Cost, Float> TCmin, TCmax, TCpourcent;
     @FXML
     private AreaChart<String, Number> diagram;
 
@@ -49,6 +53,7 @@ public class DashboardController implements Initializable {
         Operation();
         chart();
         sommeOperation();
+        viewTaux();
     }
 
     private CountUsers profil(){
@@ -264,14 +269,14 @@ public class DashboardController implements Initializable {
 
                 Map<String, List<Operation>> groupeDate=operaList.stream()
                         .collect(Collectors.groupingBy(Oper->Oper.getState().getLibelle()));
-
+                AtomicInteger sommeValiderCDF= new AtomicInteger();
+                AtomicInteger sommeValiderUSD= new AtomicInteger();
+                AtomicInteger sommeAnnulerCDF= new AtomicInteger();
+                AtomicInteger sommeAnnulerUSD= new AtomicInteger();
+                AtomicInteger sommeAttenteCDF= new AtomicInteger();
+                AtomicInteger sommeAttenteUSD= new AtomicInteger();
                 groupeDate.forEach((date,liste)->{
-                    AtomicInteger sommeValiderCDF= new AtomicInteger();
-                    AtomicInteger sommeValiderUSD= new AtomicInteger();
-                    AtomicInteger sommeAnnulerCDF= new AtomicInteger();
-                    AtomicInteger sommeAnnulerUSD= new AtomicInteger();
-                    AtomicInteger sommeAttenteCDF= new AtomicInteger();
-                    AtomicInteger sommeAttenteUSD= new AtomicInteger();
+
                     for(Operation op: liste){
                         if(op.getState().getLibelle().equals("VALIDER")){
 
@@ -301,15 +306,14 @@ public class DashboardController implements Initializable {
                             }
                         }
                     }
-
-                    attentCDF.setText(String.valueOf(55));
-                    attentUSD.setText(String.valueOf(50));
-                    validerUSD.setText(String.valueOf(50));
-                    validerCDF.setText(String.valueOf(40));
-                    annulersUSD.setText(String.valueOf(14));
-                    annulersCDF.setText(String.valueOf(85));
-
-
+                });
+                runLater(()->{
+                    attentCDF.setText(String.valueOf(sommeAttenteCDF));
+                    attentUSD.setText(String.valueOf(sommeAttenteUSD));
+                    validerUSD.setText(String.valueOf(sommeValiderUSD));
+                    validerCDF.setText(String.valueOf(sommeValiderCDF));
+                    annulersUSD.setText(String.valueOf(sommeAnnulerUSD));
+                    annulersCDF.setText(String.valueOf(sommeAnnulerCDF));
                 });
 
 
@@ -318,6 +322,23 @@ public class DashboardController implements Initializable {
             }
         });
 
+    }
+
+
+
+    private void viewTaux(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+
+        TCpourcent.setCellValueFactory(new PropertyValueFactory<Cost, Float>("percent"));
+        TCdevices.setCellValueFactory(new PropertyValueFactory<Cost, String>("devices"));
+        TCmax.setCellValueFactory(new PropertyValueFactory<Cost, Float>("max"));
+        TCmin.setCellValueFactory(new PropertyValueFactory<Cost, Float>("min"));
+
+        runAsync(()->{
+            List<Cost> costL = costList(clef);
+            runLater(()->tableauTaux.getItems().setAll(costL));
+        });
     }
 
 

@@ -328,18 +328,18 @@
                                              </font>
                                           </Label>
                                           <Label layoutX="73.0" layoutY="41.0" text="OPERATIONS EN ATTENTES" />
-                                          <Label layoutX="361.0" layoutY="17.0" text="USD" />
-                                          <Label layoutX="362.0" layoutY="40.0" text="CDF">
+                                          <Label layoutX="311.0" layoutY="17.0" text="nombre USD" />
+                                          <Label layoutX="313.0" layoutY="40.0" text="nombre CDF">
                                              <font>
                                                 <Font name="Segoe UI Light" size="12.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="attentCDF" layoutX="300.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="attentCDF" layoutX="281.0" layoutY="39.0" text="XX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="attentUSD" layoutX="301.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="attentUSD" layoutX="281.0" layoutY="15.0" text="XX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
@@ -360,18 +360,18 @@
                                              </font>
                                           </Label>
                                           <Label layoutX="73.0" layoutY="41.0" text="OPERATIONS VALIDER" />
-                                          <Label layoutX="361.0" layoutY="17.0" text="USD" />
-                                          <Label layoutX="362.0" layoutY="40.0" text="CDF">
+                                          <Label layoutX="311.0" layoutY="17.0" text="nombre USD" />
+                                          <Label layoutX="312.0" layoutY="40.0" text="nombre CDF">
                                              <font>
                                                 <Font name="Segoe UI Light" size="12.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="validerCDF" layoutX="300.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="validerCDF" layoutX="280.0" layoutY="39.0" text="XX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="validerUSD" layoutX="301.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="validerUSD" layoutX="281.0" layoutY="15.0" text="XX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
@@ -387,18 +387,18 @@
                                              </font>
                                           </Label>
                                           <Label layoutX="73.0" layoutY="41.0" text="OPERATIONS ANNULERS" />
-                                          <Label layoutX="361.0" layoutY="17.0" text="USD" />
-                                          <Label layoutX="362.0" layoutY="40.0" text="CDF">
+                                          <Label layoutX="311.0" layoutY="17.0" text="nombre USD" />
+                                          <Label layoutX="312.0" layoutY="40.0" text="nombre CDF">
                                              <font>
                                                 <Font name="Segoe UI Light" size="12.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="annulersCDF" layoutX="300.0" layoutY="39.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="annulersCDF" layoutX="280.0" layoutY="39.0" text="XX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="annulersUSD" layoutX="301.0" layoutY="15.0" text="XXXXXX" textAlignment="RIGHT">
+                                          <Label fx:id="annulersUSD" layoutX="281.0" layoutY="15.0" text="XX" textAlignment="RIGHT">
                                              <font>
                                                 <Font name="Segoe UI Bold" size="15.0" />
                                              </font>
@@ -408,13 +408,12 @@
                                     </Pane>
                                     <Pane layoutX="413.0" layoutY="34.0" prefHeight="228.0" prefWidth="453.0" styleClass="bannerJournalier">
                                        <children>
-                                          <AreaChart fx:id="diagram" horizontalZeroLineVisible="false" prefHeight="229.0" prefWidth="454.0" titleSide="BOTTOM">
+                                          <AreaChart fx:id="diagram" layoutX="-1.0" layoutY="-2.0" prefHeight="234.0" prefWidth="454.0">
                                             <xAxis>
-                                              <CategoryAxis side="BOTTOM">
+                                              <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false">
                                                    <tickLabelFont>
                                                       <Font size="5.0" />
-                                                   </tickLabelFont>
-                                                </CategoryAxis>
+                                                   </tickLabelFont></CategoryAxis>
                                             </xAxis>
                                             <yAxis>
                                               <NumberAxis side="LEFT" />
@@ -435,7 +434,13 @@
                               <Pane layoutY="476.0000114440918">
                                  <children>
                                     <Label layoutX="34.0" layoutY="7.0" text="LISTE DES TAUX SUR LES OPERATION" />
-                                    <TableView layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="653.0" />
+                                    <TableView fx:id="tableauTaux" layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="653.0">
+                                       <columns>
+                                          <TableColumn fx:id="TCdevices" prefWidth="155.7999963760376" text="Device" />
+                                          <TableColumn fx:id="TCpourcent" prefWidth="135.40005493164062" text="\%" />
+                                          <TableColumn fx:id="TCmin" minWidth="0.0" prefWidth="177.79998779296875" text="Min" />
+                                          <TableColumn fx:id="TCmax" prefWidth="186.0" text="Max" />
+                                       </columns></TableView>
                                     <Button layoutX="683.0" layoutY="88.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
                                     <TextField layoutX="681.0" layoutY="31.0" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
                                  </children>

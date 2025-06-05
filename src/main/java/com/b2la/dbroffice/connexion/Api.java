@@ -163,5 +163,38 @@ public class Api {
         return null;
     }
 
+    public static List<Cost> costList(LoginResponse bearer){
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/costs");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                Gson json= new GsonBuilder().create();
+                Type listeType= new TypeToken<List<Cost>>(){}.getType();
+                return json.fromJson(response.toString(), listeType);
+            }
+            con.disconnect();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return null;
+    }
 
 }
