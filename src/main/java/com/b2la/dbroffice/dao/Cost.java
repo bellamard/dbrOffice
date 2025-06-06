@@ -1,10 +1,12 @@
 package com.b2la.dbroffice.dao;
 
 public class Cost {
+    private int id;
     private String devices;
     private float max,min, percent;
 
-    public Cost(String devices, float max, float min, float percent) {
+    public Cost(int id, String devices, float max, float min, float percent) {
+        this.id= id;
         this.devices = devices;
         this.max = max;
         this.min = min;
@@ -12,6 +14,14 @@ public class Cost {
     }
 
     public Cost() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDevices() {

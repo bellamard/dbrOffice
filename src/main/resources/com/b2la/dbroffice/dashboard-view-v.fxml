@@ -436,13 +436,14 @@
                                     <Label layoutX="34.0" layoutY="7.0" text="LISTE DES TAUX SUR LES OPERATION" />
                                     <TableView fx:id="tableauTaux" layoutX="14.0" layoutY="31.0" prefHeight="161.0" prefWidth="653.0">
                                        <columns>
-                                          <TableColumn fx:id="TCdevices" prefWidth="155.7999963760376" text="Device" />
-                                          <TableColumn fx:id="TCpourcent" prefWidth="135.40005493164062" text="\%" />
-                                          <TableColumn fx:id="TCmin" minWidth="0.0" prefWidth="177.79998779296875" text="Min" />
-                                          <TableColumn fx:id="TCmax" prefWidth="186.0" text="Max" />
+                                          <TableColumn fx:id="TCdevices" prefWidth="70.99999332427979" text="Device" />
+                                          <TableColumn fx:id="TCactions" prefWidth="83.79998779296875" text="ACTION" />
+                                          <TableColumn fx:id="TCpourcent" prefWidth="94.60000610351562" text="\%" />
+                                          <TableColumn fx:id="TCmin" minWidth="0.0" prefWidth="217.60000610351562" text="Min" />
+                                          <TableColumn fx:id="TCmax" prefWidth="266.4000244140625" text="Max" />
                                        </columns></TableView>
                                     <Button layoutX="683.0" layoutY="88.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
-                                    <TextField layoutX="681.0" layoutY="31.0" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
+                                    <TextField fx:id="searchTaux" layoutX="681.0" layoutY="31.0" onAction="#hanchSearch" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
                                  </children>
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

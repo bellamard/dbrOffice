@@ -4,6 +4,9 @@ import com.b2la.dbroffice.connexion.Api;
 import com.b2la.dbroffice.dao.*;
 import com.b2la.dbroffice.preference.Storage;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
@@ -11,6 +14,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -42,7 +47,13 @@ public class DashboardController implements Initializable {
     @FXML
     private TableColumn<Cost, String> TCdevices;
     @FXML
-    private TableColumn<Cost, Float> TCmin, TCmax, TCpourcent;
+    private TableColumn<Cost, Float> TCmin;
+    @FXML
+    private TableColumn<Cost, Float> TCmax;
+    @FXML
+    private TableColumn<Cost, Float> TCpourcent;
+    @FXML
+    private TableColumn<Cost, String> TCactions;
     @FXML
     private AreaChart<String, Number> diagram;
 
@@ -324,23 +335,93 @@ public class DashboardController implements Initializable {
 
     }
 
-
-
     private void viewTaux(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
 
-        TCpourcent.setCellValueFactory(new PropertyValueFactory<Cost, Float>("percent"));
-        TCdevices.setCellValueFactory(new PropertyValueFactory<Cost, String>("devices"));
-        TCmax.setCellValueFactory(new PropertyValueFactory<Cost, Float>("max"));
-        TCmin.setCellValueFactory(new PropertyValueFactory<Cost, Float>("min"));
+        TCpourcent.setCellValueFactory(new PropertyValueFactory<>("percent"));
+        TCdevices.setCellValueFactory(new PropertyValueFactory<>("devices"));
+        TCmax.setCellValueFactory(new PropertyValueFactory<>("max"));
+        TCmin.setCellValueFactory(new PropertyValueFactory<>("min"));
+
+        TCactions.setCellFactory(col->new TableCell<>(){
+            private final Button btn= new Button("M");
+            private final Button btnSup= new Button("S");
+            {
+                btn.setOnAction(
+                        e->{
+                            Cost c=getTableView().getItems().get(getIndex());
+                            System.out.println("modifier: "+c.getDevices());
+                        }
+                );
+
+                btnSup.setOnAction(
+                        e->{
+                            Cost c=getTableView().getItems().get(getIndex());
+                            System.out.println("Suprimer: "+c.getId());
+                        }
+                );
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox boxBtn=new HBox(2, btn, btnSup);
+                    setGraphic(boxBtn);
+                }
+            }
+        });
+
+
 
         runAsync(()->{
-            List<Cost> costL = costList(clef);
-            runLater(()->tableauTaux.getItems().setAll(costL));
+
+            Task<ObservableList<Cost>> task= new Task<>() {
+                @Override
+                protected ObservableList<Cost> call() throws Exception {
+                    List<Cost> costL = costList(clef);
+                    return FXCollections.observableArrayList(costL);
+                }
+            };
+            task.setOnSucceeded(e->tableauTaux.setItems(task.getValue()));
+            new Thread(task).start();
         });
     }
 
+    @FXML
+    private void hanchSearch(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+        runAsync(()->{
+
+            Task<ObservableList<Cost>> task= new Task<>() {
+                @Override
+                protected ObservableList<Cost> call() throws Exception {
+                    List<Cost> costL = costList(clef);
+                    assert costL != null;
+                    List<Cost> searchList=costL.stream().filter(tcCost->
+                       tcCost.getDevices().contains(searchTaux.getText())||
+                               String.valueOf(tcCost.getMin()).contains(searchTaux.getText())||
+                               String.valueOf(tcCost.getMax()).contains(searchTaux.getText())||
+                               String.valueOf(tcCost.getPercent()).contains(searchTaux.getText())
+                    ).collect(Collectors.toList());
+                    if(!searchTaux.getText().isEmpty()){
+                        System.out.println("nombre des elements :"+searchList.size());
+                        return FXCollections.observableArrayList(searchList);
+                    }
+                        System.out.println(searchTaux.getText());
+                        return FXCollections.observableArrayList(costL);
+
+
+                }
+            };
+            task.setOnSucceeded(e->tableauTaux.setItems(task.getValue()));
+            new Thread(task).start();
+        });
+    }
 
     @FXML
     protected void onClose() {

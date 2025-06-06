@@ -13,6 +13,6 @@ module com.b2la.dbroffice {
     exports com.b2la.dbroffice;
     exports com.b2la.dbroffice.controller;
     opens com.b2la.dbroffice.controller to javafx.fxml;
-    opens com.b2la.dbroffice.dao to com.google.gson;
+    opens com.b2la.dbroffice.dao to com.google.gson, javafx.base;
 
 }
