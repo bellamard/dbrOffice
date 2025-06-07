@@ -13,6 +13,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class Api {
             try(OutputStream os= con.getOutputStream()){
                 byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
+                os.flush();
+                os.flush();
             }
             int responseCode=con.getResponseCode();
             if(responseCode==HttpURLConnection.HTTP_OK){
@@ -195,6 +198,119 @@ public class Api {
 
 
         return null;
+    }
+
+    public static Cost addCost(Cost request){
+        LoginResponse bearer=Storage.loadLogin();
+        assert bearer != null;
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/costs");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            Gson json= new Gson();
+            String jsInput= json.toJson(request);
+            try(OutputStream os= con.getOutputStream()){
+                byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+                os.flush();
+                os.flush();
+            }
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                return json.fromJson(response.toString(), Cost.class);
+            }
+            con.disconnect();
+            return null;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Cost updateCost(Cost request){
+        LoginResponse bearer=Storage.loadLogin();
+        assert bearer != null;
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/costs/"+request.getId());
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("PUT");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            Gson json= new Gson();
+            String jsInput= json.toJson(request);
+            try(OutputStream os= con.getOutputStream()){
+                byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+                os.flush();
+                os.flush();
+            }
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                return json.fromJson(response.toString(), Cost.class);
+            }
+            con.disconnect();
+            return null;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Cost deleteCost(Cost request){
+        LoginResponse bearer=Storage.loadLogin();
+        assert bearer != null;
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/costs/"+request.getId());
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("DELETE");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            Gson json= new Gson();
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                return json.fromJson(response.toString(), Cost.class);
+            }
+            con.disconnect();
+            return null;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

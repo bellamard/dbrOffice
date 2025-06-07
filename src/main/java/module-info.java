@@ -8,6 +8,7 @@ module com.b2la.dbroffice {
     requires org.kordamp.bootstrapfx.core;
     requires com.google.gson;
     requires java.prefs;
+    requires java.net.http;
 
     opens com.b2la.dbroffice to javafx.fxml;
     exports com.b2la.dbroffice;

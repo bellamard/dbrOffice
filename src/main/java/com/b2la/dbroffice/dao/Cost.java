@@ -16,6 +16,13 @@ public class Cost {
     public Cost() {
     }
 
+    public Cost( String devises, float max, float min, float percent) {
+        this.devices = devices;
+        this.max = max;
+        this.min = min;
+        this.percent = percent;
+    }
+
     public int getId() {
         return id;
     }

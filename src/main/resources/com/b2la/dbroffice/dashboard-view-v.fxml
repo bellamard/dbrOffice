@@ -442,7 +442,7 @@
                                           <TableColumn fx:id="TCmin" minWidth="0.0" prefWidth="217.60000610351562" text="Min" />
                                           <TableColumn fx:id="TCmax" prefWidth="266.4000244140625" text="Max" />
                                        </columns></TableView>
-                                    <Button layoutX="683.0" layoutY="88.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
+                                    <Button fx:id="creerTaux" layoutX="683.0" layoutY="88.0" mnemonicParsing="false" onAction="#openDialogueCost" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
                                     <TextField fx:id="searchTaux" layoutX="681.0" layoutY="31.0" onAction="#hanchSearch" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
                                  </children>
                                  <padding>

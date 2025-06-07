@@ -1,5 +1,6 @@
 package com.b2la.dbroffice.controller;
 
+import com.b2la.dbroffice.HelloApplication;
 import com.b2la.dbroffice.connexion.Api;
 import com.b2la.dbroffice.dao.*;
 import com.b2la.dbroffice.preference.Storage;
@@ -8,15 +9,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -449,6 +456,16 @@ public class DashboardController implements Initializable {
                 operation.setVisible(false);
                 utilisateur.setVisible(false);
         }
+    }
+    @FXML
+    private void openDialogueCost() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("dialogCost.fxml"));
+        Parent dialogRoot = loader.load();
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Boîte de dialogue personnalisée");
+        dialogStage.setScene(new Scene(dialogRoot));
+        dialogStage.showAndWait();
     }
 
 
