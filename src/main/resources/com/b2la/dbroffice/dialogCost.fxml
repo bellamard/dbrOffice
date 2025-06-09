@@ -2,20 +2,26 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <DialogPane prefHeight="342.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.b2la.dbroffice.controller.DialogueCostController">
    <content>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Label layoutX="14.0" layoutY="78.0" text="DEVISE" />
-            <Label layoutX="14.0" layoutY="130.0" text="POURCENTAGE" />
-            <TextField fx:id="fieldPercent" layoutX="14.0" layoutY="148.0" prefHeight="26.0" prefWidth="178.0" promptText="0.0" />
-            <Label layoutX="14.0" layoutY="186.0" text="MIN" />
-            <TextField fx:id="fieldMin" layoutX="14.0" layoutY="204.0" prefHeight="26.0" prefWidth="178.0" promptText="0.0" />
-            <Label layoutX="14.0" layoutY="246.0" text="MAX" />
-            <TextField fx:id="fieldMax" layoutX="14.0" layoutY="264.0" prefHeight="26.0" prefWidth="178.0" promptText="0.0" />
-            <ComboBox fx:id="devise" layoutX="14.0" layoutY="96.0" prefHeight="26.0" prefWidth="111.0" />
-            <Button fx:id="btnValider" layoutX="14.0" layoutY="298.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="177.0" text="VALIDER" />
+            <Label layoutX="14.0" layoutY="13.0" text="DEVISE" />
+            <Label layoutX="14.0" layoutY="65.0" text="POURCENTAGE" />
+            <TextField fx:id="fieldPercent" layoutX="14.0" layoutY="83.0" prefHeight="26.0" prefWidth="178.0" promptText="0.0" />
+            <Label layoutX="14.0" layoutY="121.0" text="MIN" />
+            <TextField fx:id="fieldMin" layoutX="14.0" layoutY="139.0" prefHeight="26.0" prefWidth="178.0" promptText="0.0" />
+            <Label layoutX="14.0" layoutY="181.0" text="MAX" />
+            <TextField fx:id="fieldMax" layoutX="14.0" layoutY="199.0" prefHeight="26.0" prefWidth="178.0" promptText="0.0" />
+            <ComboBox fx:id="devise" layoutX="14.0" layoutY="31.0" prefHeight="26.0" prefWidth="111.0" />
+            <Button fx:id="btnValider" layoutX="14.0" layoutY="233.0" mnemonicParsing="false" onAction="#onValiderOperation" prefHeight="26.0" prefWidth="177.0" text="VALIDER" />
+            <Label fx:id="textValidateur" layoutX="12.0" layoutY="269.0" text="Operation Valider" textFill="#0062ff" visible="false">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </content>

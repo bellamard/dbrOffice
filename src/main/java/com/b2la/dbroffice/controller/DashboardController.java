@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -359,6 +360,11 @@ public class DashboardController implements Initializable {
                         e->{
                             Cost c=getTableView().getItems().get(getIndex());
                             System.out.println("modifier: "+c.getDevices());
+                            try {
+                                openDialogueUpCost(c);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
                 );
 
@@ -366,6 +372,7 @@ public class DashboardController implements Initializable {
                         e->{
                             Cost c=getTableView().getItems().get(getIndex());
                             System.out.println("Suprimer: "+c.getId());
+                            suppressionTaux(c);
                         }
                 );
             }
@@ -397,6 +404,22 @@ public class DashboardController implements Initializable {
             new Thread(task).start();
         });
     }
+
+    private void suppressionTaux(Cost cost){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Voulez-vous Supprimer ?");
+        alert.setContentText("Cliquez sur OK pour confirmer la suppression.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            System.out.println("L'utilisateur a confirmé !");
+            deleteCost(cost);
+            viewTaux();
+        } else {
+            System.out.println("L'utilisateur a annulé.");
+        }
+    }
+
 
     @FXML
     private void hanchSearch(){
@@ -463,7 +486,19 @@ public class DashboardController implements Initializable {
         Parent dialogRoot = loader.load();
         Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.setTitle("Boîte de dialogue personnalisée");
+        dialogStage.setTitle("Ajouter Taux");
+        dialogStage.setScene(new Scene(dialogRoot));
+        dialogStage.showAndWait();
+    }
+
+    private void openDialogueUpCost(Cost c) throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("dialogCost.fxml"));
+        Parent dialogRoot = loader.load();
+        Stage dialogStage = new Stage();
+        DialogueCostController dcc= loader.getController();
+        dcc.typeOpera(c);
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Modification de Taux!!!");
         dialogStage.setScene(new Scene(dialogRoot));
         dialogStage.showAndWait();
     }
