@@ -4,6 +4,7 @@ import com.b2la.dbroffice.dao.Cost;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -96,6 +97,10 @@ public class DialogueCostController implements Initializable {
             });
 
         });
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Vous avez Ajouter !");
+        alert.setContentText("Ajouter Taux Valider");
         System.out.println("Ajouter Taux Valider");
 
     }
@@ -114,14 +119,17 @@ public class DialogueCostController implements Initializable {
 
 
         });
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Vous avez Modifier !");
+        alert.setContentText("Modification Taux Valider");
         System.out.println("Modification Taux Valider");
 
     }
 
     private void closeDialog(){
-
-
-        System.
+        Stage stage = (Stage) btnValider.getScene().getWindow();
+        stage.close();
     }
 
     public void typeOpera(Cost cost){

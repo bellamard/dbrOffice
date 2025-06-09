@@ -47,7 +47,7 @@ public class DashboardController implements Initializable {
             attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF;
     private Button btnTaux;
     @FXML
-    private AnchorPane home, operation, utilisateur;
+    private AnchorPane home, operation, utilisateur, chargement;
     @FXML
     private TextField searchTaux;
     @FXML
@@ -73,6 +73,7 @@ public class DashboardController implements Initializable {
         chart();
         sommeOperation();
         viewTaux();
+        chargement.setVisible(true);
     }
 
     private CountUsers profil(){
@@ -118,6 +119,7 @@ public class DashboardController implements Initializable {
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
         runAsync(()->{
+            chargement.setVisible(true);
             try {
                 List<StreamUser> userList=userPerson(clef);
                 assert userList != null;
@@ -149,6 +151,7 @@ public class DashboardController implements Initializable {
                     countAgents.setText(String.valueOf(nbreAgent));
                     countOffices.setText(String.valueOf(nbreOffice));
                     countClients.setText(String.valueOf(nbreClients));
+                    chargement.setVisible(false);
 
                 });
 
@@ -170,6 +173,7 @@ public class DashboardController implements Initializable {
     private void Operation(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
+        chargement.setVisible(true);
         runAsync(()->{
             try {
                 List<Operation> operaList=operationList(clef);
@@ -214,6 +218,7 @@ public class DashboardController implements Initializable {
                     countDeposit.setText(String.valueOf(nbreDepot));
                     countFactory.setText(String.valueOf(nbreDepotAg));
                     countRecov.setText(String.valueOf(nbreDrawlAg));
+                    chargement.setVisible(false);
                 });
 
 
@@ -234,6 +239,7 @@ public class DashboardController implements Initializable {
     private void chart(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
+        chargement.setVisible(true);
 
         runLater(()->{
             try{
@@ -270,6 +276,7 @@ public class DashboardController implements Initializable {
 
                 diagram.getData().add(xyC);
                 diagram.getData().add(xyU);
+                chargement.setVisible(false);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -281,6 +288,7 @@ public class DashboardController implements Initializable {
 
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
+        chargement.setVisible(true);
         runAsync(()->{
             try{
                 List<Operation> operaList=operationList(clef);
@@ -334,7 +342,7 @@ public class DashboardController implements Initializable {
                     annulersUSD.setText(String.valueOf(sommeAnnulerUSD));
                     annulersCDF.setText(String.valueOf(sommeAnnulerCDF));
                 });
-
+                chargement.setVisible(false);
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -346,7 +354,7 @@ public class DashboardController implements Initializable {
     private void viewTaux(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
-
+        chargement.setVisible(true);
         TCpourcent.setCellValueFactory(new PropertyValueFactory<>("percent"));
         TCdevices.setCellValueFactory(new PropertyValueFactory<>("devices"));
         TCmax.setCellValueFactory(new PropertyValueFactory<>("max"));
@@ -402,6 +410,7 @@ public class DashboardController implements Initializable {
             };
             task.setOnSucceeded(e->tableauTaux.setItems(task.getValue()));
             new Thread(task).start();
+            chargement.setVisible(false);
         });
     }
 
@@ -426,7 +435,7 @@ public class DashboardController implements Initializable {
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
         runAsync(()->{
-
+            chargement.setVisible(true);
             Task<ObservableList<Cost>> task= new Task<>() {
                 @Override
                 protected ObservableList<Cost> call() throws Exception {
@@ -450,6 +459,7 @@ public class DashboardController implements Initializable {
             };
             task.setOnSucceeded(e->tableauTaux.setItems(task.getValue()));
             new Thread(task).start();
+            chargement.setVisible(false);
         });
     }
 
@@ -475,7 +485,8 @@ public class DashboardController implements Initializable {
                 operation.setVisible(false);
                 utilisateur.setVisible(true);
                 break;
-            default: home.setVisible(true);
+            default: chargement.setVisible(true);
+                home.setVisible(false);
                 operation.setVisible(false);
                 utilisateur.setVisible(false);
         }

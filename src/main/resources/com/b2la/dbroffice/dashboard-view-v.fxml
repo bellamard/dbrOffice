@@ -493,6 +493,15 @@
                               <FontIcon iconLiteral="fa-file" iconSize="32" layoutX="23.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                            </children>
                         </AnchorPane>
+                        <AnchorPane fx:id="chargement" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="379.0" layoutY="350.0" text="CHARGEMENT" textAlignment="CENTER" textFill="#3a89bf">
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="32.0" />
+                                 </font></Label>
+                              <ProgressIndicator layoutX="463.0" layoutY="287.0" prefHeight="125.0" prefWidth="144.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </StackPane>
                </children>
