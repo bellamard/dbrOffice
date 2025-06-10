@@ -145,7 +145,7 @@
                            </children>
                         </AnchorPane>
 
-                        <AnchorPane id="home" fx:id="home">
+                        <AnchorPane id="home" fx:id="home" visible="false">
                            <children>
                               <HBox spacing="5.0">
                                  <children>
@@ -438,7 +438,7 @@
                                        <children>
                                           <AreaChart fx:id="diagram" layoutX="-1.0" layoutY="-2.0" legendSide="LEFT" prefHeight="234.0" prefWidth="454.0">
                                             <xAxis>
-                                              <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false">
+                                              <CategoryAxis side="BOTTOM" tickMarkVisible="false">
                                                    <tickLabelFont>
                                                       <Font size="5.0" />
                                                    </tickLabelFont></CategoryAxis>
@@ -481,7 +481,7 @@
                         </AnchorPane>
 
 
-                        <AnchorPane id="utilisateur" fx:id="utilisateur" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4" visible="false">
+                        <AnchorPane id="utilisateur" fx:id="utilisateur" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4">
                            <children>
                               <Label layoutX="72.0" layoutY="14.0" text="UTILISATEUR">
                                  <font>
@@ -491,26 +491,21 @@
                               <TextField layoutX="659.0" layoutY="49.0" prefHeight="26.0" prefWidth="193.0" promptText="RECHERCHE" />
                               <TableView fx:id="tableUtilisateur" layoutX="252.0" layoutY="83.0" prefHeight="530.0" prefWidth="600.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="252.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="83.0">
                                  <columns>
-                                    <TableColumn prefWidth="117.20002746582031" text="Telephone" />
-                                    <TableColumn minWidth="0.0" prefWidth="125.20001220703125" text="Prenom" />
-                                    <TableColumn prefWidth="118.0" text="Nom" />
-                                    <TableColumn prefWidth="118.199951171875" text="Type" />
-                                    <TableColumn prefWidth="72.0" text="cdf" />
-                                    <TableColumn prefWidth="50.39996337890625" text="usd" />
+                                    <TableColumn fx:id="userTPhone" prefWidth="117.20002746582031" text="Telephone" />
+                                    <TableColumn fx:id="userTSurname" minWidth="0.0" prefWidth="125.20001220703125" text="Prenom" />
+                                    <TableColumn fx:id="userTlastName" prefWidth="118.0" text="Nom" />
+                                    <TableColumn fx:id="userTType" prefWidth="118.199951171875" text="Type" />
+                                    <TableColumn fx:id="userTAction" prefWidth="119.0" text="ACTION" />
                                  </columns></TableView>
                               <Button fx:id="creerUtilisateur" layoutX="511.0" layoutY="49.0" mnemonicParsing="false" styleClass="btnGrad" text="CREER UTILISATEUR" />
                               <FontIcon iconLiteral="fa-users" iconSize="32" layoutX="27.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                              <Label layoutX="13.0" layoutY="113.0" text="Solde Total:" />
-                              <Label layoutX="194.0" layoutY="113.0" text="USD" />
-                              <Label layoutX="194.0" layoutY="143.0" text="CDF" />
-                              <Label layoutX="13.0" layoutY="193.0" text="Commission Total:" />
-                              <Label layoutX="194.0" layoutY="193.0" text="USD" />
-                              <Label layoutX="194.0" layoutY="223.0" text="CDF" />
+                              <Label layoutX="13.0" layoutY="193.0" text="Utilisateurs Total:" />
+                              <Label fx:id="UsersCount" layoutX="194.0" layoutY="193.0" text="nombre" />
                               <Label layoutX="13.0" layoutY="263.0" text="Total Utilisateur" />
-                              <Label layoutX="194.0" layoutY="263.0" text="Clients" />
-                              <Label layoutX="194.0" layoutY="303.0" text="Agent" />
-                              <Label layoutX="194.0" layoutY="343.0" text="Official" />
-                              <Label layoutX="194.0" layoutY="393.0" text="Admin" />
+                              <Label fx:id="usersClients" layoutX="194.0" layoutY="263.0" text="Clients" />
+                              <Label fx:id="usersAgent" layoutX="194.0" layoutY="303.0" text="Agent" />
+                              <Label fx:id="usersOfficial" layoutX="194.0" layoutY="343.0" text="Official" />
+                              <Label fx:id="usersAdmin" layoutX="194.0" layoutY="393.0" text="Admin" />
                            </children>
                         </AnchorPane>
 

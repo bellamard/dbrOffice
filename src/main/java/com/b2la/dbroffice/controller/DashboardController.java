@@ -45,14 +45,14 @@ public class DashboardController implements Initializable {
     @FXML
     private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
             countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov,
-            attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF;
+            attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin, usersOfficial, usersAgent, UsersCount;
     private Button btnTaux;
     @FXML
     private AnchorPane home, operation, utilisateur, chargement;
     @FXML
     private TextField searchTaux;
     @FXML
-    private TableView tableauTaux;
+    private TableView tableauTaux, tableUtilisateur;
     @FXML
     private TableColumn<Cost, String> TCdevices;
     @FXML
@@ -63,10 +63,14 @@ public class DashboardController implements Initializable {
     private TableColumn<Cost, Float> TCpourcent;
     @FXML
     private TableColumn<Cost, String> TCactions;
+    
+    @FXML
+    private TableColumn<StreamUser, String> userTPhone, userTSurname, userTlastName;
+    @FXML
+    private TableColumn<StreamUser, String> userTType, userTAction;
     @FXML
     private AreaChart<String, Number> diagram;
-    @FXML
-    private Pane boxChart;
+
 
 
     @Override
@@ -481,6 +485,105 @@ public class DashboardController implements Initializable {
         exit();
     }
 
+    // pane Utilisateur
+
+    private void getTableUser(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+
+        runAsync(()->{
+            List<StreamUser> userList=userPerson(clef);
+            assert userList != null;
+            userTPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+            userTSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
+            userTlastName.setCellValueFactory(new PropertyValueFactory<>("lastname"));
+            userTType.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+            userTAction.setCellFactory(col->new TableCell<>(){
+                private final Button btn= new Button("M");
+                private final Button btnSup= new Button("B");
+                {
+                    btn.setOnAction(
+                            e->{
+                                StreamUser su=getTableView().getItems().get(getIndex());
+                                System.out.println("modifier: "+su.getSurname());
+
+                            }
+                    );
+
+                    btnSup.setOnAction(
+                            e->{
+                                StreamUser su=getTableView().getItems().get(getIndex());
+                                System.out.println("Suprimer: "+su.getId());
+
+                            }
+                    );
+                }
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        HBox boxBtn=new HBox(2, btn, btnSup);
+                        setGraphic(boxBtn);
+                    }
+                }
+            });
+
+
+
+            Task<ObservableList<StreamUser>> task= new Task<>() {
+                @Override
+                protected ObservableList<StreamUser> call() throws Exception {
+
+                    return FXCollections.observableArrayList(userList);
+                }
+            };
+            task.setOnSucceeded(e->tableUtilisateur.setItems(task.getValue()));
+            new Thread(task).start();
+            runLater(()->{
+                int nbreClientsUtil=0;
+                int nbreAdminUtil=0;
+                int nbreOfficeUtil=0;
+                int nbreAgentUtil=0;
+                for(StreamUser client: userList){
+
+                    if(client.getType().equals("CLIENT")){
+                        nbreClientsUtil++;
+                    }
+
+                    if(client.getType().equals("ADMIN")){
+                        nbreAdminUtil++;
+                    }
+
+                    if(client.getType().equals("OFFICE")){
+                        nbreOfficeUtil++;
+                    }
+
+                    if(client.getType().equals("AGENT")){
+                        nbreAgentUtil++;
+                    }
+
+                }
+
+                UsersCount.setText(String.valueOf(userList.size()));
+                usersClients.setText(nbreClientsUtil+" Clients");
+                usersAgent.setText(nbreAgentUtil+" Agents");
+                usersOfficial.setText(nbreOfficeUtil+" Official");
+                usersAdmin.setText(nbreAdminUtil+" Admin");
+
+            });
+
+
+
+        });
+
+        
+        
+    }
+
 
 
     private void cardLayout(String Layout){
@@ -548,6 +651,7 @@ public class DashboardController implements Initializable {
     protected void goToUtilisateur(){
         String card="utilisateur";
         cardLayout(card);
+        getTableUser();
 
     }
 }
