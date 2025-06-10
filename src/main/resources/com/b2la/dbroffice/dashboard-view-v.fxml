@@ -5,6 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
@@ -116,6 +117,33 @@
                   </Pane>
                   <StackPane>
                      <children>
+
+                        <AnchorPane fx:id="chargement" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4">
+                           <children>
+                              <Label layoutX="81.0" layoutY="270.0" text="CHARGEMENT" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="36.0" />
+                                 </font>
+                                 <textFill>
+                                    <LinearGradient endX="1.0" endY="1.0">
+                                       <stops>
+                                          <Stop>
+                                             <color>
+                                                <Color green="0.5833333134651184" blue="1.0" />
+                                             </color>
+                                          </Stop>
+                                          <Stop offset="1.0">
+                                             <color>
+                                                <Color red="1.0" blue="0.8166666626930237" />
+                                             </color>
+                                          </Stop>
+                                       </stops>
+                                    </LinearGradient>
+                                 </textFill>
+                              </Label>
+                              <ProgressIndicator layoutX="179.0" layoutY="194.0" prefHeight="100.0" prefWidth="144.0" />
+                           </children>
+                        </AnchorPane>
 
                         <AnchorPane id="home" fx:id="home">
                            <children>
@@ -406,9 +434,9 @@
                                           <FontIcon iconLiteral="fa-times" iconSize="32" layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                                        </children>
                                     </Pane>
-                                    <Pane layoutX="413.0" layoutY="34.0" prefHeight="228.0" prefWidth="453.0" styleClass="bannerJournalier">
+                                    <Pane fx:id="boxChart" layoutX="413.0" layoutY="34.0" prefHeight="228.0" prefWidth="453.0" styleClass="bannerJournalier">
                                        <children>
-                                          <AreaChart fx:id="diagram" layoutX="-1.0" layoutY="-2.0" prefHeight="234.0" prefWidth="454.0">
+                                          <AreaChart fx:id="diagram" layoutX="-1.0" layoutY="-2.0" legendSide="LEFT" prefHeight="234.0" prefWidth="454.0">
                                             <xAxis>
                                               <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false">
                                                    <tickLabelFont>
@@ -461,9 +489,28 @@
                                  </font>
                               </Label>
                               <TextField layoutX="659.0" layoutY="49.0" prefHeight="26.0" prefWidth="193.0" promptText="RECHERCHE" />
-                              <TableView fx:id="tableUtilisateur" layoutX="14.0" layoutY="83.0" prefHeight="303.0" prefWidth="572.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="83.0" />
+                              <TableView fx:id="tableUtilisateur" layoutX="252.0" layoutY="83.0" prefHeight="530.0" prefWidth="600.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="252.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="83.0">
+                                 <columns>
+                                    <TableColumn prefWidth="117.20002746582031" text="Telephone" />
+                                    <TableColumn minWidth="0.0" prefWidth="125.20001220703125" text="Prenom" />
+                                    <TableColumn prefWidth="118.0" text="Nom" />
+                                    <TableColumn prefWidth="118.199951171875" text="Type" />
+                                    <TableColumn prefWidth="72.0" text="cdf" />
+                                    <TableColumn prefWidth="50.39996337890625" text="usd" />
+                                 </columns></TableView>
                               <Button fx:id="creerUtilisateur" layoutX="511.0" layoutY="49.0" mnemonicParsing="false" styleClass="btnGrad" text="CREER UTILISATEUR" />
                               <FontIcon iconLiteral="fa-users" iconSize="32" layoutX="27.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+                              <Label layoutX="13.0" layoutY="113.0" text="Solde Total:" />
+                              <Label layoutX="194.0" layoutY="113.0" text="USD" />
+                              <Label layoutX="194.0" layoutY="143.0" text="CDF" />
+                              <Label layoutX="13.0" layoutY="193.0" text="Commission Total:" />
+                              <Label layoutX="194.0" layoutY="193.0" text="USD" />
+                              <Label layoutX="194.0" layoutY="223.0" text="CDF" />
+                              <Label layoutX="13.0" layoutY="263.0" text="Total Utilisateur" />
+                              <Label layoutX="194.0" layoutY="263.0" text="Clients" />
+                              <Label layoutX="194.0" layoutY="303.0" text="Agent" />
+                              <Label layoutX="194.0" layoutY="343.0" text="Official" />
+                              <Label layoutX="194.0" layoutY="393.0" text="Admin" />
                            </children>
                         </AnchorPane>
 
@@ -493,15 +540,7 @@
                               <FontIcon iconLiteral="fa-file" iconSize="32" layoutX="23.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="chargement" prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Label layoutX="379.0" layoutY="350.0" text="CHARGEMENT" textAlignment="CENTER" textFill="#3a89bf">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="32.0" />
-                                 </font></Label>
-                              <ProgressIndicator layoutX="463.0" layoutY="287.0" prefHeight="125.0" prefWidth="144.0" />
-                           </children>
-                        </AnchorPane>
+
                      </children>
                   </StackPane>
                </children>

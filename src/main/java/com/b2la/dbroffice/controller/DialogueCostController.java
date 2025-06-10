@@ -1,11 +1,15 @@
 package com.b2la.dbroffice.controller;
 
+import com.b2la.dbroffice.HelloApplication;
 import com.b2la.dbroffice.dao.Cost;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
@@ -127,7 +131,11 @@ public class DialogueCostController implements Initializable {
 
     }
 
-    private void closeDialog(){
+    private void closeDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("dashboard-view-v.fxml"));
+        Parent root = loader.load();
+        DashboardController dbc= loader.getController();
+        dbc.viewTaux();
         Stage stage = (Stage) btnValider.getScene().getWindow();
         stage.close();
     }
@@ -149,6 +157,10 @@ public class DialogueCostController implements Initializable {
         fieldMin.setText("");
         devise.setValue("");
         typeOperation=false;
-        closeDialog();
+        try {
+            closeDialog();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

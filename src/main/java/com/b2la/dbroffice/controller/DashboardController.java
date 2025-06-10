@@ -19,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -64,16 +65,28 @@ public class DashboardController implements Initializable {
     private TableColumn<Cost, String> TCactions;
     @FXML
     private AreaChart<String, Number> diagram;
+    @FXML
+    private Pane boxChart;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        profil();
-        userCount();
-        Operation();
-        chart();
-        sommeOperation();
-        viewTaux();
         chargement.setVisible(true);
+        getChargement();
+
+    }
+
+    private void getChargement(){
+
+        new Thread(()->{
+            profil();
+            userCount();
+            Operation();
+            chart();
+            sommeOperation();
+            viewTaux();
+
+        }).start();
     }
 
     private CountUsers profil(){
@@ -119,7 +132,7 @@ public class DashboardController implements Initializable {
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
         runAsync(()->{
-            chargement.setVisible(true);
+
             try {
                 List<StreamUser> userList=userPerson(clef);
                 assert userList != null;
@@ -173,7 +186,6 @@ public class DashboardController implements Initializable {
     private void Operation(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
-        chargement.setVisible(true);
         runAsync(()->{
             try {
                 List<Operation> operaList=operationList(clef);
@@ -239,8 +251,6 @@ public class DashboardController implements Initializable {
     private void chart(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
-        chargement.setVisible(true);
-
         runLater(()->{
             try{
                 List<Operation> operaList=operationList(clef);
@@ -271,13 +281,17 @@ public class DashboardController implements Initializable {
 
                     xyC.getData().add(new XYChart.Data<>(date, nombreCDF));
                     xyU.getData().add(new XYChart.Data<>(date, nombreUSD));
-                    xyU.chartProperty();
                 });
 
+
+                xyC.chartProperty();
+                xyU.chartProperty();
+                diagram.getData().clear();
                 diagram.getData().add(xyC);
                 diagram.getData().add(xyU);
                 chargement.setVisible(false);
             } catch (Exception e) {
+                chargement.setVisible(false);
                 throw new RuntimeException(e);
             }
         });
@@ -288,7 +302,6 @@ public class DashboardController implements Initializable {
 
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
-        chargement.setVisible(true);
         runAsync(()->{
             try{
                 List<Operation> operaList=operationList(clef);
@@ -341,8 +354,8 @@ public class DashboardController implements Initializable {
                     validerCDF.setText(String.valueOf(sommeValiderCDF));
                     annulersUSD.setText(String.valueOf(sommeAnnulerUSD));
                     annulersCDF.setText(String.valueOf(sommeAnnulerCDF));
+                    chargement.setVisible(false);
                 });
-                chargement.setVisible(false);
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -351,10 +364,9 @@ public class DashboardController implements Initializable {
 
     }
 
-    private void viewTaux(){
+    public void viewTaux(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
-        chargement.setVisible(true);
         TCpourcent.setCellValueFactory(new PropertyValueFactory<>("percent"));
         TCdevices.setCellValueFactory(new PropertyValueFactory<>("devices"));
         TCmax.setCellValueFactory(new PropertyValueFactory<>("max"));
@@ -397,8 +409,6 @@ public class DashboardController implements Initializable {
             }
         });
 
-
-
         runAsync(()->{
 
             Task<ObservableList<Cost>> task= new Task<>() {
@@ -411,6 +421,7 @@ public class DashboardController implements Initializable {
             task.setOnSucceeded(e->tableauTaux.setItems(task.getValue()));
             new Thread(task).start();
             chargement.setVisible(false);
+            cardLayout("home");;
         });
     }
 
@@ -432,10 +443,11 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void hanchSearch(){
+        chargement.setVisible(true);
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
         runAsync(()->{
-            chargement.setVisible(true);
+
             Task<ObservableList<Cost>> task= new Task<>() {
                 @Override
                 protected ObservableList<Cost> call() throws Exception {
@@ -476,14 +488,17 @@ public class DashboardController implements Initializable {
             case "home": home.setVisible(true);
             operation.setVisible(false);
             utilisateur.setVisible(false);
+            chargement.setVisible(false);
             break;
             case "operation": home.setVisible(false);
                 operation.setVisible(true);
                 utilisateur.setVisible(false);
+                chargement.setVisible(false);
                 break;
             case "utilisateur": home.setVisible(false);
                 operation.setVisible(false);
                 utilisateur.setVisible(true);
+                chargement.setVisible(false);
                 break;
             default: chargement.setVisible(true);
                 home.setVisible(false);
@@ -519,6 +534,7 @@ public class DashboardController implements Initializable {
     protected void goToHome(){
         String card="home";
         cardLayout(card);
+        getChargement();
 
     }
 
