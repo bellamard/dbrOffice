@@ -50,7 +50,7 @@ public class DashboardController implements Initializable {
     @FXML
     private AnchorPane home, operation, utilisateur, chargement;
     @FXML
-    private TextField searchTaux;
+    private TextField searchTaux, fieldUserSearch;
     @FXML
     private TableView tableauTaux, tableUtilisateur;
     @FXML
@@ -501,7 +501,7 @@ public class DashboardController implements Initializable {
 
             userTAction.setCellFactory(col->new TableCell<>(){
                 private final Button btn= new Button("M");
-                private final Button btnSup= new Button("B");
+                private final Button btnBloque= new Button("B");
                 {
                     btn.setOnAction(
                             e->{
@@ -511,10 +511,10 @@ public class DashboardController implements Initializable {
                             }
                     );
 
-                    btnSup.setOnAction(
+                    btnBloque.setOnAction(
                             e->{
                                 StreamUser su=getTableView().getItems().get(getIndex());
-                                System.out.println("Suprimer: "+su.getId());
+                                gestionBloque(su);
 
                             }
                     );
@@ -526,7 +526,7 @@ public class DashboardController implements Initializable {
                     if (empty) {
                         setGraphic(null);
                     } else {
-                        HBox boxBtn=new HBox(2, btn, btnSup);
+                        HBox boxBtn=new HBox(2, btn, btnBloque);
                         setGraphic(boxBtn);
                     }
                 }
@@ -585,6 +585,96 @@ public class DashboardController implements Initializable {
     }
 
 
+    @FXML
+    private void getTableUserSearch(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+
+        runAsync(()->{
+            List<StreamUser> userList=userPerson(clef);
+            List<StreamUser> searchListUser=userList.stream().filter(tUsers->
+                    tUsers.getType().contains(fieldUserSearch.getText())||
+                            tUsers.getFirstname().toLowerCase().contains(fieldUserSearch.getText())||
+                            tUsers.getFirstname().toUpperCase().contains(fieldUserSearch.getText())||
+                            tUsers.getLastname().toLowerCase().contains(fieldUserSearch.getText())||
+                            tUsers.getLastname().toUpperCase().contains(fieldUserSearch.getText())||
+                            tUsers.getSurname().toLowerCase().contains(fieldUserSearch.getText())||
+                            tUsers.getSurname().toUpperCase().contains(fieldUserSearch.getText())||
+                            tUsers.getType().toLowerCase().contains(fieldUserSearch.getText())||
+                            tUsers.getType().toUpperCase().contains(fieldUserSearch.getText())||
+                            tUsers.getPhone().contains(fieldUserSearch.getText())
+            ).collect(Collectors.toList());
+
+            assert userList != null;
+
+
+
+
+            Task<ObservableList<StreamUser>> task= new Task<>() {
+                @Override
+                protected ObservableList<StreamUser> call() throws Exception {
+
+                    return FXCollections.observableArrayList(searchListUser);
+                }
+            };
+            task.setOnSucceeded(e->tableUtilisateur.setItems(task.getValue()));
+            new Thread(task).start();
+            runLater(()->{
+                int nbreClientsUtil=0;
+                int nbreAdminUtil=0;
+                int nbreOfficeUtil=0;
+                int nbreAgentUtil=0;
+                for(StreamUser client: searchListUser){
+
+                    if(client.getType().equals("CLIENT")){
+                        nbreClientsUtil++;
+                    }
+
+                    if(client.getType().equals("ADMIN")){
+                        nbreAdminUtil++;
+                    }
+
+                    if(client.getType().equals("OFFICE")){
+                        nbreOfficeUtil++;
+                    }
+
+                    if(client.getType().equals("AGENT")){
+                        nbreAgentUtil++;
+                    }
+
+                }
+
+                UsersCount.setText(String.valueOf(searchListUser.size()));
+                usersClients.setText(nbreClientsUtil+" Clients");
+                usersAgent.setText(nbreAgentUtil+" Agents");
+                usersOfficial.setText(nbreOfficeUtil+" Official");
+                usersAdmin.setText(nbreAdminUtil+" Admin");
+
+            });
+
+
+
+        });
+
+
+
+    }
+
+    private void gestionBloque(StreamUser user){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Gestion Etat");
+        alert.setHeaderText("Voulez-vous Bloquer ?");
+        alert.setContentText("Cliquez sur OK pour confirmer les bloquage.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            System.out.println("L'utilisateur a confirmé !");
+            getTableUser();
+        } else {
+            System.out.println("L'utilisateur a annulé.");
+        }
+    }
+
+
 
     private void cardLayout(String Layout){
         switch (Layout){
@@ -628,6 +718,16 @@ public class DashboardController implements Initializable {
         dcc.typeOpera(c);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.setTitle("Modification de Taux!!!");
+        dialogStage.setScene(new Scene(dialogRoot));
+        dialogStage.showAndWait();
+    }
+
+    private void openDialogueUser() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("dialogCost.fxml"));
+        Parent dialogRoot = loader.load();
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Ajouter Taux");
         dialogStage.setScene(new Scene(dialogRoot));
         dialogStage.showAndWait();
     }

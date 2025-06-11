@@ -313,4 +313,8 @@ public class Api {
         }
     }
 
+    public static void addUser(){
+
+    }
+
 }
