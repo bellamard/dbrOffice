@@ -145,7 +145,7 @@
                            </children>
                         </AnchorPane>
 
-                        <AnchorPane id="home" fx:id="home" visible="false">
+                       <AnchorPane id="home" fx:id="home">
                            <children>
                               <HBox spacing="5.0">
                                  <children>
@@ -437,15 +437,16 @@
                                     <Pane fx:id="boxChart" layoutX="413.0" layoutY="34.0" prefHeight="228.0" prefWidth="453.0" styleClass="bannerJournalier">
                                        <children>
                                           <AreaChart fx:id="diagram" layoutX="-1.0" layoutY="-2.0" legendSide="LEFT" prefHeight="234.0" prefWidth="454.0">
-                                            <xAxis>
-                                              <CategoryAxis side="BOTTOM" tickMarkVisible="false">
+                                             <xAxis>
+                                                <CategoryAxis side="BOTTOM" tickMarkVisible="false">
                                                    <tickLabelFont>
                                                       <Font size="5.0" />
-                                                   </tickLabelFont></CategoryAxis>
-                                            </xAxis>
-                                            <yAxis>
-                                              <NumberAxis side="LEFT" />
-                                            </yAxis>
+                                                   </tickLabelFont>
+                                                </CategoryAxis>
+                                             </xAxis>
+                                             <yAxis>
+                                                <NumberAxis side="LEFT" />
+                                             </yAxis>
                                           </AreaChart>
                                        </children>
                                     </Pane>
@@ -469,8 +470,9 @@
                                           <TableColumn fx:id="TCpourcent" prefWidth="94.60000610351562" text="\%" />
                                           <TableColumn fx:id="TCmin" minWidth="0.0" prefWidth="217.60000610351562" text="Min" />
                                           <TableColumn fx:id="TCmax" prefWidth="266.4000244140625" text="Max" />
-                                       </columns></TableView>
-                                    <Button fx:id="creerTaux" layoutX="683.0" layoutY="88.0" mnemonicParsing="false" onAction="#openDialogueCost" prefHeight="102.0" prefWidth="171.0" styleClass="btnGrad" text="CREER TAUX" />
+                                       </columns>
+                                    </TableView>
+                                    <Button fx:id="creerTaux" layoutX="683.0" layoutY="61.0" mnemonicParsing="false" onAction="#openDialogueCost" prefHeight="42.0" prefWidth="171.0" styleClass="creerUtilisateur" text="CREER TAUX" />
                                     <TextField fx:id="searchTaux" layoutX="681.0" layoutY="31.0" onAction="#hanchSearch" prefHeight="25.0" prefWidth="175.0" promptText="Recherche" />
                                  </children>
                                  <padding>
@@ -481,46 +483,82 @@
                         </AnchorPane>
 
 
-                        <AnchorPane id="utilisateur" fx:id="utilisateur" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4">
+
+
+                        <AnchorPane fx:id="utilisateur" prefHeight="700" prefWidth="960" styleClass="mainContainer" visible="false" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
                            <children>
-                              <Label layoutX="72.0" layoutY="14.0" text="UTILISATEUR">
-                                 <font>
-                                    <Font name="System Bold" size="24.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="fieldUserSearch" layoutX="659.0" layoutY="49.0" onAction="#getTableUserSearch" prefHeight="26.0" prefWidth="193.0" promptText="RECHERCHE" />
-                              <TableView fx:id="tableUtilisateur" layoutX="252.0" layoutY="83.0" prefHeight="530.0" prefWidth="600.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="252.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="83.0">
+
+                              <!-- HEADER -->
+                              <HBox layoutX="30" layoutY="20" spacing="20">
+                                 <FontIcon iconLiteral="fa-users" iconSize="26" />
+                                 <Label styleClass="headerTitle" text="Utilisateurs" />
+                              </HBox>
+
+                              <!-- TOP BAR ACTIONS -->
+                              <HBox layoutX="30" layoutY="70" spacing="10">
+                                 <Button fx:id="creerUtilisateur" onAction="#openDialogueUser" styleClass="btnPrimary" text="➕ Nouvel utilisateur" />
+                                 <TextField fx:id="fieldUserSearch" onAction="#getTableUserSearch" prefWidth="240" promptText="🔍 Rechercher..." styleClass="searchInput" />
+                              </HBox>
+
+                              <!-- STAT CARDS -->
+                              <HBox layoutX="30" layoutY="120" spacing="20">
+                                 <VBox styleClass="cardStat">
+                                    <Label styleClass="statLabel" text="Total" />
+                                    <Label fx:id="UsersCount" styleClass="statValue" text="0" />
+                                 </VBox>
+                                 <VBox styleClass="cardStat">
+                                    <Label styleClass="statLabel" text="Clients" />
+                                    <Label fx:id="usersClients" styleClass="statValue" text="0" />
+                                 </VBox>
+                                 <VBox styleClass="cardStat">
+                                    <Label styleClass="statLabel" text="Agents" />
+                                    <Label fx:id="usersAgent" styleClass="statValue" text="0" />
+                                 </VBox>
+                                 <VBox styleClass="cardStat">
+                                    <Label styleClass="statLabel" text="Officiels" />
+                                    <Label fx:id="usersOfficial" styleClass="statValue" text="0" />
+                                 </VBox>
+                                 <VBox styleClass="cardStat">
+                                    <Label styleClass="statLabel" text="Admins" />
+                                    <Label fx:id="usersAdmin" styleClass="statValue" text="0" />
+                                 </VBox>
+                              </HBox>
+
+                              <!-- TABLE DES UTILISATEURS -->
+                              <TableView fx:id="tableUtilisateur" layoutX="30" layoutY="220" prefHeight="440" prefWidth="900" styleClass="styledTable">
                                  <columns>
-                                    <TableColumn fx:id="userTPhone" prefWidth="117.20002746582031" text="Telephone" />
-                                    <TableColumn fx:id="userTSurname" minWidth="0.0" prefWidth="125.20001220703125" text="Prenom" />
-                                    <TableColumn fx:id="userTlastName" prefWidth="118.0" text="Nom" />
-                                    <TableColumn fx:id="userTType" prefWidth="118.199951171875" text="Type" />
-                                    <TableColumn fx:id="userTAction" prefWidth="119.0" text="ACTION" />
-                                 </columns></TableView>
-                              <Button fx:id="creerUtilisateur" layoutX="511.0" layoutY="49.0" mnemonicParsing="false" styleClass="btnGrad" text="CREER UTILISATEUR" />
-                              <FontIcon iconLiteral="fa-users" iconSize="32" layoutX="27.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                              <Label layoutX="13.0" layoutY="193.0" text="Utilisateurs Total:" />
-                              <Label fx:id="UsersCount" layoutX="194.0" layoutY="193.0" text="nombre" />
-                              <Label layoutX="13.0" layoutY="263.0" text="Total Utilisateur" />
-                              <Label fx:id="usersClients" layoutX="194.0" layoutY="263.0" text="Clients" />
-                              <Label fx:id="usersAgent" layoutX="194.0" layoutY="303.0" text="Agent" />
-                              <Label fx:id="usersOfficial" layoutX="194.0" layoutY="343.0" text="Official" />
-                              <Label fx:id="usersAdmin" layoutX="194.0" layoutY="393.0" text="Admin" />
+                                    <TableColumn fx:id="userTPhone" prefWidth="211.99999237060547" text="Téléphone" />
+                                    <TableColumn fx:id="userTSurname" prefWidth="144.79998779296875" text="Prénom" />
+                                    <TableColumn fx:id="userTlastName" prefWidth="175.20001220703125" text="Nom" />
+                                    <TableColumn fx:id="userTType" prefWidth="162.5999755859375" text="Type de Compte" />
+                                    <TableColumn fx:id="userTAction" prefWidth="206.199951171875" text="Action" />
+                                 </columns>
+                              </TableView>
+
                            </children>
                         </AnchorPane>
 
-
-                        <AnchorPane fx:id="operation" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4" visible="false">
+                        <AnchorPane fx:id="operation" prefHeight="700" prefWidth="960" styleClass="mainContainer" visible="false" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
                            <children>
-                              <Label layoutX="64.0" layoutY="14.0" text="OPERATIONS">
-                                 <font>
-                                    <Font name="Segoe UI Bold" size="24.0" />
-                                 </font>
-                              </Label>
-                              <TableView layoutX="251.0" layoutY="114.0" prefHeight="539.0" prefWidth="400.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                              <Pane layoutX="8.0" layoutY="114.0" prefHeight="296.0" prefWidth="439.0" AnchorPane.leftAnchor="8.0">
-                                 <children>
-                                    <AreaChart layoutX="8.0" prefHeight="292.0" prefWidth="433.0">
+
+                              <!-- Header avec icône -->
+                              <HBox alignment="CENTER_LEFT" layoutX="30" layoutY="20" spacing="20">
+                                 <FontIcon iconLiteral="fa-file" iconSize="28" />
+                                 <Label styleClass="headerTitle" text="Opérations" />
+                              </HBox>
+
+                              <!-- Barre supérieure : Recherche -->
+                              <HBox layoutX="30" layoutY="70" spacing="10">
+                                 <TextField prefWidth="250" promptText="🔍 Rechercher une opération" styleClass="searchInput" />
+                              </HBox>
+
+                              <!-- Layout principal -->
+                              <HBox layoutX="30" layoutY="120" spacing="20">
+
+                                 <!-- Zone graphique -->
+                                 <VBox spacing="10">
+                                    <Label styleClass="sectionTitle" text="Statistiques récentes" />
+                                    <AreaChart prefHeight="300" prefWidth="430">
                                        <xAxis>
                                           <CategoryAxis side="BOTTOM" />
                                        </xAxis>
@@ -528,13 +566,28 @@
                                           <NumberAxis side="LEFT" />
                                        </yAxis>
                                     </AreaChart>
-                                 </children>
-                              </Pane>
-                              <Label id="operation" fx:id="titleOperation" layoutX="14.0" layoutY="400.0" prefHeight="259.0" prefWidth="434.0" text="Description:" wrapText="true" />
-                              <TextField layoutX="702.0" layoutY="93.0" promptText="RECHERCHE" />
-                              <FontIcon iconLiteral="fa-file" iconSize="32" layoutX="23.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+
+                                    <!-- Description -->
+                                    <VBox>
+                                       <Label styleClass="sectionTitle" text="Description" />
+                                       <Label fx:id="titleOperation" prefHeight="260" prefWidth="430" styleClass="descriptionBox" text="Description..." wrapText="true" />
+                                    </VBox>
+                                 </VBox>
+
+                                 <!-- Table des opérations -->
+                                 <VBox spacing="10">
+                                    <Label styleClass="sectionTitle" text="Liste des opérations" />
+                                    <TableView fx:id="tableOperation" prefHeight="570" prefWidth="470" styleClass="styledTable">
+                                       <!-- À compléter avec les colonnes -->
+                                    </TableView>
+                                 </VBox>
+                              </HBox>
+
                            </children>
                         </AnchorPane>
+
+
+
 
                      </children>
                   </StackPane>

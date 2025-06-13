@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class DashboardController implements Initializable {
 
     private void getChargement(){
 
-        new Thread(()->{
+
             profil();
             userCount();
             Operation();
@@ -90,7 +91,6 @@ public class DashboardController implements Initializable {
             sommeOperation();
             viewTaux();
 
-        }).start();
     }
 
     private CountUsers profil(){
@@ -500,24 +500,38 @@ public class DashboardController implements Initializable {
             userTType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
             userTAction.setCellFactory(col->new TableCell<>(){
-                private final Button btn= new Button("M");
-                private final Button btnBloque= new Button("B");
+                private final Button btn= new Button("Aperçus");
+
                 {
                     btn.setOnAction(
                             e->{
                                 StreamUser su=getTableView().getItems().get(getIndex());
-                                System.out.println("modifier: "+su.getSurname());
+                                System.out.println("apercus: "+su.getSurname());
+
+                                try {
+                                    FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("utilisateur-panel.fxml"));
+                                    Parent dialogRoot = loader.load();
+                                    Stage dialogStage = new Stage();
+                                    dialogStage.centerOnScreen();
+                                    dialogStage.setResizable(false);
+                                    dialogStage.initModality(Modality.APPLICATION_MODAL);
+                                    dialogStage.setTitle("Gestion Utilisateur Taux");
+                                    dialogStage.setScene(new Scene(dialogRoot));
+                                    dialogStage.showAndWait();
+                                } catch (IOException ex) {
+                                    Alert alert= new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Erreur!!!");
+                                    alert.setHeaderText("Avertissement Erreur!!!");
+                                    alert.setContentText("Veuillez ressayer: \n"+ex);
+                                    alert.showAndWait();
+                                    throw new RuntimeException(ex);
+                                }
+
 
                             }
                     );
 
-                    btnBloque.setOnAction(
-                            e->{
-                                StreamUser su=getTableView().getItems().get(getIndex());
-                                gestionBloque(su);
 
-                            }
-                    );
                 }
 
                 @Override
@@ -526,7 +540,7 @@ public class DashboardController implements Initializable {
                     if (empty) {
                         setGraphic(null);
                     } else {
-                        HBox boxBtn=new HBox(2, btn, btnBloque);
+                        HBox boxBtn=new HBox(1, btn);
                         setGraphic(boxBtn);
                     }
                 }
@@ -722,12 +736,15 @@ public class DashboardController implements Initializable {
         dialogStage.showAndWait();
     }
 
+    @FXML
     private void openDialogueUser() throws IOException {
-        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("dialogCost.fxml"));
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("utilisateur-panel.fxml"));
         Parent dialogRoot = loader.load();
         Stage dialogStage = new Stage();
+        dialogStage.centerOnScreen();
+        dialogStage.setResizable(false);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.setTitle("Ajouter Taux");
+        dialogStage.setTitle("Gestion Utilisateur Taux");
         dialogStage.setScene(new Scene(dialogRoot));
         dialogStage.showAndWait();
     }

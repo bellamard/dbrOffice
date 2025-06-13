@@ -1,0 +1,25 @@
+.button {
+    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+#nextButton {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+}
+
+#backButton {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+}
+.icon-top {
+    -fx-fill: #3f51b5;
+}
+
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 10 0 20 0;
+}
