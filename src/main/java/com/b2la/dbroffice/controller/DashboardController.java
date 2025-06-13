@@ -509,16 +509,19 @@ public class DashboardController implements Initializable {
                                 System.out.println("apercus: "+su.getSurname());
 
                                 try {
-                                    FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("utilisateur-panel.fxml"));
+                                    FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("apercus-panel.fxml"));
                                     Parent dialogRoot = loader.load();
                                     Stage dialogStage = new Stage();
                                     dialogStage.centerOnScreen();
+                                    ApercusController ac= loader.getController();
+                                    ac.typeOpera(su);
                                     dialogStage.setResizable(false);
                                     dialogStage.initModality(Modality.APPLICATION_MODAL);
-                                    dialogStage.setTitle("Gestion Utilisateur Taux");
+                                    dialogStage.setTitle("Gestion Utilisateur");
                                     dialogStage.setScene(new Scene(dialogRoot));
                                     dialogStage.showAndWait();
                                 } catch (IOException ex) {
+
                                     Alert alert= new Alert(Alert.AlertType.ERROR);
                                     alert.setTitle("Erreur!!!");
                                     alert.setHeaderText("Avertissement Erreur!!!");
@@ -741,6 +744,7 @@ public class DashboardController implements Initializable {
         FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("utilisateur-panel.fxml"));
         Parent dialogRoot = loader.load();
         Stage dialogStage = new Stage();
+
         dialogStage.centerOnScreen();
         dialogStage.setResizable(false);
         dialogStage.initModality(Modality.APPLICATION_MODAL);

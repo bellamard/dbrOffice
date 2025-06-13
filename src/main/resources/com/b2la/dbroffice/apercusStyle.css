@@ -1,0 +1,52 @@
+.profile-card {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.1, 0, 2);
+}
+
+.title-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.icon-profile {
+    -fx-fill: #3498db;
+}
+
+.info-grid TextField, .info-grid DatePicker {
+    -fx-pref-height: 30;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.btn-action {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 6;
+}
+
+.btn-primary {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+.error-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+.combo-box {
+    -fx-pref-height: 30;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-padding: 0 10 0 10;
+}

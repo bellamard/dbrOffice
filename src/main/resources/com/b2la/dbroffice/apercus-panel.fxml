@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<AnchorPane fx:id="apercus" prefHeight="560" prefWidth="420" styleClass="profile-card" stylesheets="@apercusStyle.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.b2la.dbroffice.controller.ApercusController">
+
+   <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+
+      <!-- Avatar et titre -->
+      <VBox alignment="CENTER" spacing="10">
+         <FontIcon iconLiteral="fa-user-circle" iconSize="64" styleClass="icon-profile" />
+         <Label styleClass="title-label" text="Aperçu de l’utilisateur" />
+      </VBox>
+
+      <!-- Infos utilisateur en grille -->
+      <GridPane hgap="10" styleClass="info-grid" vgap="12">
+         <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" minWidth="100" />
+            <ColumnConstraints hgrow="ALWAYS" />
+         </columnConstraints>
+
+         <children>
+            <Label text="Nom complet :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="fieldNom" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label text="Téléphone :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="fieldPhone" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="E-mail :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="fieldEmail" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="Date de naissance :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <DatePicker fx:id="fieldDate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <Label text="Type de compte :" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <ComboBox fx:id="comboType" editable="false" promptText="Sélectionner un type" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+      </GridPane>
+
+      <!-- Boutons d'action -->
+      <HBox alignment="CENTER" spacing="12">
+         <Button fx:id="btnSolde" styleClass="btn-action" text="Solde" />
+         <Button fx:id="btnCommission" styleClass="btn-action" text="Commission" />
+         <Button fx:id="btnBloquer" styleClass="btn-danger" text="Bloquer" />
+      </HBox>
+
+      <!-- Suivant + Message -->
+      <VBox alignment="CENTER" spacing="10">
+         <Label fx:id="message" styleClass="error-label" textFill="red" visible="false" />
+      </VBox>
+   </VBox>
+</AnchorPane>
