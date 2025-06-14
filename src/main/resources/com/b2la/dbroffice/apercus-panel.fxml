@@ -17,27 +17,32 @@
       <!-- Infos utilisateur en grille -->
       <GridPane hgap="10" styleClass="info-grid" vgap="12">
          <columnConstraints>
-            <ColumnConstraints halignment="RIGHT" minWidth="100" />
+            <ColumnConstraints halignment="RIGHT" minWidth="120" />
             <ColumnConstraints hgrow="ALWAYS" />
          </columnConstraints>
 
          <children>
-            <Label text="Nom complet :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label text="Nom :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <TextField fx:id="fieldNom" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-            <Label text="Téléphone :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextField fx:id="fieldPhone" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Postnom :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="fieldPostnom" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-            <Label text="E-mail :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <TextField fx:id="fieldEmail" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Prénom :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="fieldPrenom" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-            <Label text="Date de naissance :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <DatePicker fx:id="fieldDate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Téléphone :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="fieldPhone" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-            <Label text="Type de compte :" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <ComboBox fx:id="comboType" editable="false" promptText="Sélectionner un type" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="E-mail :" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="fieldEmail" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <Label text="Type de compte :" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+            <ComboBox fx:id="comboType" editable="false" promptText="Sélectionner un type" GridPane.columnIndex="1" GridPane.rowIndex="6" />
          </children>
          <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
             <RowConstraints />
             <RowConstraints />
             <RowConstraints />
@@ -51,6 +56,7 @@
          <Button fx:id="btnSolde" styleClass="btn-action" text="Solde" />
          <Button fx:id="btnCommission" styleClass="btn-action" text="Commission" />
          <Button fx:id="btnBloquer" styleClass="btn-danger" text="Bloquer" />
+         <Button fx:id="btnModifier" layoutX="134.0" layoutY="10.0" styleClass="btn-primary" text="Modifier" />
       </HBox>
 
       <!-- Suivant + Message -->

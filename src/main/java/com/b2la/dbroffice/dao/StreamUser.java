@@ -1,13 +1,17 @@
 package com.b2la.dbroffice.dao;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 public class StreamUser {
     private int id;
     private String firstname, lastname, surname, phone, email, type;
+    private String datebirth;
 
     public StreamUser() {
     }
 
-    public StreamUser(int id, String firstname, String lastname, String surname, String phone, String email, String type) {
+    public StreamUser(int id, String firstname, String lastname, String surname, String phone, String email, String type, String datebirth) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -15,6 +19,7 @@ public class StreamUser {
         this.phone = phone;
         this.email = email;
         this.type = type;
+        this.datebirth=datebirth;
     }
 
     public int getId() {
@@ -71,5 +76,13 @@ public class StreamUser {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getDatebirth() {
+        return datebirth;
+    }
+
+    public void setDatebirth(String datebirth) {
+        this.datebirth = datebirth;
     }
 }
