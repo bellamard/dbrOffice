@@ -313,7 +313,48 @@ public class Api {
         }
     }
 
-    public static void addUser(){
+    public static User addUser(User request, String urlUser){
+        LoginResponse bearer=Storage.loadLogin();
+        assert bearer != null;
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL(urlUser);
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            Gson json= new Gson();
+            String jsInput= json.toJson(request);
+            try(OutputStream os= con.getOutputStream()){
+                byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+                os.flush();
+                os.flush();
+            }
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                return json.fromJson(response.toString(), User.class);
+            }
+            con.disconnect();
+            return null;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void activation(){
 
     }
 

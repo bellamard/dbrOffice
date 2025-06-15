@@ -1,8 +1,13 @@
 package com.b2la.dbroffice.controller;
 
+import com.b2la.dbroffice.dao.Role;
+import com.b2la.dbroffice.dao.User;
+import com.b2la.dbroffice.preference.RoleType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+
+import static com.b2la.dbroffice.connexion.Api.addUser;
 
 public class UtilisateurController {
     @FXML private VBox step1, step2, step3;
@@ -19,7 +24,7 @@ public class UtilisateurController {
 
     @FXML
     public void initialize() {
-        typeCompteCombo.getItems().addAll("CLIENT","AGENT","OFFICE");
+        typeCompteCombo.getItems().addAll(RoleType.CLIENT.name(), RoleType.AGENT.name(),RoleType.OFFICE.name());
         showStep(currentStep);
     }
 
@@ -52,9 +57,45 @@ public class UtilisateurController {
             showStep(currentStep);
         } else {
             System.out.println("✅ Formulaire soumis !");
-            // TODO : Traitement du formulaire final ici
+            getaddUser();
         }
     }
+
+    private User getaddUser(){
+        String firstname= nomField.getText();
+        String lastName= postnomField.getText();
+        String surname= prenomField.getText();
+        String telephone= telephoneField.getText();
+        String email= emailField.getText();
+        String motdepasse=passwordField.getText();
+        String dateAnniv= String.valueOf(dateNaissanceField.getValue());
+        String type=typeCompteCombo.getValue();
+
+        Role role= new Role();
+        User user=new User();
+        user.setFirstname(firstname);
+        user.setLastname(lastName);
+        user.setSurname(surname);
+        user.setPhone(telephone);
+        user.setEmail(email);
+        user.setPassword(motdepasse);
+        user.setDatebirth(dateAnniv);
+        if(type==RoleType.OFFICE.name()){
+            role.setLibelle(RoleType.OFFICE.name());
+            user.setRole(role);
+            return addUser(user, "https://dbr.b2la.online/Users/provider");
+        }
+        if(type==RoleType.AGENT.name()){
+            role.setLibelle(RoleType.AGENT.name());
+            user.setRole(role);
+            return addUser(user, "https://dbr.b2la.online/Users/agent");
+        }
+        role.setLibelle(RoleType.CLIENT.name());
+        user.setRole(role);
+        return addUser(new User(), "https://dbr.b2la.online/Users");
+
+    }
+
 
     @FXML
     private void handleBack() {

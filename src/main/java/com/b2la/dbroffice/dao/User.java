@@ -2,18 +2,22 @@ package com.b2la.dbroffice.dao;
 
 public class User {
     private int id;
-    private String firstname, surname, phone, email, datebirth, password;
+    private String firstname,lastname, surname, phone, email, datebirth, password;
     private Role role;
 
-    public User(int id, String firstname, String surname, String phone, String email, String datebirth, String password, Role role) {
+    public User(int id, String firstname, String lastname, String surname, String phone, String email, String datebirth, String password, Role role) {
         this.id = id;
         this.firstname = firstname;
+        this.lastname= lastname;
         this.surname = surname;
         this.phone = phone;
         this.email = email;
         this.datebirth = datebirth;
         this.password= password;
         this.role=role;
+    }
+
+    public User() {
     }
 
     public Role getRole() {
@@ -24,8 +28,6 @@ public class User {
         this.role = role;
     }
 
-    public User() {
-    }
 
     public String getPassword() {
         return password;
@@ -49,6 +51,14 @@ public class User {
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getSurname() {

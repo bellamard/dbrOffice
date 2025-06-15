@@ -9,6 +9,10 @@ public class Role {
         libelle = libelle;
     }
 
+    public Role() {
+
+    }
+
     public int getId() {
         return id;
     }

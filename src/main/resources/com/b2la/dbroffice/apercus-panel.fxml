@@ -56,7 +56,7 @@
          <Button fx:id="btnSolde" styleClass="btn-action" text="Solde" />
          <Button fx:id="btnCommission" styleClass="btn-action" text="Commission" />
          <Button fx:id="btnBloquer" styleClass="btn-danger" text="Bloquer" />
-         <Button fx:id="btnModifier" layoutX="134.0" layoutY="10.0" styleClass="btn-primary" text="Modifier" />
+         <Button fx:id="btnModifier" layoutX="134.0" layoutY="10.0" onAction="#getModifierAction" styleClass="btn-primary" text="Modifier" />
       </HBox>
 
       <!-- Suivant + Message -->

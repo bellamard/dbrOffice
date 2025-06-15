@@ -578,8 +578,14 @@
                                  <VBox spacing="10">
                                     <Label styleClass="sectionTitle" text="Liste des opérations" />
                                     <TableView fx:id="tableOperation" prefHeight="570" prefWidth="470" styleClass="styledTable">
-                                       <!-- À compléter avec les colonnes -->
-                                    </TableView>
+                                       <columns>
+                                          <TableColumn prefWidth="75.0" text="Reference" />
+                                          <TableColumn prefWidth="75.0" text="Type" />
+                                          <TableColumn prefWidth="75.0" text="Montant" />
+                                          <TableColumn prefWidth="75.0" text="Device" />
+                                          <TableColumn prefWidth="75.0" text="Etat" />
+                                          <TableColumn prefWidth="75.0" text="Date" />
+                                       </columns></TableView>
                                  </VBox>
                               </HBox>
 
