@@ -135,7 +135,7 @@ public class DialogueCostController implements Initializable {
         FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("dashboard-view-v.fxml"));
         Parent root = loader.load();
         DashboardController dbc= loader.getController();
-        dbc.viewTaux();
+        dbc.getTableUser();
         Stage stage = (Stage) btnValider.getScene().getWindow();
         stage.close();
     }

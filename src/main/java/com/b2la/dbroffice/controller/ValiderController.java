@@ -1,11 +1,20 @@
 package com.b2la.dbroffice.controller;
 
+import com.b2la.dbroffice.HelloApplication;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
+import static com.b2la.dbroffice.connexion.Api.activation;
 
-public class Valider {
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ValiderController {
 
     @FXML
     private VBox mainContainer;
@@ -37,6 +46,8 @@ public class Valider {
     @FXML
     private Separator headerSeparator;
 
+    int counter=3;
+
     @FXML
     public void initialize() {
         // Initialisation après le chargement du FXML
@@ -49,6 +60,7 @@ public class Valider {
     private void onValidateClicked() {
         String key = activationKeyField.getText().trim();
 
+
         if (key.isEmpty()) {
             showError("Veuillez entrer une clé d’activation.");
             return;
@@ -60,11 +72,38 @@ public class Valider {
             return;
         }
 
+
+
+
         // Supposons que la clé est correcte
         clearError();
-        System.out.println("Clé acceptée : " + key);
 
-        // TODO : Insérer ici l’appel à ton API, ta logique de validation, etc.
+        Map<String, Integer> token=new HashMap<>();
+        token.put("code", Integer.valueOf(key));
+
+        if(!activation(token)){
+            showError("La clé est invalide");
+            if(counter>0){
+                counter--;
+                return;
+            }
+            Stage stage=(Stage) validateButton.getScene().getWindow();
+            stage.close();
+        }else{
+
+            try {
+                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("utilisateur-panel.fxml"));
+                Parent root = loader.load();
+                DashboardController dbc= loader.getController();
+                dbc.viewTaux();
+                Stage stage=(Stage) validateButton.getScene().getWindow();
+                stage.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
     }
 
     private void showError(String message) {

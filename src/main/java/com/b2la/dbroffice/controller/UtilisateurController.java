@@ -1,11 +1,19 @@
 package com.b2la.dbroffice.controller;
 
+import com.b2la.dbroffice.HelloApplication;
 import com.b2la.dbroffice.dao.Role;
 import com.b2la.dbroffice.dao.User;
 import com.b2la.dbroffice.preference.RoleType;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 import static com.b2la.dbroffice.connexion.Api.addUser;
 
@@ -24,7 +32,7 @@ public class UtilisateurController {
 
     @FXML
     public void initialize() {
-        typeCompteCombo.getItems().addAll(RoleType.CLIENT.name(), RoleType.AGENT.name(),RoleType.OFFICE.name());
+        typeCompteCombo.getItems().addAll(RoleType.AGENT.name(),RoleType.OFFICE.name());
         showStep(currentStep);
     }
 
@@ -57,7 +65,26 @@ public class UtilisateurController {
             showStep(currentStep);
         } else {
             System.out.println("✅ Formulaire soumis !");
-            getaddUser();
+
+
+                try {
+
+                    if(getaddUser()==null){
+                        openDialogueActivation();
+                        Stage stage = (Stage) nextButton.getScene().getWindow();
+                        stage.close();
+                    }else {
+                        Alert alert= new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Erreur!!!");
+                        alert.setHeaderText("Avertissement Erreur!!!");
+                        alert.setContentText("Veuillez ressayer: \nL'action n'a pas abouti ");
+                        alert.showAndWait();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+
         }
     }
 
@@ -90,10 +117,21 @@ public class UtilisateurController {
             user.setRole(role);
             return addUser(user, "https://dbr.b2la.online/Users/agent");
         }
+
         role.setLibelle(RoleType.CLIENT.name());
         user.setRole(role);
         return addUser(new User(), "https://dbr.b2la.online/Users");
 
+    }
+
+    private void openDialogueActivation() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("valider.fxml"));
+        Parent dialogRoot = loader.load();
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Activation Compte");
+        dialogStage.setScene(new Scene(dialogRoot));
+        dialogStage.showAndWait();
     }
 
 

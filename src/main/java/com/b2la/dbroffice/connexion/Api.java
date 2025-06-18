@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 
 public class Api {
@@ -335,7 +336,7 @@ public class Api {
             }
 
             int responseCode=con.getResponseCode();
-            if(responseCode==HttpURLConnection.HTTP_OK){
+            if(responseCode==HttpURLConnection.HTTP_CREATED){
                 BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
                 StringBuilder response= new StringBuilder();
                 String inputLine;
@@ -345,6 +346,8 @@ public class Api {
                 in.close();
                 return json.fromJson(response.toString(), User.class);
             }
+
+
             con.disconnect();
             return null;
 
@@ -354,7 +357,51 @@ public class Api {
 
     }
 
-    public void activation(){
+    public static boolean activation(Map<String, Integer> code){
+
+        try {
+            URL url= new URL("https://dbr.b2la.online/Users/activation");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            Gson json= new Gson();
+            String jsInput= json.toJson(code);
+            try(OutputStream os= con.getOutputStream()){
+                byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+                os.flush();
+                os.flush();
+            }
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                System.out.println("activation :"+ response.toString());
+                return true;
+
+            }
+
+            con.disconnect();
+            return false;
+
+        } catch (IOException e) {
+            Alert alert= new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur!!!");
+            alert.setHeaderText("Avertissement Erreur!!!");
+            alert.setContentText("Veuillez ressayer: \n"+e);
+            alert.showAndWait();
+            System.out.println(e.toString());
+            System.exit(0);
+            throw new RuntimeException(e);
+
+        }
 
     }
 

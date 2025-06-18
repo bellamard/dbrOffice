@@ -8,7 +8,7 @@
 <AnchorPane prefHeight="350.0" prefWidth="450.0"
             xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.b2la.dbroffice.controller.Valider"
+            fx:controller="com.b2la.dbroffice.controller.ValiderController"
             stylesheets="@activeStyle.css"
             styleClass="root-pane">
     <children>

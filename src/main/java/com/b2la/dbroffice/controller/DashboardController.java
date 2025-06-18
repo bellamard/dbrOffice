@@ -487,7 +487,7 @@ public class DashboardController implements Initializable {
 
     // pane Utilisateur
 
-    private void getTableUser(){
+    public void getTableUser(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
 
