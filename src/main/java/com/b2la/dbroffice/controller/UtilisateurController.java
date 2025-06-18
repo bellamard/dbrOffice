@@ -131,6 +131,7 @@ public class UtilisateurController {
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.setTitle("Activation Compte");
         dialogStage.setScene(new Scene(dialogRoot));
+        dialogStage.setResizable(false);
         dialogStage.showAndWait();
     }
 

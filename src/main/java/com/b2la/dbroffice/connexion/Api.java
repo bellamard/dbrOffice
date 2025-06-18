@@ -357,6 +357,62 @@ public class Api {
 
     }
 
+    public static void updateUser(User request){
+        LoginResponse bearer=Storage.loadLogin();
+        assert bearer != null;
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/Users/"+request.getId());
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("PUT");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+            Gson json= new Gson();
+            String jsInput= json.toJson(request);
+            try(OutputStream os= con.getOutputStream()){
+                byte[] input=jsInput.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+                os.flush();
+                os.flush();
+            }
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                json.fromJson(response.toString(), Cost.class);
+                System.out.println("Modification valider de "+request.getSurname());
+
+            }else{
+                Alert alertError= new Alert(Alert.AlertType.ERROR);
+                alertError.setHeaderText("ERREUR MODIFICATION");
+                String messageErreur = switch (responseCode) {
+                    case 400 -> "Requête invalide. Vérifiez les données envoyées.";
+                    case 401 -> "Accès non autorisé. Veuillez vous connecter.";
+                    case 403 -> "Action interdite. Vous n’avez pas les permissions nécessaires.";
+                    case 404 -> "Utilisateur non trouvé.";
+                    case 409 -> "Conflit : l’utilisateur a peut-être été modifié par un autre processus.";
+                    case 500 -> "Erreur interne du serveur. Merci de réessayer plus tard.";
+                    default -> "Erreur inattendue. Code : " + responseCode;
+                };
+                alertError.setContentText(messageErreur);
+                alertError.showAndWait();
+
+            }
+            con.disconnect();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean activation(Map<String, Integer> code){
 
         try {
@@ -404,5 +460,41 @@ public class Api {
         }
 
     }
+
+
+    public static List<Accounts> listAccounts(LoginResponse bearer){
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/Accounts");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                Gson json= new GsonBuilder().create();
+                Type listeType= new TypeToken<List<Accounts>>(){}.getType();
+                return json.fromJson(response.toString(), listeType);
+            }
+            con.disconnect();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return null;
+    }
+
 
 }

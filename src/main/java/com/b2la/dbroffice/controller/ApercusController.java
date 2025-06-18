@@ -1,7 +1,10 @@
 package com.b2la.dbroffice.controller;
 
 import com.b2la.dbroffice.dao.Cost;
+import com.b2la.dbroffice.dao.Role;
 import com.b2la.dbroffice.dao.StreamUser;
+import com.b2la.dbroffice.dao.User;
+import com.b2la.dbroffice.preference.RoleType;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+
+import static com.b2la.dbroffice.connexion.Api.updateUser;
 
 public class ApercusController {
 
@@ -59,6 +64,20 @@ public class ApercusController {
 
     private void setModifier(){
         System.out.println("modifier le "+fieldNom.getText());
+        User us= new User();
+        us.setId(id);
+        us.setFirstname(fieldNom.getText());
+        us.setLastname(fieldPostnom.getText());
+        us.setSurname(fieldPrenom.getText());
+        us.setPhone(fieldPhone.getText());
+        us.setEmail(fieldEmail.getText());
+        Role role= new Role();
+        if(comboType.getValue()==RoleType.AGENT.name())role.setLibelle(RoleType.AGENT.name());
+        if(comboType.getValue()==RoleType.ADMIN.name())role.setLibelle(RoleType.ADMIN.name());
+        if(comboType.getValue()==RoleType.CLIENT.name())role.setLibelle(RoleType.CLIENT.name());
+        if(comboType.getValue()==RoleType.OFFICE.name())role.setLibelle(RoleType.OFFICE.name());
+        us.setRole(role);
+        updateUser(us);
         Stage stage = (Stage) btnModifier.getScene().getWindow();
         stage.close();
     }

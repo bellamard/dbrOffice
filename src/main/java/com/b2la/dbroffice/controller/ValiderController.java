@@ -92,12 +92,14 @@ public class ValiderController {
         }else{
 
             try {
-                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("utilisateur-panel.fxml"));
+                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("dashboard-view-v.fxml"));
                 Parent root = loader.load();
-                DashboardController dbc= loader.getController();
-                dbc.viewTaux();
+                DashboardController dbc=(DashboardController) loader.getController();
+                dbc.getTableUser();
                 Stage stage=(Stage) validateButton.getScene().getWindow();
                 stage.close();
+
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
