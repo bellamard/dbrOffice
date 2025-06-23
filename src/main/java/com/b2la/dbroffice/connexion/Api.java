@@ -13,7 +13,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -495,6 +494,77 @@ public class Api {
 
         return null;
     }
+
+    public static List<Commission> listCommissions(LoginResponse bearer){
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/commission");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                Gson json= new GsonBuilder().create();
+                Type listeType= new TypeToken<List<Commission>>(){}.getType();
+                return json.fromJson(response.toString(), listeType);
+            }
+            con.disconnect();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return null;
+    }
+
+    public static List<Operation> listOperation(LoginResponse bearer){
+        String bearerUser= bearer.getBearer();
+        try {
+            URL url= new URL("https://dbr.b2la.online/Operations");
+            HttpURLConnection con=(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization","Bearer "+bearerUser);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+
+            int responseCode=con.getResponseCode();
+            if(responseCode==HttpURLConnection.HTTP_OK){
+                BufferedReader in= new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response= new StringBuilder();
+                String inputLine;
+                while ((inputLine= in.readLine())!= null){
+                    response.append(inputLine);
+                }
+                in.close();
+                Gson json= new GsonBuilder().create();
+                Type listeType= new TypeToken<List<Commission>>(){}.getType();
+                return json.fromJson(response.toString(), listeType);
+            }
+            con.disconnect();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return null;
+    }
+
+
+
 
 
 }

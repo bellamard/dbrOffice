@@ -3,6 +3,8 @@ package com.b2la.dbroffice.controller;
 import com.b2la.dbroffice.HelloApplication;
 import com.b2la.dbroffice.connexion.Api;
 import com.b2la.dbroffice.dao.*;
+import com.b2la.dbroffice.preference.RoleType;
+import com.b2la.dbroffice.preference.StateOper;
 import com.b2la.dbroffice.preference.Storage;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -24,6 +26,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.net.URL;
@@ -70,6 +74,10 @@ public class DashboardController implements Initializable {
     @FXML
     private TableColumn<StreamUser, String> userTType, userTAction;
     @FXML
+    private TableColumn<Operation, String>tOperRef, tOperType, tOperDev, tOperEtat, tOperAction,tOperDate;
+    @FXML
+    private TableColumn<Operation, Float> tOperMont;
+    @FXML
     private AreaChart<String, Number> diagram;
 
 
@@ -90,6 +98,7 @@ public class DashboardController implements Initializable {
             chart();
             sommeOperation();
             viewTaux();
+
 
     }
 
@@ -206,7 +215,7 @@ public class DashboardController implements Initializable {
                     for(Operation Operat: operaList){
                         roleBen=Operat.getBen().getUser().getRole();
                         roleExp= Operat.getExp().getUser().getRole();
-                        if(Operat.getState().getLibelle().equals("VALIDER")){
+                        if(Operat.getState().getLibelle()==StateOper.VALIDER){
                             if(roleBen.getLibelle().equals("CLIENT") && roleExp.getLibelle().equals("CLIENT")){
                                 nbreSend++;
                             }
@@ -273,7 +282,7 @@ public class DashboardController implements Initializable {
                     AtomicInteger nombreUSD= new AtomicInteger();
                     AtomicInteger nombreCDF= new AtomicInteger();
                     liste.forEach(op->{
-                        if(op.getState().getLibelle().equals("VALIDER")){
+                        if(op.getState().getLibelle()==StateOper.VALIDER){
                             if(op.getDevice().equals("usd")){
                                 nombreUSD.getAndIncrement();
                             }
@@ -312,7 +321,7 @@ public class DashboardController implements Initializable {
                 assert operaList != null;
 
                 Map<String, List<Operation>> groupeDate=operaList.stream()
-                        .collect(Collectors.groupingBy(Oper->Oper.getState().getLibelle()));
+                        .collect(Collectors.groupingBy(Oper-> String.valueOf(Oper.getState().getLibelle())));
                 AtomicInteger sommeValiderCDF= new AtomicInteger();
                 AtomicInteger sommeValiderUSD= new AtomicInteger();
                 AtomicInteger sommeAnnulerCDF= new AtomicInteger();
@@ -322,7 +331,7 @@ public class DashboardController implements Initializable {
                 groupeDate.forEach((date,liste)->{
 
                     for(Operation op: liste){
-                        if(op.getState().getLibelle().equals("VALIDER")){
+                        if(op.getState().getLibelle()==StateOper.VALIDER){
 
                             if(op.getDevice().equals("usd")){
                                 sommeValiderUSD.getAndIncrement();
@@ -331,7 +340,7 @@ public class DashboardController implements Initializable {
                                 sommeValiderCDF.getAndIncrement();
                             }
                         }
-                        if(op.getState().getLibelle().equals("ANNULER")){
+                        if(op.getState().getLibelle()==StateOper.ANNULER){
 
                             if(op.getDevice().equals("usd")){
                                 sommeAnnulerUSD.getAndIncrement();
@@ -340,7 +349,7 @@ public class DashboardController implements Initializable {
                                 sommeAnnulerCDF.getAndIncrement();
                             }
                         }
-                        if(op.getState().getLibelle().equals("ATTENTE")){
+                        if(op.getState().getLibelle()==StateOper.ATTENTE){
 
                             if(op.getDevice().equals("usd")){
                                 sommeAttenteUSD.getAndIncrement();
@@ -754,6 +763,106 @@ public class DashboardController implements Initializable {
     }
 
 
+    public void viewOperation(){
+        LoginResponse clef = Storage.loadLogin();
+        assert clef != null;
+        tOperRef.setCellValueFactory(new PropertyValueFactory<>("codereference"));
+        tOperDev.setCellValueFactory(new PropertyValueFactory<>("device"));
+        tOperEtat.setCellValueFactory(new PropertyValueFactory<>("state"));
+        tOperMont.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        tOperDate.setCellValueFactory(new PropertyValueFactory<>("dateoperation"));
+        tOperType.setCellFactory(col -> new TableCell<>() {
+            final Label label = new Label();
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox boxLabel = new HBox(2, label);
+                    Operation op = getTableView().getItems().get(getIndex());
+                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.CLIENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.CLIENT)) {
+                        label.setText("Envoi Client");
+                    }
+                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.CLIENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.AGENT)) {
+                        label.setText("Retrait Client");
+                    }
+                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.AGENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.CLIENT)) {
+                        label.setText("Depot Client");
+                    }
+                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.AGENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.ADMIN)) {
+                        label.setText("Retrait Agent");
+                    }
+                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.ADMIN) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.AGENT)) {
+                        label.setText("Depot Agent");
+                    }
+                    boxLabel.getChildren().add(label);
+                    setGraphic(boxLabel);
+                }
+            }
+        });
+        tOperAction.setCellFactory(col -> new TableCell<>() {
+
+            FontIcon iconLock = new FontIcon(FontAwesome.LOCK);
+            FontIcon iconApercus = new FontIcon(FontAwesome.FILE_ARCHIVE_O);
+
+            private final Button btnB = new Button("B", iconLock);
+
+            private final Button btnAp = new Button("A", iconApercus);
+
+            {
+                btnB.setOnAction(
+                        e -> {
+                            Operation op = getTableView().getItems().get(getIndex());
+                            System.out.println("Bloquer: " + op.getDevice());
+
+                        }
+                );
+
+                btnAp.setOnAction(
+                        e -> {
+                            Operation op = getTableView().getItems().get(getIndex());
+                            System.out.println("Apercus: " + op.getId());
+
+                        }
+                );
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox boxBtn = new HBox(2);
+                    Operation op = getTableView().getItems().get(getIndex());
+                    if (op.getState().getLibelle() == StateOper.ATTENTE) {
+                        boxBtn.getChildren().add(btnB);
+                    }
+                    boxBtn.getChildren().add(btnAp);
+                    setGraphic(boxBtn);
+                }
+            }
+        });
+
+        runAsync(() -> {
+
+            Task<ObservableList<Operation>> task = new Task<>() {
+                @Override
+                protected ObservableList<Operation> call() throws Exception {
+                    List<Operation> operationList = listOperation(clef);
+                    return FXCollections.observableArrayList(operationList);
+                }
+            };
+            task.setOnSucceeded(e -> tableUtilisateur.setItems(task.getValue()));
+            new Thread(task).start();
+            chargement.setVisible(false);
+
+        });
+
+    }
+
     @FXML
     protected void goToHome(){
         String card="home";
@@ -766,6 +875,7 @@ public class DashboardController implements Initializable {
     protected void goToOperation(){
         String card="operation";
         cardLayout(card);
+        viewOperation();
 
     }
     @FXML
@@ -775,4 +885,6 @@ public class DashboardController implements Initializable {
         getTableUser();
 
     }
+
+
 }

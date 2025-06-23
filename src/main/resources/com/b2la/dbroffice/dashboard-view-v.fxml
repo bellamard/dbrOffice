@@ -538,7 +538,7 @@
                            </children>
                         </AnchorPane>
 
-                        <AnchorPane fx:id="operation" prefHeight="700" prefWidth="960" styleClass="mainContainer" visible="false" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+                        <AnchorPane fx:id="operation" prefHeight="811.0" prefWidth="910.0" styleClass="mainContainer" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
                            <children>
 
                               <!-- Header avec icône -->
@@ -553,41 +553,42 @@
                               </HBox>
 
                               <!-- Layout principal -->
-                              <HBox layoutX="30" layoutY="120" spacing="20">
-
-                                 <!-- Zone graphique -->
-                                 <VBox spacing="10">
-                                    <Label styleClass="sectionTitle" text="Statistiques récentes" />
-                                    <AreaChart prefHeight="300" prefWidth="430">
-                                       <xAxis>
-                                          <CategoryAxis side="BOTTOM" />
-                                       </xAxis>
-                                       <yAxis>
-                                          <NumberAxis side="LEFT" />
-                                       </yAxis>
-                                    </AreaChart>
-
-                                    <!-- Description -->
-                                    <VBox>
-                                       <Label styleClass="sectionTitle" text="Description" />
-                                       <Label fx:id="titleOperation" prefHeight="260" prefWidth="430" styleClass="descriptionBox" text="Description..." wrapText="true" />
-                                    </VBox>
-                                 </VBox>
+                              <VBox layoutX="30" layoutY="120" spacing="20">
 
                                  <!-- Table des opérations -->
                                  <VBox spacing="10">
                                     <Label styleClass="sectionTitle" text="Liste des opérations" />
-                                    <TableView fx:id="tableOperation" prefHeight="570" prefWidth="470" styleClass="styledTable">
+                                    <TableView fx:id="tableOperation" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
                                        <columns>
-                                          <TableColumn prefWidth="75.0" text="Reference" />
-                                          <TableColumn prefWidth="75.0" text="Type" />
-                                          <TableColumn prefWidth="75.0" text="Montant" />
-                                          <TableColumn prefWidth="75.0" text="Device" />
-                                          <TableColumn prefWidth="75.0" text="Etat" />
-                                          <TableColumn prefWidth="75.0" text="Date" />
+                                          <TableColumn prefWidth="174.79996490478516" text="Reference" fx:id="tOperRef"/>
+                                          <TableColumn minWidth="0.0" prefWidth="133.60000610351562" text="Type" fx:id="tOperType" />
+                                          <TableColumn prefWidth="163.20001220703125" text="Montant" fx:id="tOperMont"/>
+                                          <TableColumn prefWidth="94.79998779296875" text="Device" fx:id="tOperDev"/>
+                                          <TableColumn prefWidth="94.0" text="Etat" fx:id="tOperEtat"/>
+                                          <TableColumn prefWidth="78.5999755859375" text="Action" fx:id="tOperAction"/>
+                                          <TableColumn prefWidth="143.20001220703125" text="Date" fx:id="tOperDate"/>
                                        </columns></TableView>
                                  </VBox>
-                              </HBox>
+
+                                 <!-- Zone graphique -->
+                                 <VBox spacing="10">
+                                    <Label styleClass="sectionTitle" text="Statistiques récentes" />
+
+                                    <!-- Description -->
+                                    <HBox>
+                                       <AreaChart prefHeight="300" prefWidth="430">
+                                          <xAxis>
+                                             <CategoryAxis side="BOTTOM" />
+                                          </xAxis>
+                                          <yAxis>
+                                             <NumberAxis side="LEFT" />
+                                          </yAxis>
+                                       </AreaChart>
+                                       <Label styleClass="sectionTitle" text="Description" />
+                                       <Label fx:id="titleOperation" prefHeight="260" prefWidth="430" styleClass="descriptionBox" text="Description..." wrapText="true" />
+                                    </HBox>
+                                 </VBox>
+                              </VBox>
 
                            </children>
                         </AnchorPane>

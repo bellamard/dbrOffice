@@ -1,10 +1,12 @@
 package com.b2la.dbroffice.dao;
 
+import com.b2la.dbroffice.preference.StateOper;
+
 public class State {
     private int id;
-    private String libelle;
+    private StateOper libelle;
 
-    public State(int id, String libelle) {
+    public State(int id, StateOper libelle) {
         this.id = id;
         this.libelle = libelle;
     }
@@ -17,11 +19,11 @@ public class State {
         this.id = id;
     }
 
-    public String getLibelle() {
+    public StateOper getLibelle() {
         return libelle;
     }
 
-    public void setLibelle(String libelle) {
+    public void setLibelle(StateOper libelle) {
         this.libelle = libelle;
     }
 }

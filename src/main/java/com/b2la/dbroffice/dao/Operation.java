@@ -6,10 +6,10 @@ public class Operation {
     private float amount;
     private float commission;
     private String codereference, dateoperation;
-    private CountUsers exp, ben;
+    private Accounts exp, ben;
     private State state;
 
-    public Operation(int id, String device, float amount, float commission, String codereference, String dateoperation, CountUsers exp, CountUsers ben, State state) {
+    public Operation(int id, String device, float amount, float commission, String codereference, String dateoperation, Accounts exp, Accounts ben, State state) {
         this.id = id;
         this.device = device;
         this.amount = amount;
@@ -72,19 +72,19 @@ public class Operation {
         this.dateoperation = dateoperation;
     }
 
-    public CountUsers getExp() {
+    public Accounts getExp() {
         return exp;
     }
 
-    public void setExp(CountUsers exp) {
+    public void setExp(Accounts exp) {
         this.exp = exp;
     }
 
-    public CountUsers getBen() {
+    public Accounts getBen() {
         return ben;
     }
 
-    public void setBen(CountUsers ben) {
+    public void setBen(Accounts ben) {
         this.ben = ben;
     }
 
