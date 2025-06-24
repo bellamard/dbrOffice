@@ -33,10 +33,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -57,7 +54,7 @@ public class DashboardController implements Initializable {
     @FXML
     private TextField searchTaux, fieldUserSearch;
     @FXML
-    private TableView tableauTaux, tableUtilisateur;
+    private TableView tableauTaux, tableUtilisateur, tableOperation;
     @FXML
     private TableColumn<Cost, String> TCdevices;
     @FXML
@@ -107,7 +104,7 @@ public class DashboardController implements Initializable {
         assert clef != null;
         runAsync(()->{
             try{
-                CountUsers cu=Api.solde(clef);
+                CountUsers cu= solde(clef);
                 assert cu != null;
                 User usePerson=cu.getUser();
                 Role role= usePerson.getRole();
@@ -120,7 +117,7 @@ public class DashboardController implements Initializable {
                         alert.setHeaderText("Avertissement Erreur!!!");
                         alert.setContentText("tu n'as pas access avec ce role " + role.getLibelle());
                         alert.showAndWait();
-                        Platform.exit();
+                        exit();
                     }
                 });
 
@@ -766,13 +763,14 @@ public class DashboardController implements Initializable {
     public void viewOperation(){
         LoginResponse clef = Storage.loadLogin();
         assert clef != null;
+
         tOperRef.setCellValueFactory(new PropertyValueFactory<>("codereference"));
         tOperDev.setCellValueFactory(new PropertyValueFactory<>("device"));
         tOperEtat.setCellValueFactory(new PropertyValueFactory<>("state"));
         tOperMont.setCellValueFactory(new PropertyValueFactory<>("amount"));
         tOperDate.setCellValueFactory(new PropertyValueFactory<>("dateoperation"));
         tOperType.setCellFactory(col -> new TableCell<>() {
-            final Label label = new Label();
+
 
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -780,24 +778,29 @@ public class DashboardController implements Initializable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    HBox boxLabel = new HBox(2, label);
+
                     Operation op = getTableView().getItems().get(getIndex());
-                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.CLIENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.CLIENT)) {
-                        label.setText("Envoi Client");
+                    Role exp=op.getExp().getUser().getRole();
+                    Role ben=op.getBen().getUser().getRole();
+                    System.out.println(ben.getLibelle()+" "+exp.getLibelle());
+                    Label label = new Label("Super");
+                    if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
+                        label= new Label("ENVOI CLIENT");
+                        
                     }
-                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.CLIENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.AGENT)) {
-                        label.setText("Retrait Client");
+                    if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "AGENT")){
+                        label=new Label("RETRAIT CLIENT");
                     }
-                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.AGENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.CLIENT)) {
-                        label.setText("Depot Client");
+                    if(Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
+                       label=new Label("DEPOT CLIENT");
                     }
-                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.AGENT) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.ADMIN)) {
-                        label.setText("Retrait Agent");
+                    if(Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "OFFICE")){
+                        label= new Label("RETRAIT AGENT");
                     }
-                    if (op.getExp().getUser().getRole().getLibelle().equals(RoleType.ADMIN) && op.getBen().getUser().getRole().getLibelle().equals(RoleType.AGENT)) {
-                        label.setText("Depot Agent");
+                    if(Objects.equals(exp.getLibelle(), "OFFICE") && Objects.equals(ben.getLibelle(), "AGENT")){
+                        label= new Label("DEPOT AGENT");
                     }
-                    boxLabel.getChildren().add(label);
+                    HBox boxLabel = new HBox(2, label);
                     setGraphic(boxLabel);
                 }
             }
@@ -852,10 +855,11 @@ public class DashboardController implements Initializable {
                 @Override
                 protected ObservableList<Operation> call() throws Exception {
                     List<Operation> operationList = listOperation(clef);
+
                     return FXCollections.observableArrayList(operationList);
                 }
             };
-            task.setOnSucceeded(e -> tableUtilisateur.setItems(task.getValue()));
+            task.setOnSucceeded(e -> tableOperation.setItems(task.getValue()));
             new Thread(task).start();
             chargement.setVisible(false);
 

@@ -1,16 +1,17 @@
 package com.b2la.dbroffice.dao;
 
+import com.b2la.dbroffice.preference.RoleType;
+
 public class Role {
     private int id;
     private String libelle;
 
-    public Role(int id, String libelle) {
-        this.id = id;
-        libelle = libelle;
+    public Role() {
     }
 
-    public Role() {
-
+    public Role(int id, String libelle) {
+        this.id = id;
+        this.libelle = libelle;
     }
 
     public int getId() {
@@ -26,8 +27,6 @@ public class Role {
     }
 
     public void setLibelle(String libelle) {
-        libelle = libelle;
+        this.libelle = libelle;
     }
-
-
 }
