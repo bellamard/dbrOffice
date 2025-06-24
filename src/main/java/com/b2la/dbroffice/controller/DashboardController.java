@@ -46,13 +46,13 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
-            countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov,
+            countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov, titleOperation,
             attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin, usersOfficial, usersAgent, UsersCount;
     private Button btnTaux;
     @FXML
     private AnchorPane home, operation, utilisateur, chargement;
     @FXML
-    private TextField searchTaux, fieldUserSearch;
+    private TextField searchTaux, fieldUserSearch, getSearchOperation;
     @FXML
     private TableView tableauTaux, tableUtilisateur, tableOperation;
     @FXML
@@ -766,12 +766,36 @@ public class DashboardController implements Initializable {
 
         tOperRef.setCellValueFactory(new PropertyValueFactory<>("codereference"));
         tOperDev.setCellValueFactory(new PropertyValueFactory<>("device"));
-        tOperEtat.setCellValueFactory(new PropertyValueFactory<>("state"));
         tOperMont.setCellValueFactory(new PropertyValueFactory<>("amount"));
         tOperDate.setCellValueFactory(new PropertyValueFactory<>("dateoperation"));
+        tOperEtat.setCellFactory(col -> new TableCell<>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setGraphic(null);
+                }else{
+                    Operation op = getTableView().getItems().get(getIndex());
+                    Label labelIcon=new Label("Etat iconnu", new FontIcon(FontAwesome.QUESTION_CIRCLE));
+                    if(op.getState().getLibelle().equals(StateOper.ATTENTE)){
+                        labelIcon=new Label("ATTENTE", new FontIcon(FontAwesome.HOURGLASS));
+                    }
+                    if(op.getState().getLibelle().equals(StateOper.VALIDER)){
+                        labelIcon=new Label("VALIDER", new FontIcon(FontAwesome.CHECK_CIRCLE));
+                    }
+                    if(op.getState().getLibelle().equals(StateOper.ANNULER)){
+                        labelIcon=new Label("ANNULER", new FontIcon(FontAwesome.TIMES_CIRCLE));
+                    }
+                    if(op.getState().getLibelle().equals(StateOper.BLOQUER)){
+                        labelIcon=new Label("BLOQUER", new FontIcon(FontAwesome.BAN));
+                    }
+                    HBox boxLabel = new HBox(2, labelIcon);
+                    setGraphic(boxLabel);
+
+                }
+            }
+        });
         tOperType.setCellFactory(col -> new TableCell<>() {
-
-
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -782,8 +806,7 @@ public class DashboardController implements Initializable {
                     Operation op = getTableView().getItems().get(getIndex());
                     Role exp=op.getExp().getUser().getRole();
                     Role ben=op.getBen().getUser().getRole();
-                    System.out.println(ben.getLibelle()+" "+exp.getLibelle());
-                    Label label = new Label("Super");
+                    Label label = new Label("TYPE INCONNU");
                     if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
                         label= new Label("ENVOI CLIENT");
                         
@@ -864,6 +887,107 @@ public class DashboardController implements Initializable {
             chargement.setVisible(false);
 
         });
+
+    }
+
+    @FXML
+    private void getTableOperationSearch(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+
+        runAsync(()->{
+            List<Operation> operList=listOperation(clef);
+            List<Operation> searchListOper=operList.stream().filter(tOperation->
+
+                            tOperation.getDevice().toLowerCase().contains(getSearchOperation.getText())||
+                            tOperation.getCodereference().toUpperCase().contains(getSearchOperation.getText())||
+                            tOperation.getState().getLibelle().toString().toLowerCase().contains(getSearchOperation.getText())||
+                            tOperation.getDateoperation().toUpperCase().contains(getSearchOperation.getText())||
+                            tOperation.getBen().getUser().getSurname().toLowerCase().contains(getSearchOperation.getText())||
+                            tOperation.getBen().getUser().getFirstname().toUpperCase().contains(getSearchOperation.getText())||
+                            tOperation.getBen().getUser().getLastname().toLowerCase().contains(getSearchOperation.getText())||
+                            tOperation.getBen().getUser().getRole().getLibelle().toLowerCase().contains(getSearchOperation.getText())||
+                            tOperation.getExp().getUser().getSurname().toLowerCase().contains(getSearchOperation.getText())||
+                            tOperation.getExp().getUser().getFirstname().toUpperCase().contains(getSearchOperation.getText())||
+                            tOperation.getExp().getUser().getLastname().toLowerCase().contains(getSearchOperation.getText())||
+                            tOperation.getExp().getUser().getRole().getLibelle().toLowerCase().contains(getSearchOperation.getText())||
+                            String.valueOf(tOperation.getAmount()).contains(getSearchOperation.getText())||
+                            String.valueOf(tOperation.getCommission()).contains(getSearchOperation.getText())
+            ).collect(Collectors.toList());
+
+            assert operList != null;
+
+
+
+
+            Task<ObservableList<Operation>> task= new Task<>() {
+                @Override
+                protected ObservableList<Operation> call() throws Exception {
+
+                    return FXCollections.observableArrayList(searchListOper);
+                }
+            };
+            task.setOnSucceeded(e->tableOperation.setItems(task.getValue()));
+            new Thread(task).start();
+            runLater(()->{
+                float soumOperation=0;
+                float soumCommission=0;
+                int total=searchListOper.size();
+                int clientToClient=0, clientToAgent=0;
+
+                for(Operation op: searchListOper){
+
+                    Role exp=op.getExp().getUser().getRole();
+                    Role ben=op.getBen().getUser().getRole();
+                    if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
+                        System.out.println("ENVOI CLIENT ="+clientToClient);
+                        clientToClient++;
+                    }
+                    if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "AGENT")){
+                        System.out.println("RETRAIT CLIENT ="+clientToAgent);
+                        clientToAgent++;
+                    }
+                    if(Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
+                        System.out.println("DEPOT CLIENT");
+                    }
+                    if(Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "OFFICE")){
+                        label= new Label("RETRAIT AGENT");
+                    }
+                    if(Objects.equals(exp.getLibelle(), "OFFICE") && Objects.equals(ben.getLibelle(), "AGENT")){
+                        label= new Label("DEPOT AGENT");
+                    }
+
+                }
+
+                titleOperation.setText(String.format("""
+            Nombre total d'opérations : %d
+            - Opérations client → client : %d
+            - Opérations client ↔ agent : %d
+            - Opérations agent ↔ admin : %d
+
+            Statuts :
+            - En attente : %d
+            - Validées : %d
+            - Annulées : %d
+            - Bloquées : %d
+
+            Montants :
+            - Total : %.2f USD
+            - Validées : %.2f USD
+            - Annulées : %.2f USD
+            """, total, clientToClient, clientToAgent, agentToAdmin,
+                        enAttente, validees, annulees, bloquees,
+                        montantTotal, montantValide, montantAnnule););
+
+
+
+            });
+
+
+
+        });
+
+
 
     }
 

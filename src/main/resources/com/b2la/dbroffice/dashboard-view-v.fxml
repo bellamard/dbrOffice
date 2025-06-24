@@ -549,7 +549,7 @@
 
                               <!-- Barre supérieure : Recherche -->
                               <HBox layoutX="30" layoutY="70" spacing="10">
-                                 <TextField prefWidth="250" promptText="🔍 Rechercher une opération" styleClass="searchInput" />
+                                 <TextField fx:id="getSearchOperation" onAction="#getTableOperationSearch" prefWidth="250" promptText="🔍 Rechercher une opération" styleClass="searchInput" />
                               </HBox>
 
                               <!-- Layout principal -->
@@ -560,13 +560,13 @@
                                     <Label styleClass="sectionTitle" text="Liste des opérations" />
                                     <TableView fx:id="tableOperation" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
                                        <columns>
-                                          <TableColumn prefWidth="174.79996490478516" text="Reference" fx:id="tOperRef"/>
-                                          <TableColumn minWidth="0.0" prefWidth="133.60000610351562" text="Type" fx:id="tOperType" />
-                                          <TableColumn prefWidth="163.20001220703125" text="Montant" fx:id="tOperMont"/>
-                                          <TableColumn prefWidth="94.79998779296875" text="Device" fx:id="tOperDev"/>
-                                          <TableColumn prefWidth="94.0" text="Etat" fx:id="tOperEtat"/>
-                                          <TableColumn prefWidth="78.5999755859375" text="Action" fx:id="tOperAction"/>
-                                          <TableColumn prefWidth="143.20001220703125" text="Date" fx:id="tOperDate"/>
+                                          <TableColumn fx:id="tOperRef" prefWidth="174.79996490478516" text="Reference" />
+                                          <TableColumn fx:id="tOperType" minWidth="0.0" prefWidth="133.60000610351562" text="Type" />
+                                          <TableColumn fx:id="tOperMont" prefWidth="163.20001220703125" text="Montant" />
+                                          <TableColumn fx:id="tOperDev" prefWidth="94.79998779296875" text="Device" />
+                                          <TableColumn fx:id="tOperEtat" prefWidth="94.0" text="Etat" />
+                                          <TableColumn fx:id="tOperAction" prefWidth="78.5999755859375" text="Action" />
+                                          <TableColumn fx:id="tOperDate" prefWidth="143.20001220703125" text="Date" />
                                        </columns></TableView>
                                  </VBox>
 
