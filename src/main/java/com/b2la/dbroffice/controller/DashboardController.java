@@ -873,17 +873,17 @@ public class DashboardController implements Initializable {
         });
 
         runAsync(() -> {
-
+            List<Operation> operationList = listOperation(clef);
             Task<ObservableList<Operation>> task = new Task<>() {
                 @Override
                 protected ObservableList<Operation> call() throws Exception {
-                    List<Operation> operationList = listOperation(clef);
 
                     return FXCollections.observableArrayList(operationList);
                 }
             };
             task.setOnSucceeded(e -> tableOperation.setItems(task.getValue()));
             new Thread(task).start();
+            viewDescription(operationList);
             chargement.setVisible(false);
 
         });
@@ -897,23 +897,27 @@ public class DashboardController implements Initializable {
 
         runAsync(()->{
             List<Operation> operList=listOperation(clef);
-            List<Operation> searchListOper=operList.stream().filter(tOperation->
+            String searchText = getSearchOperation.getText().toLowerCase();
+            List<Operation> searchListOper = operList.stream().filter(tOperation ->
+                    tOperation.getDevice().toLowerCase().contains(searchText) ||
+                            tOperation.getCodereference().toLowerCase().contains(searchText) ||
+                            tOperation.getState().getLibelle().toString().toLowerCase().contains(searchText) ||
+                            tOperation.getDateoperation().toLowerCase().contains(searchText) ||
 
-                            tOperation.getDevice().toLowerCase().contains(getSearchOperation.getText())||
-                            tOperation.getCodereference().toUpperCase().contains(getSearchOperation.getText())||
-                            tOperation.getState().getLibelle().toString().toLowerCase().contains(getSearchOperation.getText())||
-                            tOperation.getDateoperation().toUpperCase().contains(getSearchOperation.getText())||
-                            tOperation.getBen().getUser().getSurname().toLowerCase().contains(getSearchOperation.getText())||
-                            tOperation.getBen().getUser().getFirstname().toUpperCase().contains(getSearchOperation.getText())||
-                            tOperation.getBen().getUser().getLastname().toLowerCase().contains(getSearchOperation.getText())||
-                            tOperation.getBen().getUser().getRole().getLibelle().toLowerCase().contains(getSearchOperation.getText())||
-                            tOperation.getExp().getUser().getSurname().toLowerCase().contains(getSearchOperation.getText())||
-                            tOperation.getExp().getUser().getFirstname().toUpperCase().contains(getSearchOperation.getText())||
-                            tOperation.getExp().getUser().getLastname().toLowerCase().contains(getSearchOperation.getText())||
-                            tOperation.getExp().getUser().getRole().getLibelle().toLowerCase().contains(getSearchOperation.getText())||
-                            String.valueOf(tOperation.getAmount()).contains(getSearchOperation.getText())||
-                            String.valueOf(tOperation.getCommission()).contains(getSearchOperation.getText())
+                            tOperation.getBen().getUser().getSurname().toLowerCase().contains(searchText) ||
+                            tOperation.getBen().getUser().getFirstname().toLowerCase().contains(searchText) ||
+                            tOperation.getBen().getUser().getLastname().toLowerCase().contains(searchText) ||
+                            tOperation.getBen().getUser().getRole().getLibelle().toLowerCase().contains(searchText) ||
+
+                            tOperation.getExp().getUser().getSurname().toLowerCase().contains(searchText) ||
+                            tOperation.getExp().getUser().getFirstname().toLowerCase().contains(searchText) ||
+                            tOperation.getExp().getUser().getLastname().toLowerCase().contains(searchText) ||
+                            tOperation.getExp().getUser().getRole().getLibelle().toLowerCase().contains(searchText) ||
+
+                            String.valueOf(tOperation.getAmount()).toLowerCase().contains(searchText) ||
+                            String.valueOf(tOperation.getCommission()).toLowerCase().contains(searchText)
             ).collect(Collectors.toList());
+
 
             assert operList != null;
 
@@ -929,66 +933,121 @@ public class DashboardController implements Initializable {
             };
             task.setOnSucceeded(e->tableOperation.setItems(task.getValue()));
             new Thread(task).start();
-            runLater(()->{
-                float soumOperation=0;
-                float soumCommission=0;
-                int total=searchListOper.size();
-                int clientToClient=0, clientToAgent=0;
-
-                for(Operation op: searchListOper){
-
-                    Role exp=op.getExp().getUser().getRole();
-                    Role ben=op.getBen().getUser().getRole();
-                    if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
-                        System.out.println("ENVOI CLIENT ="+clientToClient);
-                        clientToClient++;
-                    }
-                    if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "AGENT")){
-                        System.out.println("RETRAIT CLIENT ="+clientToAgent);
-                        clientToAgent++;
-                    }
-                    if(Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
-                        System.out.println("DEPOT CLIENT");
-                    }
-                    if(Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "OFFICE")){
-                        label= new Label("RETRAIT AGENT");
-                    }
-                    if(Objects.equals(exp.getLibelle(), "OFFICE") && Objects.equals(ben.getLibelle(), "AGENT")){
-                        label= new Label("DEPOT AGENT");
-                    }
-
-                }
-
-                titleOperation.setText(String.format("""
-            Nombre total d'opérations : %d
-            - Opérations client → client : %d
-            - Opérations client ↔ agent : %d
-            - Opérations agent ↔ admin : %d
-
-            Statuts :
-            - En attente : %d
-            - Validées : %d
-            - Annulées : %d
-            - Bloquées : %d
-
-            Montants :
-            - Total : %.2f USD
-            - Validées : %.2f USD
-            - Annulées : %.2f USD
-            """, total, clientToClient, clientToAgent, agentToAdmin,
-                        enAttente, validees, annulees, bloquees,
-                        montantTotal, montantValide, montantAnnule););
 
 
-
-            });
-
-
+            viewDescription(searchListOper);
 
         });
 
 
 
+    }
+
+    private void viewDescription(List<Operation> persoList){
+        runLater(()->{
+
+            int total=persoList.size();
+            int clientToClient = 0, clientToAgent = 0, agentToAdmin = 0, enAttente = 0,
+                    validees = 0, annulees = 0, bloquees = 0;
+            float montantTotalUSD=0,montantTotalCDF=0, montantValideUSD=0, montantValideCDF=0, montantAnnuleUSD=0, montantAnnuleCDF=0, montantAttenteUSD=0, montantAttenteCDF=0;
+
+
+            for(Operation op: persoList){
+
+                Role exp=op.getExp().getUser().getRole();
+                Role ben=op.getBen().getUser().getRole();
+                State state= op.getState();
+                if(Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "CLIENT")){
+                    System.out.println("ENVOI CLIENT ="+clientToClient);
+                    clientToClient++;
+                }
+                if((Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "AGENT"))||
+                        (Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "CLIENT"))){
+                    System.out.println("RETRAIT CLIENT ="+clientToAgent);
+                    clientToAgent++;
+                }
+                if((Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "OFFICE"))||
+                        (Objects.equals(exp.getLibelle(), "OFFICE") && Objects.equals(ben.getLibelle(), "AGENT"))){
+                    System.out.println("DEPOT CLIENT ="+agentToAdmin);
+                    agentToAdmin++;
+                }
+                if(Objects.equals(state.getLibelle(), StateOper.ATTENTE)){
+                    enAttente++;
+                    if(Objects.equals(op.getDevice(), "usd")) {
+                        montantAttenteUSD += op.getAmount();
+                        System.out.println("Montant En Attente ="+montantAttenteUSD+"  USD");
+                    };
+                    if(Objects.equals(op.getDevice(), "cdf")) {
+                        montantAttenteCDF += op.getAmount();
+                        System.out.println("Montant En Annulee ="+montantAttenteCDF+"CDF");
+                    };
+                    System.out.println("Statut En ATTENTE ="+enAttente);
+                }
+                if(Objects.equals(state.getLibelle(), StateOper.VALIDER)){
+                    validees++;
+                    if(Objects.equals(op.getDevice(), "usd")) {
+                        montantValideUSD += op.getAmount();
+                        System.out.println("Montant En Validee ="+montantValideUSD+"  USD");
+                    };
+                    if(Objects.equals(op.getDevice(), "cdf")) {
+                        montantValideCDF += op.getAmount();
+                        System.out.println("Montant En Validee ="+montantValideCDF+"CDF");
+                    };
+                    System.out.println("Statut En VALIDEE ="+validees);
+                }
+                if(Objects.equals(state.getLibelle(), StateOper.BLOQUER)){
+                    bloquees++;
+
+                    System.out.println("Statut En BLOQUER ="+bloquees);
+
+                }
+                if(Objects.equals(state.getLibelle(), StateOper.ANNULER)){
+                    annulees++;
+                    if(Objects.equals(op.getDevice(), "usd")) {
+                        montantAnnuleUSD += op.getAmount();
+                        System.out.println("Montant En Annulee ="+montantAnnuleUSD+"  USD");
+                    };
+                    if(Objects.equals(op.getDevice(), "cdf")) {
+                        montantAnnuleCDF += op.getAmount();
+                        System.out.println("Montant En Annulee ="+montantAnnuleCDF+"CDF");
+                    };
+                    System.out.println("Statut En Annulee ="+annulees);
+
+                }
+                if(Objects.equals(op.getDevice(), "usd")){
+                    montantTotalUSD+=op.getAmount();
+                    System.out.println("Montant total= "+montantTotalUSD+" USD");
+                }
+                if(Objects.equals(op.getDevice(), "cdf")){
+                    montantTotalCDF+=op.getAmount();
+                    System.out.println("Montant total= "+montantTotalCDF+" CDF");
+                }
+
+
+            }
+
+            titleOperation.setText(String.format("""
+                        Nombre total d'opérations : %d
+                        - Opérations client → client : %d
+                        - le client ↔ agent : %d
+                        - Opérations agent ↔ admin : %d
+                        
+                        Statuts :
+                        - En attente : %d
+                        - Validées : %d
+                        - Annulées : %d
+                        - Bloquées : %d
+                        
+                        Montants :
+                        - Total : %.2f USD / %.2f CDF
+                        - Validées : %.2f USD / %.2f CDF
+                        - En attente : %.2f USD / %.2f CDF
+                        - Annulées : %.2f USD / %.2f CDF
+                        """, total, clientToClient, clientToAgent, agentToAdmin, enAttente, validees, annulees, bloquees, montantTotalUSD, montantTotalCDF, montantValideUSD, montantValideCDF, montantAttenteUSD, montantAttenteCDF, montantAnnuleUSD, montantAnnuleCDF));
+
+
+
+        });
     }
 
     @FXML
