@@ -576,14 +576,14 @@
 
                                     <!-- Description -->
                                     <HBox>
-                                       <AreaChart prefHeight="300" prefWidth="430">
+                                       <BarChart prefHeight="300" prefWidth="430">
                                           <xAxis>
                                              <CategoryAxis side="BOTTOM" />
                                           </xAxis>
                                           <yAxis>
                                              <NumberAxis side="LEFT" />
                                           </yAxis>
-                                       </AreaChart>
+                                       </BarChart>
                                        <Label styleClass="sectionTitle" text="Description" />
                                        <Label fx:id="titleOperation" prefHeight="260" prefWidth="430" styleClass="descriptionBox" text="Description..." wrapText="true" />
                                     </HBox>
