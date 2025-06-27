@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -77,6 +78,7 @@ public class DashboardController implements Initializable {
     @FXML
     private AreaChart<String, Number> diagram;
 
+    private BarChart<String, Number> chartOpera;
 
 
     @Override
@@ -1050,6 +1052,23 @@ public class DashboardController implements Initializable {
         });
     }
 
+    private void chartOperation(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+        runLater(()->{
+            try{
+                List<Operation> opeList=operationList(clef);
+                assert opeList != null;
+
+                Map<String, List<Operation>> groupeDate=opeList.stream()
+                        .collect(Collectors.groupingBy(Oper->LocalDate.parse(Oper.getDateoperation(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toString()
+                        ));
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
     @FXML
     protected void goToHome(){
         String card="home";

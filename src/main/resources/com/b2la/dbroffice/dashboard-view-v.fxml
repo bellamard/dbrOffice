@@ -576,7 +576,7 @@
 
                                     <!-- Description -->
                                     <HBox>
-                                       <BarChart prefHeight="300" prefWidth="430">
+                                       <BarChart fx:id="chartOpera" prefHeight="300" prefWidth="430">
                                           <xAxis>
                                              <CategoryAxis side="BOTTOM" />
                                           </xAxis>
