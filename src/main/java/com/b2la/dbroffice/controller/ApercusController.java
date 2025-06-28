@@ -17,7 +17,7 @@ import java.time.LocalDate;
 
 import static com.b2la.dbroffice.connexion.Api.updateUser;
 
-public class ApercusController {
+public class  ApercusController {
 
     @FXML private ComboBox comboType;
     @FXML private TextField fieldNom;

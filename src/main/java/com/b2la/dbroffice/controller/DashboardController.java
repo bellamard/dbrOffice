@@ -845,6 +845,8 @@ public class DashboardController implements Initializable {
                             Operation op = getTableView().getItems().get(getIndex());
                             System.out.println("Bloquer: " + op.getDevice());
 
+
+
                         }
                 );
 
@@ -853,6 +855,28 @@ public class DashboardController implements Initializable {
                             Operation op = getTableView().getItems().get(getIndex());
                             System.out.println("Apercus: " + op.getId());
 
+                            try {
+                                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("apercusOperation.fxml"));
+                                Parent dialogRoot = loader.load();
+                                Stage dialogStage = new Stage();
+                                dialogStage.centerOnScreen();
+                                ApercusOperationController aoc= loader.getController();
+                                aoc.affichage(op);
+                                dialogStage.setResizable(false);
+                                dialogStage.initModality(Modality.APPLICATION_MODAL);
+                                dialogStage.setTitle("Operation");
+                                dialogStage.setScene(new Scene(dialogRoot));
+                                dialogStage.showAndWait();
+                            }
+                            catch (IOException ex) {
+
+                                Alert alert= new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Erreur!!!");
+                                alert.setHeaderText("Avertissement Erreur!!!");
+                                alert.setContentText("Veuillez ressayer: \n"+ex);
+                                alert.showAndWait();
+                                throw new RuntimeException(ex);
+                            }
                         }
                 );
             }
