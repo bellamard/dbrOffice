@@ -1,12 +1,9 @@
 package com.b2la.dbroffice.controller;
 
 import com.b2la.dbroffice.HelloApplication;
-import com.b2la.dbroffice.connexion.Api;
 import com.b2la.dbroffice.dao.*;
-import com.b2la.dbroffice.preference.RoleType;
 import com.b2la.dbroffice.preference.StateOper;
 import com.b2la.dbroffice.preference.Storage;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -22,17 +19,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Callback;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -77,7 +72,7 @@ public class DashboardController implements Initializable {
     private TableColumn<Operation, Float> tOperMont;
     @FXML
     private AreaChart<String, Number> diagram;
-
+    @FXML
     private BarChart<String, Number> chartOpera;
 
 
@@ -1081,12 +1076,76 @@ public class DashboardController implements Initializable {
         assert clef != null;
         runLater(()->{
             try{
-                List<Operation> opeList=operationList(clef);
+                List<Operation> opeList = operationList(clef);
                 assert opeList != null;
 
-                Map<String, List<Operation>> groupeDate=opeList.stream()
-                        .collect(Collectors.groupingBy(Oper->LocalDate.parse(Oper.getDateoperation(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toString()
-                        ));
+                XYChart.Series<String, Number> xyC2CUSD = new XYChart.Series<>();
+                xyC2CUSD.setName("C2C USD");
+                XYChart.Series<String, Number> xyC2CCDF = new XYChart.Series<>();
+                xyC2CCDF.setName("C2C CDF");
+                XYChart.Series<String, Number> xyC2AUSD = new XYChart.Series<>();
+                xyC2AUSD.setName("C2A USD");
+                XYChart.Series<String, Number> xyC2ACDF = new XYChart.Series<>();
+                xyC2ACDF.setName("C2A CDF");
+                XYChart.Series<String, Number> xyA2OUSD = new XYChart.Series<>();
+                xyA2OUSD.setName("A2O USD");
+                XYChart.Series<String, Number> xyA2OCDF = new XYChart.Series<>();
+                xyA2OCDF.setName("A2O CDF");
+
+
+
+                Map<String, List<Operation>> groupeDateo = opeList.stream()
+                        .collect(Collectors.groupingBy(op -> {
+                            OffsetDateTime dateTime = OffsetDateTime.parse(op.getDateoperation());
+                            return dateTime.getYear() + "-" + String.format("%02d", dateTime.getMonthValue());
+                        }));
+
+
+                groupeDateo.forEach((date, liste) -> {
+                    float C2CUSD = 0, C2CCDF = 0, C2AUSD = 0, C2ACDF = 0, A2OUSD = 0, A2OCDF = 0;
+
+                    for (Operation op1 : liste) {
+                        if (op1.getState().getLibelle() == StateOper.VALIDER) {
+                            Role exp = op1.getExp().getUser().getRole();
+                            Role ben = op1.getBen().getUser().getRole();
+                            float amount = op1.getAmount();
+                            if (op1.getDevice().equalsIgnoreCase("usd")) {
+                                if (Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "CLIENT"))
+                                    C2CUSD += amount;
+                                else if ((Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "AGENT")) ||
+                                        (Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "CLIENT")))
+                                    C2AUSD += amount;
+                                else if ((Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "OFFICE")) ||
+                                        (Objects.equals(exp.getLibelle(), "OFFICE") && Objects.equals(ben.getLibelle(), "AGENT")))
+                                    A2OUSD += amount;
+                            }
+                            else if (op1.getDevice().equalsIgnoreCase("cdf")) {
+                                if (Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "CLIENT"))
+                                    C2CCDF += amount;
+                                else if ((Objects.equals(exp.getLibelle(), "CLIENT") && Objects.equals(ben.getLibelle(), "AGENT")) ||
+                                        (Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "CLIENT")))
+                                    C2ACDF += amount;
+                                else if ((Objects.equals(exp.getLibelle(), "AGENT") && Objects.equals(ben.getLibelle(), "OFFICE")) ||
+                                        (Objects.equals(exp.getLibelle(), "OFFICE") && Objects.equals(ben.getLibelle(), "AGENT")))
+                                    A2OCDF += amount;
+                            }
+                        }
+                    }
+
+                    // Ajout des valeurs au chart
+                    xyC2CUSD.getData().add(new XYChart.Data<>(date, (C2CUSD*2850)));
+                    xyC2CCDF.getData().add(new XYChart.Data<>(date, C2CCDF));
+                    xyC2AUSD.getData().add(new XYChart.Data<>(date, (C2AUSD*2850)));
+                    xyC2ACDF.getData().add(new XYChart.Data<>(date, C2ACDF));
+                    xyA2OUSD.getData().add(new XYChart.Data<>(date, (A2OUSD*2850)));
+                    xyA2OCDF.getData().add(new XYChart.Data<>(date, A2OCDF));
+                });
+
+                chartOpera.getData().clear();
+                chartOpera.getData().addAll(
+                        xyC2CCDF, xyC2CUSD,
+                        xyC2ACDF, xyC2AUSD, xyA2OUSD, xyA2OCDF
+                );
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -1106,6 +1165,7 @@ public class DashboardController implements Initializable {
         String card="operation";
         cardLayout(card);
         viewOperation();
+        chartOperation();
 
     }
     @FXML
