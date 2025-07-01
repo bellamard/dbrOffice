@@ -620,14 +620,14 @@
                                                 <FontIcon iconLiteral="fa-user" iconSize="28" />
                                              </children>
                                           </VBox>
-                                          <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" styleClass="cardStat">
+                                          <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="120.0" prefWidth="200.0" styleClass="cardStat">
                                              <children>
                                                 <Label styleClass="statLabel" text="Somme USD" />
                                                 <Label fx:id="SoldeUSD" styleClass="statValue" text="USD" textAlignment="RIGHT" />
                                                 <FontIcon iconLiteral="fa-dollar" iconSize="28" />
                                              </children>
                                           </VBox>
-                                          <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" styleClass="cardStat">
+                                          <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="120.0" prefWidth="201.0" styleClass="cardStat">
                                              <children>
                                                 <Label styleClass="statLabel" text="Somme CDF" />
                                                 <Label fx:id="SoldeCDF" styleClass="statValue" text="CDF" textAlignment="RIGHT" />
@@ -650,7 +650,7 @@
                                           <TableColumn fx:id="tCommNom" minWidth="0.0" prefWidth="231.20001220703125" text="nom" />
                                           <TableColumn fx:id="tCommPhone" prefWidth="168.0" text="Phone" />
                                           <TableColumn fx:id="tCommUsd" prefWidth="138.0" text="USD" />
-                                          <TableColumn fx:id="tCommCDF" prefWidth="129.2000732421875" text="CDF" />
+                                          <TableColumn fx:id="tCommCdf" prefWidth="129.2000732421875" text="CDF" />
                                        </columns>
                                     </TableView>
                                  </VBox>

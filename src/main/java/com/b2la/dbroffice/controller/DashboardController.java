@@ -43,7 +43,8 @@ public class DashboardController implements Initializable {
     @FXML
     private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
             countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov, titleOperation,
-            attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin, usersOfficial, usersAgent, UsersCount, countCommission, SoldeUSD, SoldeCDF;
+            attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin,
+            usersOfficial, usersAgent, UsersCount, countCommission, SoldeUSD, SoldeCDF;
     private Button btnTaux;
     @FXML
     private AnchorPane home, operation, utilisateur, chargement, commission;
@@ -70,6 +71,10 @@ public class DashboardController implements Initializable {
     private TableColumn<Operation, String>tOperRef, tOperType, tOperDev, tOperEtat, tOperAction,tOperDate;
     @FXML
     private TableColumn<Operation, Float> tOperMont;
+    @FXML
+    private TableColumn<Commission, Float> tCommCdf, tCommUsd;
+    @FXML
+    private TableColumn<Commission, String>tCommPrenom, tCommNom, tCommPhone;
     @FXML
     private AreaChart<String, Number> diagram;
     @FXML
@@ -923,6 +928,93 @@ public class DashboardController implements Initializable {
 
     }
 
+    public void viewCommissiomn(){
+        LoginResponse clef = Storage.loadLogin();
+        assert clef != null;
+        tCommUsd.setCellValueFactory(new PropertyValueFactory<>("usdwin"));
+        tCommCdf.setCellValueFactory(new PropertyValueFactory<>("cdfwin"));
+        tCommPrenom.setCellFactory(col -> new TableCell<>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setGraphic(null);
+                }
+                else{
+                    Commission com= getTableView().getItems().get(getIndex());
+                    Label labelTitle=new Label("-");
+                    labelTitle.setText(com.getUser().getSurname());
+                    HBox boxLabel= new HBox(2, labelTitle);
+                    setGraphic(boxLabel);
+                }
+            }
+        });
+
+        tCommNom.setCellFactory(col -> new TableCell<>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setGraphic(null);
+                }
+                else{
+                    Commission com= getTableView().getItems().get(getIndex());
+                    Label labelTitle=new Label("-");
+                    labelTitle.setText(com.getUser().getFirstname());
+                    HBox boxLabel= new HBox(2, labelTitle);
+                    setGraphic(boxLabel);
+                }
+            }
+        });
+
+        tCommPhone.setCellFactory(col -> new TableCell<>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setGraphic(null);
+                }
+                else{
+                    Commission com= getTableView().getItems().get(getIndex());
+                    Label labelTitle=new Label("-");
+                    labelTitle.setText(com.getUser().getPhone());
+                    HBox boxLabel= new HBox(2, labelTitle);
+                    setGraphic(boxLabel);
+                }
+            }
+        });
+
+        runAsync(()->{
+            List<Commission> commList=listCommissions(clef);
+            assert commList != null;
+            getStatCommission(commList);
+            Task<ObservableList<Commission>> task= new Task<>() {
+                @Override
+                protected ObservableList<Commission> call() throws Exception {
+                    return FXCollections.observableArrayList(commList);
+                }
+            };
+            task.setOnSucceeded(e->tableCommission.setItems(task.getValue()));
+            new Thread(task).start();
+
+        });
+    }
+
+    public void getStatCommission(List<Commission> listCommission){
+        runLater(()->{
+            countCommission.setText(String.valueOf(listCommission.size()));
+            float soldeUsd=0, soldeCdf=0;
+            for(Commission comm: listCommission){
+                soldeUsd+=comm.getUsdwin();
+                soldeCdf+=comm.getCdfwin();
+            }
+            SoldeUSD.setText(String.format("%.2f USD",soldeUsd));
+            SoldeCDF.setText(String.format("%.2f CDF",soldeCdf));
+        });
+
+
+    }
+
     @FXML
     private void getTableOperationSearch(){
         LoginResponse clef=Storage.loadLogin();
@@ -1188,7 +1280,7 @@ public class DashboardController implements Initializable {
     protected void goToCommission(){
         String card="commission";
         cardLayout(card);
-        getTableUser();
+        viewCommissiomn();
     }
 
 
