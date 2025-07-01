@@ -601,47 +601,60 @@
                                  <Label styleClass="headerTitle" text="COMMISSIONS" />
                               </HBox>
 
-                              <!-- Barre supérieure : Recherche -->
-                              <HBox layoutX="30" layoutY="70" spacing="10">
-                                 <TextField fx:id="getSearchCommission" onAction="#getTableOperationSearch" prefWidth="250" promptText="🔍 Rechercher Commission" styleClass="searchInput" />
-                              </HBox>
+
 
                               <!-- Layout principal -->
                               <VBox layoutX="30" layoutY="120" spacing="20">
 
+                                 <!-- Zone graphique -->
+                                 <VBox spacing="10">
+                                    <Label styleClass="sectionTitle" text="Statistiques" />
+
+                                    <!-- Description -->
+                                    <HBox prefHeight="120.0" prefWidth="854.0" spacing="10.0">
+                                       <children>
+                                          <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" styleClass="cardStat">
+                                             <children>
+                                                <Label styleClass="statLabel" text="Comptes" />
+                                                <Label fx:id="countCommission" styleClass="statValue" text="account" textAlignment="RIGHT" />
+                                                <FontIcon iconLiteral="fa-user" iconSize="28" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" styleClass="cardStat">
+                                             <children>
+                                                <Label styleClass="statLabel" text="Somme USD" />
+                                                <Label fx:id="SoldeUSD" styleClass="statValue" text="USD" textAlignment="RIGHT" />
+                                                <FontIcon iconLiteral="fa-dollar" iconSize="28" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" styleClass="cardStat">
+                                             <children>
+                                                <Label styleClass="statLabel" text="Somme CDF" />
+                                                <Label fx:id="SoldeCDF" styleClass="statValue" text="CDF" textAlignment="RIGHT" />
+                                                <FontIcon iconLiteral="fa-money" iconSize="28" />
+                                             </children>
+                                          </VBox>
+                                       </children></HBox>
+                                 </VBox>
+                                 <!-- Barre supérieure : Recherche -->
+                                 <HBox layoutX="30" layoutY="70" spacing="10">
+                                    <TextField fx:id="getSearchCommission" onAction="#getTableOperationSearch" prefWidth="250" promptText="🔍 Rechercher Commission" styleClass="searchInput" />
+                                 </HBox>
+
                                  <!-- Table des opérations -->
                                  <VBox spacing="10">
                                     <Label styleClass="sectionTitle" text="Liste des Commissions" />
-                                    <TableView fx:id="tableOperation" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
+                                    <TableView fx:id="tableCommission" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
                                        <columns>
-                                          <TableColumn fx:id="tOperRef" prefWidth="174.79996490478516" text="Reference" />
-                                          <TableColumn fx:id="tOperType" minWidth="0.0" prefWidth="133.60000610351562" text="Type" />
-                                          <TableColumn fx:id="tOperMont" prefWidth="163.20001220703125" text="Montant" />
-                                          <TableColumn fx:id="tOperDev" prefWidth="94.79998779296875" text="Device" />
-                                          <TableColumn fx:id="tOperEtat" prefWidth="94.0" text="Etat" />
-                                          <TableColumn fx:id="tOperAction" prefWidth="78.5999755859375" text="Action" />
-                                          <TableColumn fx:id="tOperDate" prefWidth="143.20001220703125" text="Date" />
-                                       </columns></TableView>
+                                          <TableColumn fx:id="tCommPrenom" prefWidth="176.39998626708984" text="Prenom" />
+                                          <TableColumn fx:id="tCommNom" minWidth="0.0" prefWidth="231.20001220703125" text="nom" />
+                                          <TableColumn fx:id="tCommPhone" prefWidth="168.0" text="Phone" />
+                                          <TableColumn fx:id="tCommUsd" prefWidth="138.0" text="USD" />
+                                          <TableColumn fx:id="tCommCDF" prefWidth="129.2000732421875" text="CDF" />
+                                       </columns>
+                                    </TableView>
                                  </VBox>
 
-                                 <!-- Zone graphique -->
-                                 <VBox spacing="10">
-                                    <Label styleClass="sectionTitle" text="Statistiques récentes" />
-
-                                    <!-- Description -->
-                                    <HBox>
-                                       <BarChart fx:id="chartOpera" prefHeight="300" prefWidth="430">
-                                          <xAxis>
-                                             <CategoryAxis side="BOTTOM" />
-                                          </xAxis>
-                                          <yAxis>
-                                             <NumberAxis side="LEFT" />
-                                          </yAxis>
-                                       </BarChart>
-                                       <Label styleClass="sectionTitle" text="Description" />
-                                       <Label fx:id="titleOperation" prefHeight="260" prefWidth="430" styleClass="descriptionBox" text="Description..." wrapText="true" />
-                                    </HBox>
-                                 </VBox>
                               </VBox>
 
                            </children>

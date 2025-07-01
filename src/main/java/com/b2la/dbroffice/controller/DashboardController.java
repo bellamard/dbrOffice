@@ -46,7 +46,7 @@ public class DashboardController implements Initializable {
             attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin, usersOfficial, usersAgent, UsersCount;
     private Button btnTaux;
     @FXML
-    private AnchorPane home, operation, utilisateur, chargement;
+    private AnchorPane home, operation, utilisateur, chargement, commission;
     @FXML
     private TextField searchTaux, fieldUserSearch, getSearchOperation;
     @FXML
@@ -703,21 +703,31 @@ public class DashboardController implements Initializable {
             operation.setVisible(false);
             utilisateur.setVisible(false);
             chargement.setVisible(false);
+            commission.setVisible(false);
             break;
             case "operation": home.setVisible(false);
                 operation.setVisible(true);
                 utilisateur.setVisible(false);
                 chargement.setVisible(false);
+                commission.setVisible(false);
                 break;
             case "utilisateur": home.setVisible(false);
                 operation.setVisible(false);
                 utilisateur.setVisible(true);
                 chargement.setVisible(false);
+                commission.setVisible(false);
+                break;
+            case "commission": home.setVisible(false);
+                operation.setVisible(false);
+                utilisateur.setVisible(false);
+                chargement.setVisible(false);
+                commission.setVisible(true);
                 break;
             default: chargement.setVisible(true);
                 home.setVisible(false);
                 operation.setVisible(false);
                 utilisateur.setVisible(false);
+                commission.setVisible(false);
         }
     }
     @FXML
