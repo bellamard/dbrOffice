@@ -43,14 +43,14 @@ public class DashboardController implements Initializable {
     @FXML
     private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
             countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov, titleOperation,
-            attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin, usersOfficial, usersAgent, UsersCount;
+            attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin, usersOfficial, usersAgent, UsersCount, countCommission, SoldeUSD, SoldeCDF;
     private Button btnTaux;
     @FXML
     private AnchorPane home, operation, utilisateur, chargement, commission;
     @FXML
     private TextField searchTaux, fieldUserSearch, getSearchOperation;
     @FXML
-    private TableView tableauTaux, tableUtilisateur, tableOperation;
+    private TableView tableauTaux, tableUtilisateur, tableOperation, tableCommission;
     @FXML
     private TableColumn<Cost, String> TCdevices;
     @FXML
@@ -906,6 +906,7 @@ public class DashboardController implements Initializable {
 
         runAsync(() -> {
             List<Operation> operationList = listOperation(clef);
+            chartOperation(operationList);
             Task<ObservableList<Operation>> task = new Task<>() {
                 @Override
                 protected ObservableList<Operation> call() throws Exception {
@@ -953,7 +954,7 @@ public class DashboardController implements Initializable {
 
             assert operList != null;
 
-
+            chartOperation(searchListOper);
 
 
             Task<ObservableList<Operation>> task= new Task<>() {
@@ -1082,12 +1083,11 @@ public class DashboardController implements Initializable {
         });
     }
 
-    private void chartOperation(){
-        LoginResponse clef=Storage.loadLogin();
-        assert clef != null;
+    private void chartOperation(List<Operation> opeList){
+
         runLater(()->{
             try{
-                List<Operation> opeList = operationList(clef);
+
                 assert opeList != null;
 
                 XYChart.Series<String, Number> xyC2CUSD = new XYChart.Series<>();
@@ -1175,7 +1175,7 @@ public class DashboardController implements Initializable {
         String card="operation";
         cardLayout(card);
         viewOperation();
-        chartOperation();
+
 
     }
     @FXML
