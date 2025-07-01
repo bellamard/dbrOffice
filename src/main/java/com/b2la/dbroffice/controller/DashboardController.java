@@ -696,6 +696,7 @@ public class DashboardController implements Initializable {
 
 
 
+
     private void cardLayout(String Layout){
         switch (Layout){
             case "home": home.setVisible(true);
@@ -1093,7 +1094,6 @@ public class DashboardController implements Initializable {
                 xyA2OCDF.setName("A2O CDF");
 
 
-
                 Map<String, List<Operation>> groupeDateo = opeList.stream()
                         .collect(Collectors.groupingBy(op -> {
                             OffsetDateTime dateTime = OffsetDateTime.parse(op.getDateoperation());
@@ -1173,7 +1173,12 @@ public class DashboardController implements Initializable {
         String card="utilisateur";
         cardLayout(card);
         getTableUser();
-
+    }
+    @FXML
+    protected void goToCommission(){
+        String card="commission";
+        cardLayout(card);
+        getTableUser();
     }
 
 

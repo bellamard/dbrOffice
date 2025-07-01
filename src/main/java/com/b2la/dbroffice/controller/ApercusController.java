@@ -1,21 +1,18 @@
 package com.b2la.dbroffice.controller;
 
-import com.b2la.dbroffice.dao.Cost;
-import com.b2la.dbroffice.dao.Role;
-import com.b2la.dbroffice.dao.StreamUser;
-import com.b2la.dbroffice.dao.User;
+import com.b2la.dbroffice.dao.*;
 import com.b2la.dbroffice.preference.RoleType;
+import com.b2la.dbroffice.preference.Storage;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
-import static com.b2la.dbroffice.connexion.Api.updateUser;
+import static com.b2la.dbroffice.connexion.Api.*;
 
 public class  ApercusController {
 
@@ -89,4 +86,75 @@ public class  ApercusController {
         }
         getActiveModifier();
     }
+
+    @FXML
+    private void getSoldeUser(){
+        LoginResponse clef= Storage.loadLogin();
+        assert clef != null;
+
+        try{
+            List<Accounts> accountsList = listAccounts(clef);
+            assert accountsList != null;
+            Optional<Accounts> accounts=accountsList.stream()
+                    .filter(acc->acc.getUser().getId()==id)
+                    .findFirst();
+            Alert alert= new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("SOLDE");
+            alert.setHeaderText(accounts.get().getUser().getSurname()+" "
+                    +accounts.get().getUser().getFirstname());
+            alert.setContentText(String.format("""
+                             🔸Votre Solde est :🔸
+                                •  %, .2f CDF
+                                • $%, .2f USD
+                            """
+                    , accounts.get().getCdf()
+                    , accounts.get().getUsd()));
+            alert.showAndWait();
+
+        }
+        catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur!!!");
+            alert.setHeaderText("Avertissement Erreur!!!");
+            alert.setContentText("votre compte de n'est pas activee");
+            alert.showAndWait();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    private void getCommisonUser(){
+        LoginResponse clef= Storage.loadLogin();
+        assert clef != null;
+
+        try{
+            List<Commission> commissionList = listCommissions(clef);
+            assert commissionList != null;
+            Optional<Commission> accounts=commissionList.stream()
+                    .filter(acc->acc.getUser().getId()==id)
+                    .findFirst();
+            Alert alert= new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("SOLDE");
+            alert.setHeaderText(accounts.get().getUser().getSurname()+" "
+                    +accounts.get().getUser().getFirstname());
+            alert.setContentText(String.format("""
+                             🔸Votre Solde est :🔸
+                                •  %, .2f CDF
+                                • $%, .2f USD
+                            """
+                    , accounts.get().getCdfwin()
+                    , accounts.get().getUsdwin()));
+            alert.showAndWait();
+
+        }
+        catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur!!!");
+            alert.setHeaderText("Avertissement Erreur!!!");
+            alert.setContentText("votre compte de commission n'est pas activee");
+            alert.showAndWait();
+            throw new RuntimeException(e);
+        }
+    }
+
 }

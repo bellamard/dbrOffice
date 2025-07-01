@@ -47,7 +47,7 @@
                         </StackedFontIcon>
                      </graphic>
                   </Button>
-                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="210.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="COMMISIONS">
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="210.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToCommission" styleClass="btnNav" text="COMMISIONS">
                      <graphic>
                         <StackedFontIcon alignment="CENTER_LEFT">
                            <children>
@@ -118,7 +118,7 @@
                   <StackPane>
                      <children>
 
-                        <AnchorPane fx:id="chargement" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4">
+                        <AnchorPane fx:id="chargement" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.8" prefWidth="866.4" visible="false">
                            <children>
                               <Label layoutX="81.0" layoutY="270.0" text="CHARGEMENT" textAlignment="CENTER">
                                  <font>
@@ -145,7 +145,7 @@
                            </children>
                         </AnchorPane>
 
-                       <AnchorPane id="home" fx:id="home">
+                       <AnchorPane id="home" fx:id="home" visible="false">
                            <children>
                               <HBox spacing="5.0">
                                  <children>
@@ -538,7 +538,7 @@
                            </children>
                         </AnchorPane>
 
-                        <AnchorPane fx:id="operation" prefHeight="811.0" prefWidth="910.0" styleClass="mainContainer" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+                        <AnchorPane fx:id="operation" prefHeight="811.0" prefWidth="910.0" styleClass="mainContainer" visible="false" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
                            <children>
 
                               <!-- Header avec icône -->
@@ -558,6 +558,60 @@
                                  <!-- Table des opérations -->
                                  <VBox spacing="10">
                                     <Label styleClass="sectionTitle" text="Liste des opérations" />
+                                    <TableView fx:id="tableOperation" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
+                                       <columns>
+                                          <TableColumn fx:id="tOperRef" prefWidth="174.79996490478516" text="Reference" />
+                                          <TableColumn fx:id="tOperType" minWidth="0.0" prefWidth="133.60000610351562" text="Type" />
+                                          <TableColumn fx:id="tOperMont" prefWidth="163.20001220703125" text="Montant" />
+                                          <TableColumn fx:id="tOperDev" prefWidth="94.79998779296875" text="Device" />
+                                          <TableColumn fx:id="tOperEtat" prefWidth="94.0" text="Etat" />
+                                          <TableColumn fx:id="tOperAction" prefWidth="78.5999755859375" text="Action" />
+                                          <TableColumn fx:id="tOperDate" prefWidth="143.20001220703125" text="Date" />
+                                       </columns></TableView>
+                                 </VBox>
+
+                                 <!-- Zone graphique -->
+                                 <VBox spacing="10">
+                                    <Label styleClass="sectionTitle" text="Statistiques récentes" />
+
+                                    <!-- Description -->
+                                    <HBox>
+                                       <BarChart fx:id="chartOpera" prefHeight="300" prefWidth="430">
+                                          <xAxis>
+                                             <CategoryAxis side="BOTTOM" />
+                                          </xAxis>
+                                          <yAxis>
+                                             <NumberAxis side="LEFT" />
+                                          </yAxis>
+                                       </BarChart>
+                                       <Label styleClass="sectionTitle" text="Description" />
+                                       <Label fx:id="titleOperation" prefHeight="260" prefWidth="430" styleClass="descriptionBox" text="Description..." wrapText="true" />
+                                    </HBox>
+                                 </VBox>
+                              </VBox>
+
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="commission" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+
+                              <!-- Header avec icône -->
+                              <HBox alignment="CENTER_LEFT" layoutX="30" layoutY="20" spacing="20">
+                                 <FontIcon iconLiteral="fa-diamond" iconSize="28" />
+                                 <Label styleClass="headerTitle" text="COMMISSIONS" />
+                              </HBox>
+
+                              <!-- Barre supérieure : Recherche -->
+                              <HBox layoutX="30" layoutY="70" spacing="10">
+                                 <TextField fx:id="getSearchCommission" onAction="#getTableOperationSearch" prefWidth="250" promptText="🔍 Rechercher Commission" styleClass="searchInput" />
+                              </HBox>
+
+                              <!-- Layout principal -->
+                              <VBox layoutX="30" layoutY="120" spacing="20">
+
+                                 <!-- Table des opérations -->
+                                 <VBox spacing="10">
+                                    <Label styleClass="sectionTitle" text="Liste des Commissions" />
                                     <TableView fx:id="tableOperation" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
                                        <columns>
                                           <TableColumn fx:id="tOperRef" prefWidth="174.79996490478516" text="Reference" />
