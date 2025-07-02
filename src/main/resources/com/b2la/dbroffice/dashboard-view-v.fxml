@@ -56,7 +56,7 @@
                         </StackedFontIcon>
                      </graphic>
                   </Button>
-                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="250.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btnNav" text="PAIEMENTS">
+                  <Button alignment="BASELINE_LEFT" layoutX="10.0" layoutY="250.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToPaiement" styleClass="btnNav" text="PAIEMENTS">
                      <graphic>
                         <StackedFontIcon alignment="CENTER_LEFT">
                            <children>
@@ -662,11 +662,11 @@
       
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="commission1" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0">
+                              <AnchorPane fx:id="paiement" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" layoutX="30" layoutY="20" spacing="20">
                                        <children>
-                                          <FontIcon iconLiteral="fa-diamond" iconSize="28" />
+                                          <FontIcon iconLiteral="fa-money" iconSize="28" />
                                           <Label styleClass="headerTitle" text="PAIEMENTS" />
                                        </children>
                                     </HBox>
@@ -679,44 +679,77 @@
                                                    <children>
                                                       <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" styleClass="cardComm">
                                                          <children>
-                                                            <Label styleClass="statLabel" text="Comptes" />
-                                                            <Label fx:id="countCommission1" styleClass="statValue" text="account" textAlignment="RIGHT" />
+                                                            <Label styleClass="statLabel" text="Agents" />
+                                                            <Label fx:id="accountAgent" styleClass="statValue" text="account" textAlignment="RIGHT" />
                                                             <FontIcon iconLiteral="fa-user" iconSize="28" />
                                                          </children>
                                                       </VBox>
                                                       <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="120.0" prefWidth="200.0" styleClass="cardComm">
                                                          <children>
-                                                            <Label styleClass="statLabel" text="Somme USD" />
-                                                            <Label fx:id="SoldeUSD1" styleClass="statValue" text="USD" textAlignment="RIGHT" />
-                                                            <FontIcon iconLiteral="fa-dollar" iconSize="28" />
+                                                            <Label styleClass="statLabel" text="Agents payee" />
+                                                            <Label fx:id="accountPayed" styleClass="statValue" text="accountPayed" textAlignment="RIGHT" />
+                                                            <FontIcon iconLiteral="fa-money" iconSize="28" />
                                                          </children>
                                                       </VBox>
                                                       <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="120.0" prefWidth="201.0" styleClass="cardComm">
                                                          <children>
-                                                            <Label styleClass="statLabel" text="Somme CDF" />
-                                                            <Label fx:id="SoldeCDF1" styleClass="statValue" text="CDF" textAlignment="RIGHT" />
-                                                            <FontIcon iconLiteral="fa-money" iconSize="28" />
+                                                            <Label styleClass="statLabel" text="A PAYER" />
+                                                            <Label fx:id="payerCdf" styleClass="statValue" text="CDF" textAlignment="RIGHT" />
+                                                            <Label fx:id="payerUsd" layoutX="173.0" layoutY="25.0" styleClass="statValue" text="USD" textAlignment="RIGHT" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_RIGHT" layoutX="331.0" layoutY="10.0" prefHeight="120.0" prefWidth="201.0" styleClass="cardComm">
+                                                         <children>
+                                                            <Label styleClass="statLabel" text="PAYEE" />
+                                                            <Label fx:id="payeeCdf" styleClass="statValue" text="CDF" textAlignment="RIGHT" />
+                                                            <Label fx:id="payeeUsd" layoutX="173.0" layoutY="25.0" styleClass="statValue" text="USD" textAlignment="RIGHT" />
                                                          </children>
                                                       </VBox>
                                                    </children>
                                                 </HBox>
                                              </children>
                                           </VBox>
-                                          <HBox layoutX="30" layoutY="70" spacing="10">
+                                          <HBox alignment="CENTER_LEFT" layoutX="30" layoutY="70" spacing="10">
                                              <children>
-                                                <TextField fx:id="getSearchCommission1" onAction="#getTableCommissionSearch" prefWidth="250" promptText="🔍 Rechercher Commission" styleClass="searchInput" />
+                                                <TextField fx:id="getSearchCommission1" onAction="#getTableCommissionSearch" prefWidth="250" promptText="🔍 Rechercher Agents" styleClass="searchInput" />
+                                                <ComboBox prefHeight="20.0" prefWidth="150.0" styleClass="searchInput" />
+                                                <Button mnemonicParsing="false" styleClass="btnPrimary" text="VALIDER" />
                                              </children>
                                           </HBox>
                                           <VBox spacing="10">
                                              <children>
-                                                <Label styleClass="sectionTitle" text="Liste des Commissions" />
+                                                <Label styleClass="sectionTitle" text="Liste des Agents" />
                                                 <TableView fx:id="tableCommission1" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
                                                    <columns>
-                                                      <TableColumn fx:id="tCommPrenom1" prefWidth="176.39998626708984" text="Prenom" />
-                                                      <TableColumn fx:id="tCommNom1" minWidth="0.0" prefWidth="231.20001220703125" text="nom" />
-                                                      <TableColumn fx:id="tCommPhone1" prefWidth="168.0" text="Phone" />
-                                                      <TableColumn fx:id="tCommUsd1" prefWidth="138.0" text="USD" />
-                                                      <TableColumn fx:id="tCommCdf1" prefWidth="129.2000732421875" text="CDF" />
+                                                      <TableColumn fx:id="tCommPrenom1" prefWidth="125.79996490478516" text="Prenom" />
+                                                      <TableColumn fx:id="tCommNom1" minWidth="0.0" prefWidth="125.0" text="nom" />
+                                                      <TableColumn fx:id="tCommPhone1" prefWidth="146.20001220703125" text="Phone" />
+                                                      <TableColumn fx:id="tCommUsd1" prefWidth="140.4000244140625" text="USD" />
+                                                      <TableColumn fx:id="tCommCdf1" prefWidth="143.4000244140625" text="CDF" />
+                                                      <TableColumn prefWidth="61.4000244140625" text="ACTION" />
+                                                      <TableColumn prefWidth="89.80010986328125" text="ETAT" />
+                                                   </columns>
+                                                </TableView>
+                                             </children>
+                                          </VBox>
+                                          <HBox layoutX="10.0" layoutY="176.0" spacing="10">
+                                             <children>
+                                                <TextField fx:id="getSearchCommission11" onAction="#getTableCommissionSearch" prefWidth="250" promptText="🔍 Rechercher payee" styleClass="searchInput" />
+                                             </children>
+                                          </HBox>
+                                          <VBox layoutX="10.0" layoutY="228.0" spacing="10">
+                                             <children>
+                                                <Label styleClass="sectionTitle" text="Liste des Agent payees" />
+                                                <TableView fx:id="tableCommission11" prefHeight="279.0" prefWidth="853.0" styleClass="styledTable">
+                                                   <columns>
+                                                      <TableColumn fx:id="tCommPrenom11" prefWidth="128.8000259399414" text="Prenom" />
+                                                      <TableColumn fx:id="tCommNom11" minWidth="0.0" prefWidth="96.00006103515625" text="nom" />
+                                                      <TableColumn fx:id="tCommPhone11" prefWidth="119.0" text="Phone" />
+                                                      <TableColumn fx:id="tCommUsd11" prefWidth="123.0" text="USD" />
+                                                      <TableColumn fx:id="tCommPhone111" prefWidth="108.60003662109375" text="CDF" />
+                                                      <TableColumn fx:id="tCommPhone1111" prefWidth="68.7999267578125" text="MOIS" />
+                                                      <TableColumn fx:id="tCommPhone11111" prefWidth="73.99993896484375" text="DATE" />
+                                                      <TableColumn prefWidth="109.20001220703125" text="REFERENCE" />
                                                    </columns>
                                                 </TableView>
                                              </children>

@@ -47,7 +47,7 @@ public class DashboardController implements Initializable {
             usersOfficial, usersAgent, UsersCount, countCommission, SoldeUSD, SoldeCDF;
     private Button btnTaux;
     @FXML
-    private AnchorPane home, operation, utilisateur, chargement, commission;
+    private AnchorPane home, operation, utilisateur, chargement, commission, paiement;
     @FXML
     private TextField searchTaux, fieldUserSearch, getSearchOperation, getSearchCommission;
     @FXML
@@ -709,30 +709,42 @@ public class DashboardController implements Initializable {
             utilisateur.setVisible(false);
             chargement.setVisible(false);
             commission.setVisible(false);
+            paiement.setVisible(false);
             break;
             case "operation": home.setVisible(false);
                 operation.setVisible(true);
                 utilisateur.setVisible(false);
                 chargement.setVisible(false);
                 commission.setVisible(false);
+                paiement.setVisible(false);
                 break;
             case "utilisateur": home.setVisible(false);
                 operation.setVisible(false);
                 utilisateur.setVisible(true);
                 chargement.setVisible(false);
                 commission.setVisible(false);
+                paiement.setVisible(false);
                 break;
             case "commission": home.setVisible(false);
                 operation.setVisible(false);
                 utilisateur.setVisible(false);
                 chargement.setVisible(false);
                 commission.setVisible(true);
+                paiement.setVisible(false);
+                break;
+            case "paiement": home.setVisible(false);
+                operation.setVisible(false);
+                utilisateur.setVisible(false);
+                chargement.setVisible(false);
+                commission.setVisible(false);
+                paiement.setVisible(true);
                 break;
             default: chargement.setVisible(true);
                 home.setVisible(false);
                 operation.setVisible(false);
                 utilisateur.setVisible(false);
                 commission.setVisible(false);
+                paiement.setVisible(false);
         }
     }
     @FXML
@@ -1316,6 +1328,12 @@ public class DashboardController implements Initializable {
         String card="commission";
         cardLayout(card);
         viewCommissiomn();
+    }
+    @FXML
+    protected void goToPaiement(){
+        String card="paiement";
+        cardLayout(card);
+        //viewPaiement();
     }
 
 
