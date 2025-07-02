@@ -326,6 +326,17 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0.3, 0, 1);
 }
 
+.cardComm {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 16;
+    -fx-spacing: 6;
+    -fx-pref-width: 200;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0.3, 0, 1);
+}
+
 .statLabel {
     -fx-text-fill: #6b7280;
     -fx-font-size: 12px;

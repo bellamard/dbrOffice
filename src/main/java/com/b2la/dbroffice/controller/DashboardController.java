@@ -49,7 +49,7 @@ public class DashboardController implements Initializable {
     @FXML
     private AnchorPane home, operation, utilisateur, chargement, commission;
     @FXML
-    private TextField searchTaux, fieldUserSearch, getSearchOperation;
+    private TextField searchTaux, fieldUserSearch, getSearchOperation, getSearchCommission;
     @FXML
     private TableView tableauTaux, tableUtilisateur, tableOperation, tableCommission;
     @FXML
@@ -1173,6 +1173,41 @@ public class DashboardController implements Initializable {
 
 
         });
+    }
+
+    @FXML
+    private void getTableCommissionSearch(){
+        LoginResponse clef=Storage.loadLogin();
+        assert clef != null;
+
+        runAsync(()->{
+            List<Commission> comList=listCommissions(clef);
+            String searchText = getSearchCommission.getText().toLowerCase();
+            List<Commission> searchListCom = comList.stream().filter(tCommission ->
+                    tCommission.getUser().getLastname().toLowerCase().contains(searchText) ||
+                            tCommission.getUser().getSurname().toLowerCase().contains(searchText) ||
+                            tCommission.getUser().getFirstname().toLowerCase().contains(searchText) ||
+                            tCommission.getUser().getPhone().toLowerCase().contains(searchText) ||
+                            String.valueOf(tCommission.getCdfwin()).toLowerCase().contains(searchText) ||
+                            String.valueOf(tCommission.getUsdwin()).toLowerCase().contains(searchText)
+            ).collect(Collectors.toList());
+            assert comList != null;
+            getStatCommission(searchListCom);
+            Task<ObservableList<Commission>> task= new Task<>() {
+                @Override
+                protected ObservableList<Commission> call() throws Exception {
+
+                    return FXCollections.observableArrayList(searchListCom);
+                }
+            };
+            task.setOnSucceeded(e->tableCommission.setItems(task.getValue()));
+            new Thread(task).start();
+
+
+        });
+
+
+
     }
 
     private void chartOperation(List<Operation> opeList){
