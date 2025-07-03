@@ -44,14 +44,14 @@ public class DashboardController implements Initializable {
     private Label username, countAdmin, countOffices, countAgents, countClients, countUsers,
             countSend, countWithdrawal, countDeposit, countFactory, countOpera,countRecov, titleOperation,
             attentCDF, attentUSD, validerUSD, validerCDF, annulersUSD, annulersCDF, usersClients, usersAdmin,
-            usersOfficial, usersAgent, UsersCount, countCommission, SoldeUSD, SoldeCDF;
-    private Button btnTaux;
+            usersOfficial, usersAgent, UsersCount, countCommission, SoldeUSD, SoldeCDF, accountAgent, accountPayed, payerCdf, payerUsd, payeeCdf, payeeUsd;
+    private Button btnTaux, btnPaiement;
     @FXML
     private AnchorPane home, operation, utilisateur, chargement, commission, paiement;
     @FXML
-    private TextField searchTaux, fieldUserSearch, getSearchOperation, getSearchCommission;
+    private TextField searchTaux, fieldUserSearch, getSearchOperation, getSearchCommission, getSearchPaiement;
     @FXML
-    private TableView tableauTaux, tableUtilisateur, tableOperation, tableCommission;
+    private TableView tableauTaux, tableUtilisateur, tableOperation, tableCommission, tablePaiement;
     @FXML
     private TableColumn<Cost, String> TCdevices;
     @FXML
@@ -74,11 +74,13 @@ public class DashboardController implements Initializable {
     @FXML
     private TableColumn<Commission, Float> tCommCdf, tCommUsd;
     @FXML
-    private TableColumn<Commission, String>tCommPrenom, tCommNom, tCommPhone;
+    private TableColumn<Commission, String>tCommPrenom, tCommNom, tCommPhone, tPaiementPrenom, tPaiementNom, tPaiementPhone, tPatiementAction, tPaiementEtat, tPaiementCdf, tPaiementUsd;
     @FXML
     private AreaChart<String, Number> diagram;
     @FXML
     private BarChart<String, Number> chartOpera;
+    @FXML
+    private ComboBox comboMonth;
 
 
     @Override
@@ -1299,6 +1301,78 @@ public class DashboardController implements Initializable {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        });
+    }
+
+    public void viewPaiement(){
+        LoginResponse clef = Storage.loadLogin();
+        assert clef != null;
+        tPaiementUsd.setCellValueFactory(new PropertyValueFactory<>("usdwin"));
+        tPaiementCdf.setCellValueFactory(new PropertyValueFactory<>("cdfwin"));
+        tPaiementPrenom.setCellFactory(col -> new TableCell<>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setGraphic(null);
+                }
+                else{
+                    Commission com= getTableView().getItems().get(getIndex());
+                    Label labelTitle=new Label("-");
+                    labelTitle.setText(com.getUser().getSurname());
+                    HBox boxLabel= new HBox(2, labelTitle);
+                    setGraphic(boxLabel);
+                }
+            }
+        });
+
+        tPaiementNom.setCellFactory(col -> new TableCell<>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setGraphic(null);
+                }
+                else{
+                    Commission com= getTableView().getItems().get(getIndex());
+                    Label labelTitle=new Label("-");
+                    labelTitle.setText(com.getUser().getFirstname());
+                    HBox boxLabel= new HBox(2, labelTitle);
+                    setGraphic(boxLabel);
+                }
+            }
+        });
+
+        tPaiementPhone.setCellFactory(col -> new TableCell<>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setGraphic(null);
+                }
+                else{
+                    Commission com= getTableView().getItems().get(getIndex());
+                    Label labelTitle=new Label("-");
+                    labelTitle.setText(com.getUser().getPhone());
+                    HBox boxLabel= new HBox(2, labelTitle);
+                    setGraphic(boxLabel);
+                }
+            }
+        });
+
+        runAsync(()->{
+            List<Commission> commList=listCommissions(clef);
+            assert commList != null;
+            getStatCommission(commList);
+            Task<ObservableList<Commission>> task= new Task<>() {
+                @Override
+                protected ObservableList<Commission> call() throws Exception {
+                    return FXCollections.observableArrayList(commList);
+                }
+            };
+            task.setOnSucceeded(e->tablePaiement.setItems(task.getValue()));
+            new Thread(task).start();
+
         });
     }
     @FXML
