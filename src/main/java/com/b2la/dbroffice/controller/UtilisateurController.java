@@ -110,17 +110,17 @@ public class UtilisateurController {
         if(type==RoleType.OFFICE.name()){
             role.setLibelle(RoleType.OFFICE.name());
             user.setRole(role);
-            return addUser(user, "https://dbr.b2la.online/Users/provider");
+            return addUser(user, "/users/provider");
         }
         if(type==RoleType.AGENT.name()){
             role.setLibelle(RoleType.AGENT.name());
             user.setRole(role);
-            return addUser(user, "https://dbr.b2la.online/Users/agent");
+            return addUser(user, "/users/agent");
         }
 
         role.setLibelle(RoleType.CLIENT.name());
         user.setRole(role);
-        return addUser(new User(), "https://dbr.b2la.online/Users");
+        return addUser(new User(), "/users");
 
     }
 

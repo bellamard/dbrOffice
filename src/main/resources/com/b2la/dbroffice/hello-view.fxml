@@ -1,60 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import org.kordamp.ikonli.javafx.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" styleClass="bgPanel" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.b2la.dbroffice.controller.HelloController">
-   <left>
-      <Pane prefWidth="370.0" styleClass="bgPanelSecond" BorderPane.alignment="CENTER">
-         <children>
-            <Button id="btnClose" fx:id="btnClose" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#onClose" styleClass="btnClose" text="x" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
-         </children></Pane>
-   </left>
-   <center>
-      <Pane styleClass="bgPanelPrincipal" BorderPane.alignment="CENTER">
-         <children>
-            <Label layoutX="67.0" layoutY="14.0" prefHeight="35.0" prefWidth="140.0" text="DBR OFFICE" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
-
-            <Label id="errorTitle" fx:id="errorTitle" layoutX="10.0" layoutY="335.0" lineSpacing="1.0" prefHeight="54.0" prefWidth="223.0" text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc." textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
-               <font>
-                  <Font name="Roboto Light" size="12.0" />
-               </font>
-            </Label>
-            <TextField id="fieldUsername" fx:id="fieldUsername" layoutX="10.0" layoutY="158.0" prefHeight="25.0" prefWidth="227.0" promptText="USERNAME" text="+243" />
-            <ImageView fitHeight="50.0" fitWidth="60.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@images/picture.png" />
-               </image>
-            </ImageView>
-            <Label layoutX="40.0" layoutY="130.0" prefHeight="17.0" prefWidth="182.0" text="UTILISATEUR" textFill="#00bbff" />
-            <FontIcon iconColor="#00bbff" iconLiteral="fa-user" iconSize="24" layoutX="13.0" layoutY="144.0" />
-            <Label layoutX="40.0" layoutY="200.0" prefHeight="17.0" prefWidth="182.0" text="MOT DE PASSE" textFill="#00bbff" />
-            <FontIcon iconColor="#00bbff" iconLiteral="fa-lock" iconSize="24" layoutX="13.0" layoutY="214.0" />
-            <PasswordField id="fieldPassword" fx:id="fieldPassword" layoutX="10.0" layoutY="229.0" onKeyPressed="#handleKeyPressed" prefHeight="25.0" prefWidth="227.0" promptText="*********" />
-            <Pane id="pannelLoading" fx:id="paneLoading" layoutX="10.0" layoutY="264.0" prefHeight="20.0" prefWidth="200.0" visible="false">
-               <children>
-                  <Label layoutX="30.0" prefHeight="17.0" prefWidth="168.0" text="LOADING" textFill="#00bbff" />
-                  <ProgressIndicator prefHeight="20.0" prefWidth="20.0" />
-               </children>
-            </Pane>
-            <Button id="btnConnexion" fx:id="btnConnexion" layoutX="10.0" layoutY="298.0" mnemonicParsing="false" onAction="#onConnexion" prefHeight="25.0" prefWidth="227.0" styleClass="btnLogin" text="CONNEXION" textFill="WHITE" />
-            <Label layoutX="67.0" layoutY="49.0" text="LOGIN" textFill="#00b2ff">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-         </children>
-      </Pane>
-   </center>
+<BorderPane prefHeight="560.0" prefWidth="920.0" styleClass="login-root" stylesheets="@Style.css"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.b2la.dbroffice.controller.HelloController">
+    <left>
+        <VBox prefWidth="500" spacing="24" styleClass="login-hero">
+            <padding><Insets bottom="44" left="48" right="48" top="38"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label styleClass="login-mark" text="DBR"/>
+                <VBox spacing="0">
+                    <Label styleClass="login-brand" text="Core Finance"/>
+                    <Label styleClass="login-brand-subtitle" text="Back-office opérationnel"/>
+                </VBox>
+            </HBox>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Label styleClass="hero-eyebrow" text="PLATEFORME FINTECH SÉCURISÉE"/>
+            <Label styleClass="hero-title" text="Pilotez les flux financiers avec clarté." wrapText="true"/>
+            <Label styleClass="hero-copy"
+                   text="Supervisez les opérations, la conformité KYC, les conversions, les comptes et les services clients depuis un espace unique."
+                   wrapText="true"/>
+            <VBox spacing="12" styleClass="login-benefits">
+                <Label text="✓ Vue consolidée des activités et liquidités"/>
+                <Label text="✓ Contrôles Maker-Checker et traçabilité"/>
+                <Label text="✓ Accès adapté aux équipes administratives"/>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Label styleClass="login-security" text="Connexion chiffrée • Accès réservé au personnel habilité"/>
+        </VBox>
+    </left>
+    <center>
+        <StackPane styleClass="login-form-zone">
+            <Button fx:id="btnClose" alignment="CENTER" mnemonicParsing="false" onAction="#onClose"
+                    StackPane.alignment="TOP_RIGHT" styleClass="login-close" text="×"/>
+            <VBox maxWidth="330" spacing="16" styleClass="login-card">
+                <Label styleClass="login-card-eyebrow" text="ESPACE ADMINISTRATION"/>
+                <Label styleClass="login-card-title" text="Bienvenue"/>
+                <Label styleClass="login-card-copy" text="Identifiez-vous pour accéder au centre de pilotage." wrapText="true"/>
+                <Separator/>
+                <VBox spacing="7">
+                    <Label styleClass="login-field-label" text="Numéro de téléphone"/>
+                    <TextField fx:id="fieldUsername" promptText="+243 000 000 000" text="+243"/>
+                    <Label styleClass="login-field-help" text="Utilisez le numéro associé à votre compte ADMIN ou OFFICE." wrapText="true"/>
+                </VBox>
+                <VBox spacing="7">
+                    <Label styleClass="login-field-label" text="Mot de passe"/>
+                    <PasswordField fx:id="fieldPassword" onKeyPressed="#handleKeyPressed" promptText="Saisissez votre mot de passe"/>
+                </VBox>
+                <Label fx:id="errorTitle" styleClass="login-error" text="" visible="false" wrapText="true"/>
+                <Pane fx:id="paneLoading" prefHeight="28" visible="false">
+                    <HBox alignment="CENTER_LEFT" spacing="9">
+                        <ProgressIndicator prefHeight="22" prefWidth="22"/>
+                        <Label styleClass="login-loading" text="Vérification de votre accès..."/>
+                    </HBox>
+                </Pane>
+                <Button fx:id="btnConnexion" maxWidth="Infinity" mnemonicParsing="false" onAction="#onConnexion"
+                        styleClass="login-submit" text="Accéder au back-office"/>
+                <Label styleClass="login-support" text="En cas de blocage, contactez l’administrateur de la plateforme." wrapText="true"/>
+            </VBox>
+        </StackPane>
+    </center>
 </BorderPane>

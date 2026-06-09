@@ -21,16 +21,20 @@ class AccessControlTest {
     }
 
     @Test
-    void officeAgentCanValidateKycButCannotChangeConfiguration() {
-        assertTrue(AccessControl.allows(BackOfficeRole.BACK_OFFICE_AGENT, Permission.KYC_VALIDATE));
-        assertTrue(AccessControl.allows(BackOfficeRole.BACK_OFFICE_AGENT, Permission.OPERATIONS_WRITE));
-        assertFalse(AccessControl.allows(BackOfficeRole.BACK_OFFICE_AGENT, Permission.CONFIG_WRITE));
+    void officeRoleMatchesBackendBackOfficePermissions() {
+        assertTrue(AccessControl.allows(BackOfficeRole.COMPLIANCE_AGENT, Permission.KYC_VALIDATE));
+        assertTrue(AccessControl.allows(BackOfficeRole.COMPLIANCE_AGENT, Permission.OPERATIONS_READ));
+        assertTrue(AccessControl.allows(BackOfficeRole.COMPLIANCE_AGENT, Permission.MESSAGING_WRITE));
+        assertTrue(AccessControl.allows(BackOfficeRole.COMPLIANCE_AGENT, Permission.OPERATIONS_WRITE));
+        assertTrue(AccessControl.allows(BackOfficeRole.COMPLIANCE_AGENT, Permission.CONFIG_WRITE));
+        assertTrue(AccessControl.allows(BackOfficeRole.COMPLIANCE_AGENT, Permission.USERS_WRITE));
+        assertTrue(AccessControl.allows(BackOfficeRole.COMPLIANCE_AGENT, Permission.GPS_READ));
     }
 
     @Test
     void backendRolesAreMappedExplicitly() {
         assertEquals(BackOfficeRole.SUPER_ADMIN, BackOfficeRole.fromBackendRole("ADMIN"));
-        assertEquals(BackOfficeRole.BACK_OFFICE_AGENT, BackOfficeRole.fromBackendRole("OFFICE"));
+        assertEquals(BackOfficeRole.COMPLIANCE_AGENT, BackOfficeRole.fromBackendRole("OFFICE"));
         assertEquals(BackOfficeRole.ANALYST, BackOfficeRole.fromBackendRole("ANALYSTE"));
         assertThrows(IllegalArgumentException.class, () -> BackOfficeRole.fromBackendRole("CLIENT"));
     }

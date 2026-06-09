@@ -13,6 +13,6 @@ public record EndpointDefinition(
 ) {
     @Override
     public String toString() {
-        return method + "  " + name;
+        return name;
     }
 }

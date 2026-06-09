@@ -12,6 +12,7 @@ public final class EndpointCatalog {
 
     public static List<EndpointDefinition> all() {
         return List.of(
+                e("Authentification", "Connexion", "POST", "/auth/login", "{\"username\":\"+243895127236\",\"password\":\"Admin@123\"}", Permission.DASHBOARD_READ),
                 e("Authentification", "Envoyer un code de récupération", "POST", "/auth/recovery/send-code", "{\"username\":\"+243810000001\"}", Permission.USERS_WRITE),
                 e("Authentification", "Vérifier un code de récupération", "POST", "/auth/recovery/verify-code", "{\"username\":\"+243810000001\",\"code\":\"123456\"}", Permission.USERS_WRITE),
                 e("Authentification", "Réinitialiser un mot de passe", "POST", "/auth/recovery/reset-password", "{\"username\":\"+243810000001\",\"code\":\"123456\",\"password\":\"NewPassword@123\"}", Permission.USERS_WRITE),
@@ -21,6 +22,7 @@ public final class EndpointCatalog {
                 e("Utilisateurs", "Lister les utilisateurs", "GET", "/users", "", Permission.USERS_READ),
                 e("Utilisateurs", "Afficher un utilisateur", "GET", "/users/{user_id}", "", Permission.USERS_READ),
                 e("Utilisateurs", "Modifier un utilisateur", "PUT", "/users/{user_id}", "{\"id\":1,\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Jean\",\"phone\":\"+243810000001\",\"email\":\"jean@example.com\",\"datebirth\":\"1995-01-15\",\"role\":{\"libelle\":\"CLIENT\"}}", Permission.USERS_WRITE),
+                e("Utilisateurs", "Activer ou désactiver un utilisateur", "PUT", "/users/{user_id}/state", "{\"active\":false}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Supprimer un utilisateur", "DELETE", "/users/{user_id}", "", Permission.USERS_WRITE),
                 e("Utilisateurs", "Profil courant", "GET", "/users/profil", "", Permission.USERS_READ),
                 e("Utilisateurs", "Ajouter l'adresse courante", "PUT", "/users/address", addressBody("12"), Permission.USERS_WRITE),
@@ -52,7 +54,7 @@ public final class EndpointCatalog {
                 e("Configuration", "Afficher un coût", "GET", "/costs/{cost_id}", "", Permission.CONFIG_READ),
                 e("Configuration", "Modifier un coût", "PUT", "/costs/{cost_id}", "{\"devices\":{\"id\":1},\"min\":1,\"max\":2000,\"percent\":3}", Permission.CONFIG_WRITE),
                 e("Configuration", "Supprimer un coût", "DELETE", "/costs/{cost_id}", "", Permission.CONFIG_WRITE),
-                e("Configuration", "Vérifier un pourcentage", "GET", "/costs/check", "{\"value\":100,\"devices\":{\"id\":1,\"signe\":\"USD\"}}", Permission.CONFIG_READ),
+                e("Configuration", "Vérifier un pourcentage", "GET", "/costs/check?value={amount}&deviseId={devise_id}", "", Permission.CONFIG_READ),
 
                 e("Établissements", "Créer un établissement", "POST", "/etablissements", "{\"name\":\"DBR Partner\",\"registrationNumber\":\"RCCM-001\",\"postalAddress\":" + addressBody("1") + ",\"contactDetails\":\"+243810000010\",\"customerType\":\"ENTITES\",\"phoneOwn\":\"+243810000003\"}", Permission.CONFIG_WRITE),
                 e("Établissements", "Lister les établissements", "GET", "/etablissements", "", Permission.CONFIG_READ),
@@ -76,6 +78,7 @@ public final class EndpointCatalog {
                 e("Conversions", "Confirmer une conversion", "PUT", "/conversions/confirme", "{\"reference\":\"1\",\"clef\":\"123456\"}", Permission.OPERATIONS_WRITE),
 
                 e("Jetons cash", "Créer un jeton", "POST", "/jetons-cash", "{\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Junior\",\"address\":\"Kinshasa\",\"phone\":\"+243810000010\",\"email\":\"jean@example.com\",\"amount\":100,\"devise\":\"USD\"}", Permission.OPERATIONS_WRITE),
+                e("Jetons cash", "Confirmer la création", "POST", "/jetons-cash/confirmation", "{\"clef\":\"123456\"}", Permission.OPERATIONS_WRITE),
                 e("Jetons cash", "Payer un jeton", "POST", "/jetons-cash/paiement", "{\"phone\":\"+243810000010\",\"code\":\"123456\"}", Permission.OPERATIONS_WRITE),
                 e("Jetons cash", "Afficher un jeton", "GET", "/jetons-cash/{jeton_cash_reference}", "", Permission.OPERATIONS_READ),
                 e("Jetons cash", "Historique des jetons", "GET", "/jetons-cash", "", Permission.OPERATIONS_READ),

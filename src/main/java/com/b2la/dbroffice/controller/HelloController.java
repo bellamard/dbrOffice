@@ -7,11 +7,9 @@ import com.b2la.dbroffice.api.ApiResponse;
 import com.b2la.dbroffice.dao.LoginRequest;
 import com.b2la.dbroffice.dao.LoginResponse;
 import com.b2la.dbroffice.preference.Storage;
+import com.b2la.dbroffice.security.BackendRoleResolver;
 import com.b2la.dbroffice.security.BackOfficeRole;
 import com.b2la.dbroffice.security.SessionContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.concurrent.Task;
@@ -63,9 +61,8 @@ public class HelloController {
             @Override
             protected LoginSession call() {
                 LoginResponse response = ApiClient.getInstance().login(new LoginRequest(username, password));
-                ApiResponse profile = ApiClient.getInstance().send("GET", "/accounts/solde", "");
-                String backendRole = extractRole(profile.body());
-                return new LoginSession(response, BackOfficeRole.fromBackendRole(backendRole));
+                ApiResponse profile = ApiClient.getInstance().send("GET", "/users/profil", "");
+                return new LoginSession(response, BackendRoleResolver.fromProfile(profile.body()));
             }
         };
         task.setOnSucceeded(event -> {
@@ -79,9 +76,7 @@ public class HelloController {
             btnConnexion.setDisable(false);
             fieldPassword.clear();
             Throwable error = task.getException();
-            showLoginError(error instanceof ApiException
-                    ? "Connexion refusée par le backend."
-                    : error.getMessage());
+            showLoginError(loginErrorMessage(error));
         });
         Thread thread = new Thread(task, "dbr-login");
         thread.setDaemon(true);
@@ -122,45 +117,15 @@ public class HelloController {
         btnConnexion.setDisable(false);
     }
 
-    private static String extractRole(String json) {
-        JsonElement root = JsonParser.parseString(json);
-        String role = findRole(root);
-        if (role == null || role.isBlank()) {
-            throw new IllegalArgumentException("Le backend n'a retourné aucun rôle back-office.");
-        }
-        return role;
-    }
-
-    private static String findRole(JsonElement element) {
-        if (element == null || element.isJsonNull()) {
-            return null;
-        }
-        if (element.isJsonObject()) {
-            JsonObject object = element.getAsJsonObject();
-            JsonElement role = object.get("role");
-            if (role != null) {
-                if (role.isJsonPrimitive()) {
-                    return role.getAsString();
-                }
-                if (role.isJsonObject() && role.getAsJsonObject().has("libelle")) {
-                    return role.getAsJsonObject().get("libelle").getAsString();
-                }
+    private static String loginErrorMessage(Throwable error) {
+        if (error instanceof ApiException apiError) {
+            String detail = apiError.getResponseBody();
+            if (detail != null && !detail.isBlank()) {
+                return "Connexion refusée (" + apiError.getStatusCode() + "): " + detail;
             }
-            for (String key : object.keySet()) {
-                String nested = findRole(object.get(key));
-                if (nested != null) {
-                    return nested;
-                }
-            }
-        } else if (element.isJsonArray()) {
-            for (JsonElement child : element.getAsJsonArray()) {
-                String nested = findRole(child);
-                if (nested != null) {
-                    return nested;
-                }
-            }
+            return apiError.getMessage();
         }
-        return null;
+        return error.getMessage() == null ? "Connexion impossible." : error.getMessage();
     }
 
     private record LoginSession(LoginResponse response, BackOfficeRole role) {

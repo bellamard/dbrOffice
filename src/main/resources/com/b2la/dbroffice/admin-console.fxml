@@ -12,82 +12,245 @@
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.b2la.dbroffice.controller.AdminConsoleController">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="top-bar">
-            <padding><Insets bottom="14" left="20" right="20" top="14"/></padding>
-            <Label styleClass="brand" text="DBR BACK-OFFICE"/>
+        <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="top-bar">
+            <padding><Insets bottom="10" left="18" right="18" top="10"/></padding>
+            <Label styleClass="product-mark" text="DBR"/>
+            <VBox spacing="1">
+                <Label styleClass="brand" text="Core Finance"/>
+                <Label styleClass="brand-subtitle" text="Operations &amp; Compliance"/>
+            </VBox>
+            <Separator orientation="VERTICAL" prefHeight="30"/>
+            <VBox spacing="1">
+                <Label styleClass="context-label" text="ESPACE DE TRAVAIL"/>
+                <Label styleClass="context-value" text="Administration centrale"/>
+            </VBox>
             <Region HBox.hgrow="ALWAYS"/>
             <ProgressIndicator fx:id="progress" prefHeight="24" prefWidth="24" visible="false"/>
-            <Label fx:id="identityLabel" styleClass="identity" text="Utilisateur"/>
-            <Button onAction="#logout" text="Déconnexion"/>
+            <Label fx:id="environmentLabel" styleClass="environment-badge" text="LOCAL"/>
+            <VBox alignment="CENTER_RIGHT" spacing="1">
+                <Label fx:id="identityLabel" styleClass="identity" text="Utilisateur"/>
+                <Label styleClass="session-label" text="Session sécurisée"/>
+            </VBox>
+            <Button onAction="#logout" styleClass="secondary-button" text="Déconnexion"/>
         </HBox>
     </top>
     <center>
-        <TabPane tabClosingPolicy="UNAVAILABLE">
+        <TabPane side="LEFT" styleClass="banking-navigation" tabClosingPolicy="UNAVAILABLE">
             <tabs>
-                <Tab text="Dashboard">
-                    <VBox spacing="18">
-                        <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
-                        <HBox spacing="16">
-                            <VBox styleClass="kpi"><Label text="Utilisateurs"/><Label fx:id="usersKpi" styleClass="kpi-value" text="-"/></VBox>
-                            <VBox styleClass="kpi"><Label text="Opérations"/><Label fx:id="operationsKpi" styleClass="kpi-value" text="-"/></VBox>
-                            <VBox styleClass="kpi"><Label text="Dossiers KYC"/><Label fx:id="kycKpi" styleClass="kpi-value" text="-"/></VBox>
-                            <VBox styleClass="kpi"><Label text="API"/><Label fx:id="apiStatusKpi" styleClass="kpi-value" text="À vérifier"/></VBox>
-                            <Button onAction="#refreshDashboard" text="Actualiser"/>
+                <Tab text="Pilotage">
+                    <VBox spacing="16" styleClass="workspace">
+                        <padding><Insets bottom="22" left="24" right="24" top="22"/></padding>
+                        <HBox alignment="CENTER_LEFT">
+                            <VBox spacing="3">
+                                <Label styleClass="page-title" text="Pilotage général"/>
+                                <Label styleClass="page-subtitle" text="Vue consolidée des finances, clients, services, conformité et support"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button onAction="#refreshDashboard" styleClass="secondary-button" text="Actualiser les données"/>
                         </HBox>
-                        <BarChart fx:id="operationChart" animated="false" title="Volumes par type d'opération" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Service central :"/>
+                            <Label fx:id="apiStatusKpi" styleClass="service-status" text="Vérification"/>
+                        </HBox>
+                        <HBox spacing="16">
+                            <VBox HBox.hgrow="ALWAYS" styleClass="kpi"><Label styleClass="kpi-label" text="LIQUIDITÉS TOTALES"/><Label fx:id="liquidityKpi" styleClass="kpi-value kpi-money" text="-"/><Label styleClass="help-text" text="Soldes disponibles par devise"/></VBox>
+                            <VBox HBox.hgrow="ALWAYS" styleClass="kpi alert-card"><Label styleClass="kpi-label" text="CONFORMITÉ À TRAITER"/><Label fx:id="complianceKpi" styleClass="kpi-value kpi-alert" text="-"/><Label styleClass="help-text" text="Dossiers KYC en attente"/></VBox>
+                            <VBox HBox.hgrow="ALWAYS" styleClass="kpi"><Label styleClass="kpi-label" text="VOLUME SUR 24 HEURES"/><Label fx:id="volumeKpi" styleClass="kpi-value" text="-"/><Label styleClass="help-text" text="Montants traités par devise"/></VBox>
+                            <VBox HBox.hgrow="ALWAYS" styleClass="kpi"><Label styleClass="kpi-label" text="TICKETS OUVERTS"/><Label fx:id="ticketsKpi" styleClass="kpi-value" text="-"/><Label styleClass="help-text" text="Messages non lus à traiter"/></VBox>
+                        </HBox>
+                        <Label styleClass="panel-title" text="Activité globale de la plateforme"/>
+                        <GridPane hgap="12" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="16.66"/>
+                                <ColumnConstraints percentWidth="16.66"/>
+                                <ColumnConstraints percentWidth="16.66"/>
+                                <ColumnConstraints percentWidth="16.66"/>
+                                <ColumnConstraints percentWidth="16.66"/>
+                                <ColumnConstraints percentWidth="16.66"/>
+                            </columnConstraints>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="0">
+                                <Label styleClass="module-stat-title" text="CLIENTS &amp; AGENTS"/>
+                                <Label fx:id="usersOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openUsersOverview" styleClass="link-button" text="Voir les utilisateurs"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="1">
+                                <Label styleClass="module-stat-title" text="COMPTES"/>
+                                <Label fx:id="accountsOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openAccountsOverview" styleClass="link-button" text="Voir les comptes"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="2">
+                                <Label styleClass="module-stat-title" text="OPÉRATIONS"/>
+                                <Label fx:id="operationsOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openOperationsOverview" styleClass="link-button" text="Voir les opérations"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="3">
+                                <Label styleClass="module-stat-title" text="CONVERSIONS"/>
+                                <Label fx:id="conversionsOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openConversionsOverview" styleClass="link-button" text="Voir les conversions"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="4">
+                                <Label styleClass="module-stat-title" text="PARTENAIRES &amp; SERVICES"/>
+                                <Label fx:id="establishmentsOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openBillingOverview" styleClass="link-button" text="Voir les services"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="5">
+                                <Label styleClass="module-stat-title" text="JETON CASH"/>
+                                <Label fx:id="cashTokensOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openCashTokensOverview" styleClass="link-button" text="Gérer Jeton Cash"/>
+                            </VBox>
+                        </GridPane>
+                        <HBox spacing="10" styleClass="workflow-banner">
+                            <Label styleClass="workflow-title" text="Contrôle Maker-Checker"/>
+                            <Label text="Une opération initiée doit être contrôlée par un autre agent : En attente → Validée ou Refusée." wrapText="true"/>
+                        </HBox>
+                        <BarChart fx:id="operationChart" animated="false" title="Répartition des opérations par statut" VBox.vgrow="ALWAYS">
                             <xAxis><CategoryAxis label="Type"/></xAxis>
                             <yAxis><NumberAxis label="Nombre"/></yAxis>
                         </BarChart>
                     </VBox>
                 </Tab>
-                <Tab text="Modules API">
-                    <SplitPane dividerPositions="0.42">
-                        <VBox spacing="10">
-                            <padding><Insets bottom="16" left="16" right="16" top="16"/></padding>
-                            <Label styleClass="section-title" text="Opération back-office"/>
-                            <Label text="Module"/>
-                            <ComboBox fx:id="moduleCombo" maxWidth="Infinity"/>
-                            <Label text="Endpoint"/>
-                            <ComboBox fx:id="endpointCombo" maxWidth="Infinity"/>
-                            <Label text="Chemin"/>
-                            <TextField fx:id="pathField"/>
-                            <Label text="Variables de chemin / requête (JSON)"/>
-                            <TextArea fx:id="variablesArea" prefRowCount="4"/>
-                            <Label text="Corps de la requête"/>
-                            <TextArea fx:id="bodyArea" prefRowCount="12" VBox.vgrow="ALWAYS"/>
-                            <Button fx:id="executeButton" maxWidth="Infinity" onAction="#executeEndpoint" styleClass="primary" text="Exécuter"/>
-                        </VBox>
-                        <VBox spacing="10">
-                            <padding><Insets bottom="16" left="16" right="16" top="16"/></padding>
+                <Tab fx:id="servicesTab" text="Services métiers">
+                    <VBox spacing="0" styleClass="workspace">
+                        <HBox alignment="CENTER_LEFT" styleClass="workspace-header">
+                            <VBox spacing="3">
+                                <Label styleClass="page-title" text="Centre des services métiers"/>
+                                <Label styleClass="page-subtitle" text="Accédez aux opérations, conversions, services, Jeton Cash, KYC et données clients"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label styleClass="step-badge" text="1. Choisir"/>
+                            <Label styleClass="step-badge" text="2. Renseigner"/>
+                            <Label styleClass="step-badge" text="3. Confirmer"/>
+                        </HBox>
+                    <SplitPane dividerPositions="0.43" VBox.vgrow="ALWAYS">
+                        <ScrollPane fitToWidth="true">
+                            <VBox spacing="14" styleClass="action-panel">
+                                <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+                                <Label styleClass="panel-title" text="Accès rapides"/>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="33.33"/>
+                                        <ColumnConstraints percentWidth="33.33"/>
+                                        <ColumnConstraints percentWidth="33.33"/>
+                                    </columnConstraints>
+                                    <Button maxWidth="Infinity" onAction="#openOperationsOverview" styleClass="quick-action" text="Transferts &amp; retraits" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                    <Button maxWidth="Infinity" onAction="#openConversionsOverview" styleClass="quick-action" text="Conversions" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                    <Button maxWidth="Infinity" onAction="#openCashTokensOverview" styleClass="quick-action" text="Jeton Cash" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                                    <Button maxWidth="Infinity" onAction="#openBillingOverview" styleClass="quick-action" text="Partenaires &amp; services" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                    <Button maxWidth="Infinity" onAction="#openKycOverview" styleClass="quick-action" text="Contrôle KYC" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                    <Button maxWidth="Infinity" onAction="#openUsersOverview" styleClass="quick-action" text="Clients &amp; agents" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                </GridPane>
+                                <Separator/>
+                                <Label styleClass="panel-title" text="Nouvelle instruction"/>
+                                <Label styleClass="help-text" text="Sélectionnez le service puis complétez les champs obligatoires." wrapText="true"/>
+                                <GridPane hgap="12" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50"/>
+                                        <ColumnConstraints percentWidth="50"/>
+                                    </columnConstraints>
+                                    <Label styleClass="field-label" text="Domaine de gestion" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                    <Label styleClass="field-label" text="Action administrative" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                    <ComboBox fx:id="moduleCombo" maxWidth="Infinity" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                    <ComboBox fx:id="endpointCombo" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                </GridPane>
+                                <Label fx:id="actionDescriptionLabel" styleClass="action-description" text="Sélectionnez une action." wrapText="true"/>
+                                <VBox spacing="7" styleClass="action-preview-card">
+                                    <Label styleClass="preview-eyebrow" text="APERÇU DE L'ACTION"/>
+                                    <Label fx:id="previewTitleLabel" styleClass="preview-title" text="Aucune action sélectionnée"/>
+                                    <GridPane hgap="10" vgap="5">
+                                        <Label styleClass="preview-key" text="Domaine" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                        <Label fx:id="previewModuleLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                        <Label styleClass="preview-key" text="Type" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                        <Label fx:id="previewMethodLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <Label styleClass="preview-key" text="Impact" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                        <Label fx:id="previewImpactLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                    </GridPane>
+                                    <HBox alignment="CENTER_RIGHT" spacing="8">
+                                        <Button onAction="#clearActionForm" styleClass="secondary-button compact-button" text="Réinitialiser"/>
+                                        <Button onAction="#executeEndpoint" styleClass="primary compact-button" text="Lancer cette action"/>
+                                    </HBox>
+                                </VBox>
+                                <Separator/>
+                                <Label styleClass="panel-title" text="Données de l'instruction"/>
+                                <VBox fx:id="actionForm" spacing="9"/>
+                                <TitledPane animated="false" expanded="false" text="Options techniques">
+                                    <content>
+                                        <VBox spacing="8">
+                                            <Label text="Chemin du service"/>
+                                            <TextField fx:id="pathField"/>
+                                            <Label text="Paramètres techniques"/>
+                                            <TextArea fx:id="variablesArea" prefRowCount="3"/>
+                                            <Label text="Données JSON"/>
+                                            <TextArea fx:id="bodyArea" prefRowCount="8"/>
+                                        </VBox>
+                                    </content>
+                                </TitledPane>
+                                <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-actions">
+                                    <Button onAction="#clearActionForm" styleClass="secondary-button" text="Réinitialiser"/>
+                                    <Button fx:id="executeButton" onAction="#executeEndpoint" styleClass="primary" text="Confirmer l'action"/>
+                                </HBox>
+                            </VBox>
+                        </ScrollPane>
+                        <VBox spacing="12" styleClass="result-panel">
+                            <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
                             <HBox alignment="CENTER_LEFT">
-                                <Label styleClass="section-title" text="Résultat"/>
+                                <VBox>
+                                    <Label styleClass="panel-title" text="Résultat et aperçu"/>
+                                    <Label fx:id="resultSummaryLabel" styleClass="help-text" text="Aucune action exécutée."/>
+                                </VBox>
                                 <Region HBox.hgrow="ALWAYS"/>
-                                <Button onAction="#exportResponse" text="Exporter CSV"/>
+                                <Button onAction="#exportResponse" styleClass="secondary-button" text="Exporter"/>
                             </HBox>
-                            <TableView fx:id="resultTable" prefHeight="340" VBox.vgrow="ALWAYS"/>
-                            <Label text="Réponse brute"/>
-                            <TextArea fx:id="responseArea" editable="false" prefRowCount="12" wrapText="true"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="table-toolbar">
+                                <TextField fx:id="resultFilterField" HBox.hgrow="ALWAYS" onKeyReleased="#filterResults" promptText="Rechercher dans les résultats..."/>
+                                <Label fx:id="resultCountLabel" styleClass="count-badge" text="0 résultat"/>
+                            </HBox>
+                            <HBox fx:id="recordActions" alignment="CENTER_LEFT" spacing="8" styleClass="record-actions">
+                                <Label styleClass="help-text" text="Actions sur la ligne sélectionnée :"/>
+                                <Button fx:id="editRecordButton" onAction="#editSelectedRecord" styleClass="secondary-button compact-button" text="Modifier"/>
+                                <Button fx:id="activateUserButton" onAction="#activateSelectedUser" styleClass="success-button compact-button" text="Activer"/>
+                                <Button fx:id="deactivateUserButton" onAction="#deactivateSelectedUser" styleClass="warning-button compact-button" text="Désactiver"/>
+                                <Button fx:id="deleteRecordButton" onAction="#deleteSelectedRecord" styleClass="danger-button compact-button" text="Supprimer"/>
+                            </HBox>
+                            <TableView fx:id="resultTable" prefHeight="520" VBox.vgrow="ALWAYS"/>
+                            <TitledPane animated="false" expanded="false" text="Afficher la réponse technique">
+                                <content>
+                                    <TextArea fx:id="responseArea" editable="false" prefRowCount="10" wrapText="true"/>
+                                </content>
+                            </TitledPane>
                         </VBox>
                     </SplitPane>
+                    </VBox>
                 </Tab>
-                <Tab text="Carte GPS">
+                <Tab text="Réseau">
                     <BorderPane>
                         <top>
-                            <HBox alignment="CENTER_LEFT" spacing="12">
-                                <padding><Insets bottom="10" left="16" right="16" top="10"/></padding>
-                                <Label styleClass="section-title" text="Positions en temps réel"/>
+                            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="workspace-header">
+                                <VBox>
+                                    <Label styleClass="page-title" text="Présence terrain"/>
+                                    <Label styleClass="page-subtitle" text="Localisation des agents et utilisateurs autorisés"/>
+                                </VBox>
                                 <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="gpsStatusLabel" styleClass="map-status" text="Chargement de la carte..."/>
+                                <Label fx:id="gpsCountLabel" styleClass="count-badge" text="0 position"/>
                                 <Label text="Client: vert | Agent: bleu | Administration: rouge"/>
-                                <Button onAction="#refreshGpsMap" text="Actualiser"/>
+                                <Button onAction="#refreshGpsMap" styleClass="secondary-button" text="Actualiser la carte"/>
                             </HBox>
                         </top>
                         <center>
-                            <WebView fx:id="gpsMap"/>
+                            <StackPane styleClass="map-container">
+                                <WebView fx:id="gpsMap" minHeight="500"/>
+                            </StackPane>
                         </center>
                     </BorderPane>
                 </Tab>
                 <Tab text="Audit">
-                    <TableView fx:id="auditTable">
+                    <VBox spacing="12" styleClass="workspace">
+                        <padding><Insets bottom="20" left="22" right="22" top="20"/></padding>
+                        <VBox spacing="3">
+                            <Label styleClass="page-title" text="Journal des activités"/>
+                            <Label styleClass="page-subtitle" text="Traçabilité des actions réalisées dans le back-office"/>
+                        </VBox>
+                    <TableView fx:id="auditTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="auditDate" prefWidth="220" text="Date"/>
                             <TableColumn fx:id="auditUser" prefWidth="180" text="Administrateur"/>
@@ -96,15 +259,24 @@
                             <TableColumn fx:id="auditResult" prefWidth="140" text="Résultat"/>
                         </columns>
                     </TableView>
+                    </VBox>
                 </Tab>
-                <Tab text="Configuration">
-                    <VBox maxWidth="700" spacing="12">
-                        <padding><Insets bottom="30" left="30" right="30" top="30"/></padding>
-                        <Label styleClass="section-title" text="Connexion au backend"/>
-                        <Label text="URL de base de l'API"/>
-                        <TextField fx:id="baseUrlField" promptText="https://dbr.b2la.online"/>
-                        <Label text="La variable DBR_API_BASE_URL est prioritaire sur cette valeur."/>
-                        <Button onAction="#saveConfiguration" styleClass="primary" text="Enregistrer"/>
+                <Tab text="Paramètres">
+                    <VBox spacing="18" styleClass="workspace">
+                        <padding><Insets bottom="30" left="30" right="30" top="26"/></padding>
+                        <VBox spacing="3">
+                            <Label styleClass="page-title" text="Paramètres de la plateforme"/>
+                            <Label styleClass="page-subtitle" text="Configuration réservée aux administrateurs habilités"/>
+                        </VBox>
+                        <VBox maxWidth="720" spacing="14" styleClass="settings-card">
+                            <Label styleClass="panel-title" text="Connexion au service central"/>
+                            <Label styleClass="field-label" text="Adresse du service DBR"/>
+                            <TextField fx:id="baseUrlField" promptText="https://dbr.b2la.online"/>
+                            <Label styleClass="help-text" text="Une adresse incorrecte bloque les opérations. Contactez le support avant toute modification." wrapText="true"/>
+                            <HBox alignment="CENTER_RIGHT">
+                                <Button onAction="#saveConfiguration" styleClass="primary" text="Enregistrer les paramètres"/>
+                            </HBox>
+                        </VBox>
                     </VBox>
                 </Tab>
             </tabs>

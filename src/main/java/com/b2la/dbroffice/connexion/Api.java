@@ -1,5 +1,6 @@
 package com.b2la.dbroffice.connexion;
 
+import com.b2la.dbroffice.api.AppConfig;
 import com.b2la.dbroffice.dao.*;
 import com.b2la.dbroffice.preference.Storage;
 import com.google.gson.Gson;
@@ -23,7 +24,7 @@ public class Api {
     public static LoginResponse login(LoginRequest request){
 
         try {
-            URL url= new URL("https://dbr.b2la.online/Users/connexion");
+            URL url= new URL(AppConfig.endpoint("/users/connexion"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
@@ -68,7 +69,7 @@ public class Api {
     public static CountUsers solde(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/Accounts/solde");
+            URL url= new URL(AppConfig.endpoint("/accounts/solde"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -101,7 +102,7 @@ public class Api {
     public static List<StreamUser> userPerson(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/Users");
+            URL url= new URL(AppConfig.endpoint("/users"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -135,7 +136,7 @@ public class Api {
     public static List<Operation> operationList(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/Operations");
+            URL url= new URL(AppConfig.endpoint("/operations"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -169,7 +170,7 @@ public class Api {
     public static List<Cost> costList(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/costs");
+            URL url= new URL(AppConfig.endpoint("/costs"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -205,7 +206,7 @@ public class Api {
         assert bearer != null;
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/costs");
+            URL url= new URL(AppConfig.endpoint("/costs"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -245,7 +246,7 @@ public class Api {
         assert bearer != null;
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/costs/"+request.getId());
+            URL url= new URL(AppConfig.endpoint("/costs/" + request.getId()));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("PUT");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -285,7 +286,7 @@ public class Api {
         assert bearer != null;
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/costs/"+request.getId());
+            URL url= new URL(AppConfig.endpoint("/costs/" + request.getId()));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("DELETE");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -313,12 +314,12 @@ public class Api {
         }
     }
 
-    public static User addUser(User request, String urlUser){
+    public static User addUser(User request, String path){
         LoginResponse bearer=Storage.loadLogin();
         assert bearer != null;
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL(urlUser);
+            URL url= new URL(AppConfig.endpoint(path));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -361,7 +362,7 @@ public class Api {
         assert bearer != null;
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/Users/"+request.getId());
+            URL url= new URL(AppConfig.endpoint("/users/" + request.getId()));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("PUT");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -415,7 +416,7 @@ public class Api {
     public static boolean activation(Map<String, Integer> code){
 
         try {
-            URL url= new URL("https://dbr.b2la.online/Users/activation");
+            URL url= new URL(AppConfig.endpoint("/users/activation"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
@@ -464,7 +465,7 @@ public class Api {
     public static List<Accounts> listAccounts(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/Accounts");
+            URL url= new URL(AppConfig.endpoint("/accounts"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -498,7 +499,7 @@ public class Api {
     public static List<Commission> listCommissions(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/commission");
+            URL url= new URL(AppConfig.endpoint("/commission"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
@@ -532,7 +533,7 @@ public class Api {
     public static List<Operation> listOperation(LoginResponse bearer){
         String bearerUser= bearer.getBearer();
         try {
-            URL url= new URL("https://dbr.b2la.online/Operations");
+            URL url= new URL(AppConfig.endpoint("/operations"));
             HttpURLConnection con=(HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization","Bearer "+bearerUser);
