@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane prefHeight="800.0" prefWidth="1280.0" stylesheets="@admin-console.css"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.b2la.dbroffice.controller.AdminConsoleController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="top-bar">
+            <padding><Insets bottom="14" left="20" right="20" top="14"/></padding>
+            <Label styleClass="brand" text="DBR BACK-OFFICE"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <ProgressIndicator fx:id="progress" prefHeight="24" prefWidth="24" visible="false"/>
+            <Label fx:id="identityLabel" styleClass="identity" text="Utilisateur"/>
+            <Button onAction="#logout" text="Déconnexion"/>
+        </HBox>
+    </top>
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Dashboard">
+                    <VBox spacing="18">
+                        <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+                        <HBox spacing="16">
+                            <VBox styleClass="kpi"><Label text="Utilisateurs"/><Label fx:id="usersKpi" styleClass="kpi-value" text="-"/></VBox>
+                            <VBox styleClass="kpi"><Label text="Opérations"/><Label fx:id="operationsKpi" styleClass="kpi-value" text="-"/></VBox>
+                            <VBox styleClass="kpi"><Label text="Dossiers KYC"/><Label fx:id="kycKpi" styleClass="kpi-value" text="-"/></VBox>
+                            <VBox styleClass="kpi"><Label text="API"/><Label fx:id="apiStatusKpi" styleClass="kpi-value" text="À vérifier"/></VBox>
+                            <Button onAction="#refreshDashboard" text="Actualiser"/>
+                        </HBox>
+                        <BarChart fx:id="operationChart" animated="false" title="Volumes par type d'opération" VBox.vgrow="ALWAYS">
+                            <xAxis><CategoryAxis label="Type"/></xAxis>
+                            <yAxis><NumberAxis label="Nombre"/></yAxis>
+                        </BarChart>
+                    </VBox>
+                </Tab>
+                <Tab text="Modules API">
+                    <SplitPane dividerPositions="0.42">
+                        <VBox spacing="10">
+                            <padding><Insets bottom="16" left="16" right="16" top="16"/></padding>
+                            <Label styleClass="section-title" text="Opération back-office"/>
+                            <Label text="Module"/>
+                            <ComboBox fx:id="moduleCombo" maxWidth="Infinity"/>
+                            <Label text="Endpoint"/>
+                            <ComboBox fx:id="endpointCombo" maxWidth="Infinity"/>
+                            <Label text="Chemin"/>
+                            <TextField fx:id="pathField"/>
+                            <Label text="Variables de chemin / requête (JSON)"/>
+                            <TextArea fx:id="variablesArea" prefRowCount="4"/>
+                            <Label text="Corps de la requête"/>
+                            <TextArea fx:id="bodyArea" prefRowCount="12" VBox.vgrow="ALWAYS"/>
+                            <Button fx:id="executeButton" maxWidth="Infinity" onAction="#executeEndpoint" styleClass="primary" text="Exécuter"/>
+                        </VBox>
+                        <VBox spacing="10">
+                            <padding><Insets bottom="16" left="16" right="16" top="16"/></padding>
+                            <HBox alignment="CENTER_LEFT">
+                                <Label styleClass="section-title" text="Résultat"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button onAction="#exportResponse" text="Exporter CSV"/>
+                            </HBox>
+                            <TableView fx:id="resultTable" prefHeight="340" VBox.vgrow="ALWAYS"/>
+                            <Label text="Réponse brute"/>
+                            <TextArea fx:id="responseArea" editable="false" prefRowCount="12" wrapText="true"/>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+                <Tab text="Carte GPS">
+                    <BorderPane>
+                        <top>
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <padding><Insets bottom="10" left="16" right="16" top="10"/></padding>
+                                <Label styleClass="section-title" text="Positions en temps réel"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="Client: vert | Agent: bleu | Administration: rouge"/>
+                                <Button onAction="#refreshGpsMap" text="Actualiser"/>
+                            </HBox>
+                        </top>
+                        <center>
+                            <WebView fx:id="gpsMap"/>
+                        </center>
+                    </BorderPane>
+                </Tab>
+                <Tab text="Audit">
+                    <TableView fx:id="auditTable">
+                        <columns>
+                            <TableColumn fx:id="auditDate" prefWidth="220" text="Date"/>
+                            <TableColumn fx:id="auditUser" prefWidth="180" text="Administrateur"/>
+                            <TableColumn fx:id="auditAction" prefWidth="260" text="Action"/>
+                            <TableColumn fx:id="auditTarget" prefWidth="360" text="Cible"/>
+                            <TableColumn fx:id="auditResult" prefWidth="140" text="Résultat"/>
+                        </columns>
+                    </TableView>
+                </Tab>
+                <Tab text="Configuration">
+                    <VBox maxWidth="700" spacing="12">
+                        <padding><Insets bottom="30" left="30" right="30" top="30"/></padding>
+                        <Label styleClass="section-title" text="Connexion au backend"/>
+                        <Label text="URL de base de l'API"/>
+                        <TextField fx:id="baseUrlField" promptText="https://dbr.b2la.online"/>
+                        <Label text="La variable DBR_API_BASE_URL est prioritaire sur cette valeur."/>
+                        <Button onAction="#saveConfiguration" styleClass="primary" text="Enregistrer"/>
+                    </VBox>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>
