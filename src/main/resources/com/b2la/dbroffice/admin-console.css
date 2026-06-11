@@ -316,6 +316,60 @@
     -fx-min-width: 82;
 }
 
+.selected-preview {
+    -fx-background-color: white;
+    -fx-border-color: #b8d8e5;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 12;
+}
+
+.detail-view-tabs {
+    -fx-tab-min-width: 90;
+}
+
+.detail-list {
+    -fx-background-color: #f8fafc;
+}
+
+.detail-block {
+    -fx-background-color: white;
+    -fx-border-color: #d9e2ec;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 12;
+}
+
+.detail-block-title {
+    -fx-text-fill: #087f8c;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.detail-grid {
+    -fx-background-color: transparent;
+}
+
+.detail-key {
+    -fx-text-fill: #627d98;
+    -fx-font-weight: bold;
+}
+
+.detail-value {
+    -fx-text-fill: #172033;
+}
+
+.detail-empty {
+    -fx-text-fill: #627d98;
+    -fx-font-style: italic;
+    -fx-padding: 14;
+}
+
+.overview-dialog {
+    -fx-pref-width: 1000;
+    -fx-pref-height: 700;
+}
+
 .success-button {
     -fx-background-color: #dcfce7;
     -fx-text-fill: #166534;

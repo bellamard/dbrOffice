@@ -13,13 +13,14 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -60,6 +61,8 @@ public class AdminConsoleController {
     @FXML private Label previewMethodLabel;
     @FXML private Label previewImpactLabel;
     @FXML private Tab servicesTab;
+    @FXML private Tab auditTab;
+    @FXML private Tab settingsTab;
     @FXML private ComboBox<String> moduleCombo;
     @FXML private ComboBox<EndpointDefinition> endpointCombo;
     @FXML private TextField pathField;
@@ -90,6 +93,10 @@ public class AdminConsoleController {
     @FXML private Button activateUserButton;
     @FXML private Button deactivateUserButton;
     @FXML private Button deleteRecordButton;
+    @FXML private Button userOverviewButton;
+    @FXML private VBox selectedPreview;
+    @FXML private Label selectedPreviewTitle;
+    @FXML private VBox selectedPreviewContent;
 
     private final ApiClient api = ApiClient.getInstance();
     private final AuditService audit = AuditService.getInstance();
@@ -106,6 +113,7 @@ public class AdminConsoleController {
         baseUrlField.setText(AppConfig.baseUrl());
         environmentLabel.setText(isLocalEnvironment() ? "LOCAL" : "PRODUCTION");
         configureAuditTable();
+        configureRoleVisibility();
         configureCatalog();
         refreshAudit();
         initializeMap();
@@ -113,11 +121,21 @@ public class AdminConsoleController {
         refreshDashboard();
     }
 
+    private void configureRoleVisibility() {
+        boolean auditAllowed = AccessControl.allows(SessionContext.role(), Permission.AUDIT_READ);
+        auditTab.setDisable(!auditAllowed);
+        settingsTab.setDisable(!AccessControl.allows(SessionContext.role(), Permission.CONFIG_WRITE));
+    }
+
     private void configureRecordActions() {
         recordActions.setVisible(false);
         recordActions.setManaged(false);
         resultTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, selected) -> updateRecordActions());
+                (observable, oldValue, selected) -> {
+                    updateRecordActions();
+                    showSelectedPreview(selected);
+                });
+        showSelectedPreview(null);
     }
 
     private void initializeMap() {
@@ -261,6 +279,9 @@ public class AdminConsoleController {
         boolean readAction = current != null && "GET".equals(current.method());
         String module = current == null ? "" : current.module();
         boolean userModule = "Utilisateurs".equals(module);
+        boolean userStateAllowed = userModule && authorizedEndpoints.stream()
+                .anyMatch(endpoint -> endpoint.module().equals(module)
+                        && endpoint.name().equals("Activer ou désactiver un utilisateur"));
         boolean editable = hasSelection && readAction && authorizedEndpoints.stream()
                 .anyMatch(endpoint -> endpoint.module().equals(module)
                         && endpoint.name().startsWith("Modifier"));
@@ -275,10 +296,12 @@ public class AdminConsoleController {
         editRecordButton.setManaged(editable);
         deleteRecordButton.setVisible(deletable);
         deleteRecordButton.setManaged(deletable);
-        activateUserButton.setVisible(userModule);
-        activateUserButton.setManaged(userModule);
-        deactivateUserButton.setVisible(userModule);
-        deactivateUserButton.setManaged(userModule);
+        userOverviewButton.setVisible(userModule);
+        userOverviewButton.setManaged(userModule);
+        activateUserButton.setVisible(userStateAllowed);
+        activateUserButton.setManaged(userStateAllowed);
+        deactivateUserButton.setVisible(userStateAllowed);
+        deactivateUserButton.setManaged(userStateAllowed);
     }
 
     @FXML
@@ -580,6 +603,170 @@ public class AdminConsoleController {
         prepareUserStateAction(false);
     }
 
+    @FXML
+    private void openSelectedUserOverview() {
+        Map<String, String> selected = selectedResult();
+        if (selected == null) return;
+        String userId = selectedId(selected);
+        String username = firstSelectedValue(selected, "phone", "username", "email");
+        setBusy(true);
+        runAsync(
+                () -> User360Service.getInstance().load(userId, username),
+                this::showUserOverview,
+                exception -> showError(apiErrorMessage(exception)));
+    }
+
+    private void showUserOverview(User360Snapshot snapshot) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Fiche utilisateur 360°");
+        dialog.setHeaderText("Utilisateur #" + snapshot.userId());
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        TabPane tabs = new TabPane();
+        snapshot.sections().forEach((name, content) -> {
+            Tab tab = new Tab(name, create360Section(content));
+            tab.setClosable(false);
+            tabs.getTabs().add(tab);
+        });
+        tabs.setPrefSize(980, 640);
+        dialog.getDialogPane().getStylesheets().add(Objects.requireNonNull(
+                HelloApplication.class.getResource("admin-console.css")).toExternalForm());
+        dialog.getDialogPane().getStyleClass().add("overview-dialog");
+        dialog.getDialogPane().setContent(tabs);
+        audit.record("CONSULTATION FICHE 360", "/users/" + snapshot.userId(), "SUCCÈS");
+        refreshAudit();
+        dialog.showAndWait();
+    }
+
+    private Node create360Section(String content) {
+        TabPane views = new TabPane();
+        views.getStyleClass().add("detail-view-tabs");
+
+        Node preview;
+        try {
+            preview = structuredPreview(JsonParser.parseString(content));
+        } catch (JsonParseException exception) {
+            preview = messagePreview(content.isBlank() ? "Aucune donnée disponible." : content);
+        }
+
+        TextArea json = new TextArea(prettyJson(content));
+        json.setEditable(false);
+        json.setWrapText(true);
+
+        Tab previewTab = new Tab("Aperçu", preview);
+        previewTab.setClosable(false);
+        Tab jsonTab = new Tab("JSON", json);
+        jsonTab.setClosable(false);
+        views.getTabs().addAll(previewTab, jsonTab);
+        return views;
+    }
+
+    private Node structuredPreview(JsonElement source) {
+        JsonElement payload = previewPayload(source);
+        VBox content = new VBox(10);
+        content.getStyleClass().add("detail-list");
+        content.setPadding(new Insets(12));
+
+        if (payload == null || payload.isJsonNull()) {
+            content.getChildren().add(messagePreview("Aucune donnée disponible."));
+        } else if (payload.isJsonArray()) {
+            JsonArray array = payload.getAsJsonArray();
+            if (array.isEmpty()) {
+                content.getChildren().add(messagePreview("Aucun élément dans cette section."));
+            } else {
+                int index = 1;
+                for (JsonElement item : array) {
+                    content.getChildren().add(detailBlock(item, "Élément " + index++));
+                }
+            }
+        } else {
+            content.getChildren().add(detailBlock(payload, ""));
+        }
+
+        ScrollPane scroll = new ScrollPane(content);
+        scroll.setFitToWidth(true);
+        return scroll;
+    }
+
+    private Node detailBlock(JsonElement element, String heading) {
+        VBox block = new VBox(8);
+        block.getStyleClass().add("detail-block");
+        if (!heading.isBlank()) {
+            Label title = new Label(heading);
+            title.getStyleClass().add("detail-block-title");
+            block.getChildren().add(title);
+        }
+
+        if (element != null && element.isJsonObject()) {
+            block.getChildren().add(detailGrid(flattenObject(element.getAsJsonObject())));
+        } else {
+            Label value = new Label(compact(element));
+            value.setWrapText(true);
+            value.getStyleClass().add("detail-value");
+            block.getChildren().add(value);
+        }
+        return block;
+    }
+
+    private GridPane detailGrid(Map<String, String> values) {
+        GridPane grid = new GridPane();
+        grid.getStyleClass().add("detail-grid");
+        grid.setHgap(16);
+        grid.setVgap(8);
+        ColumnConstraints keyColumn = new ColumnConstraints();
+        keyColumn.setMinWidth(150);
+        keyColumn.setPrefWidth(210);
+        ColumnConstraints valueColumn = new ColumnConstraints();
+        valueColumn.setHgrow(Priority.ALWAYS);
+        grid.getColumnConstraints().addAll(keyColumn, valueColumn);
+
+        int row = 0;
+        for (Map.Entry<String, String> entry : values.entrySet()) {
+            Label key = new Label(friendlyColumnName(entry.getKey()));
+            key.getStyleClass().add("detail-key");
+            Label value = new Label(displayDetailValue(entry.getValue()));
+            value.setWrapText(true);
+            value.setMaxWidth(Double.MAX_VALUE);
+            value.getStyleClass().add("detail-value");
+            grid.addRow(row++, key, value);
+        }
+        if (row == 0) {
+            grid.add(messagePreview("Aucune information à afficher."), 0, 0, 2, 1);
+        }
+        return grid;
+    }
+
+    private static Node messagePreview(String text) {
+        Label label = new Label(text);
+        label.setWrapText(true);
+        label.getStyleClass().add("detail-empty");
+        return label;
+    }
+
+    private static JsonElement previewPayload(JsonElement root) {
+        JsonElement current = root;
+        while (current != null && current.isJsonObject()) {
+            JsonObject object = current.getAsJsonObject();
+            JsonElement next = object.get("data");
+            if (next == null) next = object.get("response");
+            if (next == null) break;
+            current = next;
+        }
+        return current;
+    }
+
+    private static String displayDetailValue(String value) {
+        if (value == null || value.isBlank()) {
+            return "Non renseigné";
+        }
+        if ("true".equalsIgnoreCase(value)) {
+            return "Oui";
+        }
+        if ("false".equalsIgnoreCase(value)) {
+            return "Non";
+        }
+        return value;
+    }
+
     private void prepareUserStateAction(boolean active) {
         Map<String, String> selected = selectedResult();
         if (selected == null) return;
@@ -645,6 +832,20 @@ public class AdminConsoleController {
             if (value != null && !value.isBlank()) return value;
         }
         throw new IllegalArgumentException("Cette ligne ne contient aucun identifiant exploitable.");
+    }
+
+    private static String firstSelectedValue(Map<String, String> selected, String... names) {
+        for (String name : names) {
+            for (Map.Entry<String, String> entry : selected.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(name)
+                        || entry.getKey().toLowerCase(Locale.ROOT).endsWith("." + name.toLowerCase(Locale.ROOT))) {
+                    if (entry.getValue() != null && !entry.getValue().isBlank()) {
+                        return entry.getValue();
+                    }
+                }
+            }
+        }
+        return "";
     }
 
     private static JsonElement convertedValue(String text, JsonElement original) {
@@ -792,6 +993,7 @@ public class AdminConsoleController {
         resultTable.getItems().clear();
         resultRows.clear();
         resultFilterField.clear();
+        showSelectedPreview(null);
         try {
             JsonElement root = displayPayload(JsonParser.parseString(body));
             List<JsonObject> objects = new ArrayList<>();
@@ -848,6 +1050,23 @@ public class AdminConsoleController {
 
     private void updateResultCount(int count) {
         resultCountLabel.setText(count + (count > 1 ? " résultats" : " résultat"));
+    }
+
+    private void showSelectedPreview(Map<String, String> selected) {
+        boolean visible = selected != null;
+        selectedPreview.setVisible(visible);
+        selectedPreview.setManaged(visible);
+        selectedPreviewContent.getChildren().clear();
+        if (!visible) {
+            selectedPreviewTitle.setText("Détail de la sélection");
+            return;
+        }
+
+        String identifier = firstSelectedValue(selected, "id", "reference", "codeReference", "phone", "name");
+        selectedPreviewTitle.setText(identifier.isBlank()
+                ? "Détail de la sélection"
+                : "Détail · " + identifier);
+        selectedPreviewContent.getChildren().add(detailGrid(selected));
     }
 
     @FXML
@@ -1413,9 +1632,8 @@ public class AdminConsoleController {
             return "Utilisateur";
         }
         return switch (SessionContext.role()) {
-            case SUPER_ADMIN -> "Administrateur";
-            case COMPLIANCE_AGENT -> "Agent back-office";
-            case ANALYST -> "Analyste";
+            case ADMIN -> "Administrateur";
+            case OFFICE -> "Agent Office";
         };
     }
 

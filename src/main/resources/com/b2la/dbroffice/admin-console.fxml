@@ -206,12 +206,25 @@
                             </HBox>
                             <HBox fx:id="recordActions" alignment="CENTER_LEFT" spacing="8" styleClass="record-actions">
                                 <Label styleClass="help-text" text="Actions sur la ligne sélectionnée :"/>
+                                <Button fx:id="userOverviewButton" onAction="#openSelectedUserOverview" styleClass="primary compact-button" text="Fiche 360°"/>
                                 <Button fx:id="editRecordButton" onAction="#editSelectedRecord" styleClass="secondary-button compact-button" text="Modifier"/>
                                 <Button fx:id="activateUserButton" onAction="#activateSelectedUser" styleClass="success-button compact-button" text="Activer"/>
                                 <Button fx:id="deactivateUserButton" onAction="#deactivateSelectedUser" styleClass="warning-button compact-button" text="Désactiver"/>
                                 <Button fx:id="deleteRecordButton" onAction="#deleteSelectedRecord" styleClass="danger-button compact-button" text="Supprimer"/>
                             </HBox>
                             <TableView fx:id="resultTable" prefHeight="520" VBox.vgrow="ALWAYS"/>
+                            <VBox fx:id="selectedPreview" spacing="10" styleClass="selected-preview">
+                                <HBox alignment="CENTER_LEFT">
+                                    <Label fx:id="selectedPreviewTitle" styleClass="panel-title" text="Détail de la sélection"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label styleClass="preview-eyebrow" text="APERÇU"/>
+                                </HBox>
+                                <ScrollPane fitToWidth="true" maxHeight="260" prefViewportHeight="170">
+                                    <content>
+                                        <VBox fx:id="selectedPreviewContent"/>
+                                    </content>
+                                </ScrollPane>
+                            </VBox>
                             <TitledPane animated="false" expanded="false" text="Afficher la réponse technique">
                                 <content>
                                     <TextArea fx:id="responseArea" editable="false" prefRowCount="10" wrapText="true"/>
@@ -243,7 +256,7 @@
                         </center>
                     </BorderPane>
                 </Tab>
-                <Tab text="Audit">
+                <Tab fx:id="auditTab" text="Audit">
                     <VBox spacing="12" styleClass="workspace">
                         <padding><Insets bottom="20" left="22" right="22" top="20"/></padding>
                         <VBox spacing="3">
@@ -261,7 +274,7 @@
                     </TableView>
                     </VBox>
                 </Tab>
-                <Tab text="Paramètres">
+                <Tab fx:id="settingsTab" text="Paramètres">
                     <VBox spacing="18" styleClass="workspace">
                         <padding><Insets bottom="30" left="30" right="30" top="26"/></padding>
                         <VBox spacing="3">

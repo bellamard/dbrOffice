@@ -6,16 +6,18 @@ import java.util.Set;
 
 public final class AccessControl {
     private static final Map<BackOfficeRole, Set<Permission>> MATRIX = Map.of(
-            BackOfficeRole.SUPER_ADMIN, EnumSet.allOf(Permission.class),
-            BackOfficeRole.COMPLIANCE_AGENT, EnumSet.allOf(Permission.class),
-            BackOfficeRole.ANALYST, EnumSet.of(
+            BackOfficeRole.ADMIN, EnumSet.allOf(Permission.class),
+            BackOfficeRole.OFFICE, EnumSet.of(
                     Permission.DASHBOARD_READ,
                     Permission.USERS_READ,
+                    Permission.KYC_READ,
+                    Permission.KYC_VALIDATE,
                     Permission.OPERATIONS_READ,
                     Permission.GPS_READ,
                     Permission.REPORTING_READ,
                     Permission.CONFIG_READ,
-                    Permission.AUDIT_READ)
+                    Permission.MESSAGING_READ,
+                    Permission.MESSAGING_WRITE)
     );
 
     private AccessControl() {

@@ -21,13 +21,13 @@ class BackendRoleResolverTest {
                 }
                 """;
 
-        assertEquals(BackOfficeRole.SUPER_ADMIN, BackendRoleResolver.fromProfile(profile));
+        assertEquals(BackOfficeRole.ADMIN, BackendRoleResolver.fromProfile(profile));
     }
 
     @Test
     void readsOfficeFromHistoricalProfile() {
         assertEquals(
-                BackOfficeRole.COMPLIANCE_AGENT,
+                BackOfficeRole.OFFICE,
                 BackendRoleResolver.fromProfile("{\"data\":{\"role\":{\"libelle\":\"OFFICE\"}}}"));
     }
 }

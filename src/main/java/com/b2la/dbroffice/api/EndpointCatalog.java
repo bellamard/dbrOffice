@@ -23,7 +23,6 @@ public final class EndpointCatalog {
                 e("Utilisateurs", "Afficher un utilisateur", "GET", "/users/{user_id}", "", Permission.USERS_READ),
                 e("Utilisateurs", "Modifier un utilisateur", "PUT", "/users/{user_id}", "{\"id\":1,\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Jean\",\"phone\":\"+243810000001\",\"email\":\"jean@example.com\",\"datebirth\":\"1995-01-15\",\"role\":{\"libelle\":\"CLIENT\"}}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Activer ou désactiver un utilisateur", "PUT", "/users/{user_id}/state", "{\"active\":false}", Permission.USERS_WRITE),
-                e("Utilisateurs", "Supprimer un utilisateur", "DELETE", "/users/{user_id}", "", Permission.USERS_WRITE),
                 e("Utilisateurs", "Profil courant", "GET", "/users/profil", "", Permission.USERS_READ),
                 e("Utilisateurs", "Ajouter l'adresse courante", "PUT", "/users/address", addressBody("12"), Permission.USERS_WRITE),
                 e("Utilisateurs", "Demander un changement de mot de passe", "POST", "/users/modifypwd", "{\"username\":\"+243810000001\"}", Permission.USERS_WRITE),
