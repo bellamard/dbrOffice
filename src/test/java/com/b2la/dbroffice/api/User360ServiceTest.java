@@ -39,4 +39,38 @@ class User360ServiceTest {
 
         assertEquals(1, result.size());
     }
+
+    @Test
+    void filtersSelectedUserBalanceFromAccountsPayload() {
+        String response = """
+                {
+                  "data": {
+                    "acctList": [
+                      {
+                        "acct": {
+                          "id": 100,
+                          "userId": 42,
+                          "balance": {"currency": "USD", "amount": 125.50}
+                        }
+                      },
+                      {
+                        "acct": {
+                          "id": 101,
+                          "userId": 9,
+                          "balance": {"currency": "CDF", "amount": 5000}
+                        }
+                      }
+                    ]
+                  }
+                }
+                """;
+
+        var result = JsonParser.parseString(
+                User360Service.filterResponse(response, "42", "")).getAsJsonArray();
+
+        assertEquals(1, result.size());
+        var account = result.get(0).getAsJsonObject().getAsJsonObject("acct");
+        assertEquals(100, account.get("id").getAsInt());
+        assertEquals(125.50, account.getAsJsonObject("balance").get("amount").getAsDouble());
+    }
 }
