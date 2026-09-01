@@ -13,14 +13,17 @@ public final class EndpointCatalog {
     public static List<EndpointDefinition> all() {
         return List.of(
                 e("Authentification", "Connexion", "POST", "/auth/login", "{\"username\":\"+243895127236\",\"password\":\"Admin@123\"}", Permission.DASHBOARD_READ),
+                e("Authentification", "Créer un compte public", "POST", "/auth/signup", "{\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Jean\",\"phone\":\"+243810000001\",\"email\":\"jean@example.com\",\"password\":\"Password@123\",\"datebirth\":\"1995-01-15\"}", Permission.USERS_WRITE),
                 e("Authentification", "Envoyer un code de récupération", "POST", "/auth/recovery/send-code", "{\"username\":\"+243810000001\"}", Permission.USERS_WRITE),
                 e("Authentification", "Vérifier un code de récupération", "POST", "/auth/recovery/verify-code", "{\"username\":\"+243810000001\",\"code\":\"123456\"}", Permission.USERS_WRITE),
                 e("Authentification", "Réinitialiser un mot de passe", "POST", "/auth/recovery/reset-password", "{\"username\":\"+243810000001\",\"code\":\"123456\",\"password\":\"NewPassword@123\"}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Créer un client", "POST", "/users", "{\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Jean\",\"phone\":\"+243810000001\",\"email\":\"jean@example.com\",\"password\":\"Password@123\",\"datebirth\":\"1995-01-15\"}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Créer un agent", "POST", "/users/agent", "{\"firstname\":\"Agent\",\"lastname\":\"DBR\",\"surname\":\"Agent\",\"phone\":\"+243810000002\",\"email\":\"agent@example.com\",\"password\":\"Password@123\",\"datebirth\":\"1990-05-20\"}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Créer un provider", "POST", "/users/provider", "{\"firstname\":\"Provider\",\"lastname\":\"DBR\",\"surname\":\"Provider\",\"phone\":\"+243810000003\",\"email\":\"provider@example.com\",\"password\":\"Password@123\",\"datebirth\":\"1988-03-10\"}", Permission.USERS_WRITE),
+                e("Utilisateurs", "Créer un superviseur", "POST", "/users/superviseur", "{\"firstname\":\"Superviseur\",\"lastname\":\"DBR\",\"surname\":\"Superviseur\",\"phone\":\"+243810000004\",\"email\":\"superviseur@example.com\",\"password\":\"Password@123\",\"datebirth\":\"1985-07-10\"}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Lister les utilisateurs", "GET", "/users", "", Permission.USERS_READ),
                 e("Utilisateurs", "Afficher un utilisateur", "GET", "/users/{user_id}", "", Permission.USERS_READ),
+                e("Utilisateurs", "Supprimer un utilisateur", "DELETE", "/users/{user_id}", "", Permission.USERS_WRITE),
                 e("Utilisateurs", "Modifier un utilisateur", "PUT", "/users/{user_id}", "{\"id\":1,\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Jean\",\"phone\":\"+243810000001\",\"email\":\"jean@example.com\",\"datebirth\":\"1995-01-15\",\"role\":{\"libelle\":\"CLIENT\"}}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Activer ou désactiver un utilisateur", "PUT", "/users/{user_id}/state", "{\"active\":false}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Profil courant", "GET", "/users/profil", "", Permission.USERS_READ),
@@ -30,11 +33,27 @@ public final class EndpointCatalog {
                 e("Utilisateurs", "Activer un compte", "POST", "/users/activation", "{\"username\":\"+243810000001\",\"code\":\"123456\"}", Permission.USERS_WRITE),
                 e("Utilisateurs", "Vérifier un username", "POST", "/users/check", "+243810000001", "text/plain", Permission.USERS_READ),
                 e("Utilisateurs", "Vérifier les contacts", "POST", "/users/check-contacts", "[\"+243810000001\",\"+243810000002\"]", Permission.USERS_READ),
+                e("Utilisateurs", "Rafraîchir la session", "POST", "/users/refresh-token", "{\"refresh\":\"REFRESH_TOKEN\"}", Permission.DASHBOARD_READ),
+                e("Utilisateurs", "Connexion historique", "POST", "/users/connexion", "{\"username\":\"+243895127236\",\"password\":\"Admin@123\"}", Permission.DASHBOARD_READ),
+                e("Utilisateurs", "Déconnexion", "POST", "/users/deconnexion", "", Permission.DASHBOARD_READ),
 
                 e("Comptes", "Créer un compte", "POST", "/accounts", "{\"id\":1,\"name\":\"Dollar americain\",\"signe\":\"USD\"}", Permission.CONFIG_WRITE),
                 e("Comptes", "Solde courant", "GET", "/accounts/solde", "", Permission.USERS_READ),
                 e("Comptes", "Afficher un compte", "GET", "/accounts/{account_id}", "", Permission.USERS_READ),
                 e("Comptes", "Lister les comptes", "GET", "/accounts", "", Permission.USERS_READ),
+
+                e("Certificats PC", "Générer un certificat PC", "POST", "/certificats-pc", "{\"pcName\":\"POSTE-CAISSE-01\",\"fingerprint\":\"SERIAL-OU-HASH-MACHINE\",\"userPhone\":\"+243810000002\",\"expiresAt\":\"2027-09-01T00:00:00Z\"}", Permission.DEVICE_CERTIFICATES_WRITE),
+                e("Certificats PC", "Valider un certificat PC", "POST", "/certificats-pc/validation", "{\"certificate\":\"DBR-PC-CERT.certificateId.secret\"}", Permission.DEVICE_CERTIFICATES_WRITE),
+                e("Certificats PC", "Lister les certificats PC", "GET", "/certificats-pc", "", Permission.DEVICE_CERTIFICATES_READ),
+                e("Certificats PC", "Afficher un certificat PC", "GET", "/certificats-pc/{certificate_id}", "", Permission.DEVICE_CERTIFICATES_READ),
+                e("Certificats PC", "Certificats PC d'un utilisateur", "GET", "/certificats-pc/user/{phone}", "", Permission.DEVICE_CERTIFICATES_READ),
+                e("Certificats PC", "Révoquer un certificat PC", "PUT", "/certificats-pc/{certificate_id}/revoke", "", Permission.DEVICE_CERTIFICATES_WRITE),
+
+                e("Affectations", "Lister les affectations", "GET", "/affectations", "", Permission.AFFECTATIONS_READ),
+                e("Affectations", "Afficher une affectation agent", "GET", "/affectations/agent/{phone_agent}", "", Permission.AFFECTATIONS_READ),
+                e("Affectations", "Créer une affectation", "POST", "/affectations", affectationBody(), Permission.AFFECTATIONS_WRITE),
+                e("Affectations", "Modifier une affectation", "PUT", "/affectations", affectationBody(), Permission.AFFECTATIONS_WRITE),
+                e("Affectations", "Supprimer une affectation agent", "DELETE", "/affectations/agent/{phone_agent}", "", Permission.AFFECTATIONS_WRITE),
 
                 e("Adresses", "Créer une adresse", "POST", "/addresses", addressBody("12"), Permission.USERS_WRITE),
                 e("Adresses", "Lister les adresses", "GET", "/addresses", "", Permission.USERS_READ),
@@ -68,6 +87,15 @@ public final class EndpointCatalog {
                 e("Opérations", "Lister les retraits", "GET", "/operations/retrait", "", Permission.OPERATIONS_READ),
                 e("Opérations", "Confirmer la clé", "POST", "/operations/clef", "{\"reference\":\"OP-REFERENCE\",\"clef\":\"123456\"}", Permission.OPERATIONS_WRITE),
                 e("Opérations", "Confirmer la clé agent", "POST", "/operations/clefCA", "{\"reference\":\"OP-REFERENCE\",\"clef\":\"123456\"}", Permission.OPERATIONS_WRITE),
+
+                e("Salaires", "Créer un salaire", "POST", "/salaires", "{\"agentPhone\":\"+243810000002\",\"devise\":\"USD\",\"ammount\":100,\"mounthyears\":\"2026-06-01T00:00:00\"}", Permission.SALAIRES_WRITE),
+                e("Salaires", "Confirmer un salaire", "POST", "/salaires/confirmation", "{\"reference\":\"OP-REFERENCE\"}", Permission.SALAIRES_WRITE),
+                e("Salaires", "Lister les salaires", "GET", "/salaires", "", Permission.SALAIRES_READ),
+                e("Salaires", "Mes salaires", "GET", "/salaires/me", "", Permission.SALAIRES_READ),
+                e("Salaires", "Salaires des agents affectés", "GET", "/salaires/agents", "", Permission.SALAIRES_READ),
+                e("Salaires", "Salaires par utilisateur", "GET", "/salaires/user/{phone}", "", Permission.SALAIRES_READ),
+                e("Salaires", "Salaires par mois", "GET", "/salaires/month?mounthyears={month}", "", Permission.SALAIRES_READ),
+                e("Salaires", "Afficher un salaire", "GET", "/salaires/{salaire_id}", "", Permission.SALAIRES_READ),
 
                 e("Conversions", "Créer une conversion", "POST", "/conversions", "{\"amount\":100,\"phoneBeneficier\":\"+243810000001\",\"typeOperation\":\"CONVERSION\",\"devise\":\"USD\",\"etranger\":\"CDF\"}", Permission.OPERATIONS_WRITE),
                 e("Conversions", "Lister les conversions", "GET", "/conversions", "", Permission.OPERATIONS_READ),
@@ -105,15 +133,20 @@ public final class EndpointCatalog {
                 e("Reporting", "Actions entre deux dates", "GET", "/reporting/actions/search?start={start}&end={end}", "", Permission.REPORTING_READ),
                 e("Reporting", "Actions par utilisateur", "GET", "/reporting/actions/user?username={username}", "", Permission.REPORTING_READ),
 
+                e("Services client", "Profil client", "GET", "/profile", "", Permission.USERS_READ),
+                e("Services client", "Modifier le profil client", "PUT", "/update-profil", "{\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Jean\",\"phone\":\"+243810000001\",\"email\":\"jean@example.com\"}", Permission.USERS_WRITE),
                 e("Services client", "Transactions", "GET", "/transactions", "", Permission.OPERATIONS_READ),
                 e("Services client", "Historiques", "GET", "/historiques", "", Permission.OPERATIONS_READ),
                 e("Services client", "Détail d'une opération", "GET", "/insights/{operation_ref}", "", Permission.OPERATIONS_READ),
                 e("Services client", "Créer un transfert", "POST", "/transfers", "{\"amount\":100,\"devise\":\"USD\",\"phone\":\"+243895127236\"}", Permission.OPERATIONS_WRITE),
                 e("Services client", "Créer un paiement", "POST", "/payments", "{\"amount\":100,\"devise\":\"USD\",\"phone\":\"+243895127236\"}", Permission.OPERATIONS_WRITE),
                 e("Services client", "Confirmer un paiement", "POST", "/payments/confirm", "{\"codeReference\":\"OP-REFERENCE\",\"clef\":\"123456\"}", Permission.OPERATIONS_WRITE),
+                e("Services client", "Modifier le mot de passe client", "POST", "/update-password", "{\"username\":\"+243810000001\",\"code\":\"123456\",\"password\":\"NewPassword@123\"}", Permission.USERS_WRITE),
                 e("Services client", "Notifications", "GET", "/notifications", "", Permission.MESSAGING_READ),
                 e("Services client", "Marquer une notification", "POST", "/state-notification", "{\"id\":\"1\",\"state\":\"READ\"}", Permission.MESSAGING_WRITE),
                 e("Services client", "Supprimer une notification", "DELETE", "/notifications/{message_id}", "", Permission.MESSAGING_WRITE),
+                e("Services client", "Données KYC client", "GET", "/kyc-data", "", Permission.KYC_READ),
+                e("Services client", "Soumettre le KYC client", "POST", "/submit-kyc", "{\"typeFile\":\"PASSPORT\",\"filePath\":\"C:\\\\tmp\\\\document.pdf\"}", "multipart/form-data", Permission.KYC_VALIDATE),
                 e("Services client", "Types de documents", "GET", "/document-types", "", Permission.KYC_READ),
                 e("Services client", "Lister les services", "GET", "/services", "", Permission.CONFIG_READ),
                 e("Services client", "Afficher un service", "GET", "/services/{etablissement_id}", "", Permission.CONFIG_READ),
@@ -136,5 +169,9 @@ public final class EndpointCatalog {
 
     private static String addressBody(String number) {
         return "{\"number\":\"" + number + "\",\"street\":\"Avenue Lumumba\",\"neighborhood\":\"Gombe\",\"community\":\"Kinshasa\",\"state\":\"Kinshasa\"}";
+    }
+
+    private static String affectationBody() {
+        return "{\"firstnameAgent\":\"Agent\",\"surnameAgent\":\"DBR\",\"phoneAgent\":\"+243810000002\",\"firstnameSuperviseur\":\"Superviseur\",\"surnameSuperviseur\":\"DBR\",\"phoneSuperviseur\":\"+243810000004\"}";
     }
 }

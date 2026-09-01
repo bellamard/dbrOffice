@@ -4,11 +4,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="560.0" prefWidth="920.0" styleClass="login-root" stylesheets="@Style.css"
+<BorderPane fx:id="loginRoot" minHeight="0" minWidth="0" prefHeight="560.0" prefWidth="920.0"
+            styleClass="login-root" stylesheets="@Style.css"
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.b2la.dbroffice.controller.HelloController">
     <left>
-        <VBox prefWidth="500" spacing="24" styleClass="login-hero">
+        <VBox fx:id="loginHero" minWidth="360" prefWidth="500" spacing="24" styleClass="login-hero">
             <padding><Insets bottom="44" left="48" right="48" top="38"/></padding>
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <Label styleClass="login-mark" text="DBR"/>
@@ -33,34 +34,48 @@
         </VBox>
     </left>
     <center>
-        <StackPane styleClass="login-form-zone">
+        <StackPane fx:id="loginFormZone" minWidth="0" styleClass="login-form-zone">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="430" pannable="true"
+                        styleClass="login-scroll" vbarPolicy="AS_NEEDED">
+                <content>
+                    <StackPane>
+                        <VBox maxWidth="330" spacing="16" styleClass="login-card">
+                            <Label styleClass="login-card-eyebrow" text="ESPACE ADMINISTRATION"/>
+                            <Label styleClass="login-card-title" text="Bienvenue"/>
+                            <Label styleClass="login-card-copy" text="Identifiez-vous pour accéder au centre de pilotage." wrapText="true"/>
+                            <Separator/>
+                            <VBox spacing="7">
+                                <Label styleClass="login-field-label" text="Numéro de téléphone"/>
+                                <TextField fx:id="fieldUsername" promptText="+243 000 000 000" text="+243"/>
+                                <Label styleClass="login-field-help" text="Utilisez le numéro associé à votre compte ADMIN ou OFFICE." wrapText="true"/>
+                            </VBox>
+                            <VBox spacing="7">
+                                <Label styleClass="login-field-label" text="Mot de passe"/>
+                                <PasswordField fx:id="fieldPassword" onKeyPressed="#handleKeyPressed" promptText="Saisissez votre mot de passe"/>
+                            </VBox>
+                            <Label fx:id="errorTitle" styleClass="login-error" text="" visible="false" wrapText="true"/>
+                            <Pane fx:id="paneLoading" prefHeight="28" visible="false">
+                                <HBox alignment="CENTER_LEFT" spacing="9">
+                                    <ProgressIndicator prefHeight="22" prefWidth="22"/>
+                                    <Label styleClass="login-loading" text="Vérification de votre accès..."/>
+                                </HBox>
+                            </Pane>
+                            <Button fx:id="btnConnexion" maxWidth="Infinity" mnemonicParsing="false" onAction="#onConnexion"
+                                    styleClass="login-submit" text="Accéder au back-office"/>
+                            <Label styleClass="login-support" text="En cas de blocage, contactez l’administrateur de la plateforme." wrapText="true"/>
+                        </VBox>
+                    </StackPane>
+                </content>
+            </ScrollPane>
             <Button fx:id="btnClose" alignment="CENTER" mnemonicParsing="false" onAction="#onClose"
-                    StackPane.alignment="TOP_RIGHT" styleClass="login-close" text="×"/>
-            <VBox maxWidth="330" spacing="16" styleClass="login-card">
-                <Label styleClass="login-card-eyebrow" text="ESPACE ADMINISTRATION"/>
-                <Label styleClass="login-card-title" text="Bienvenue"/>
-                <Label styleClass="login-card-copy" text="Identifiez-vous pour accéder au centre de pilotage." wrapText="true"/>
-                <Separator/>
-                <VBox spacing="7">
-                    <Label styleClass="login-field-label" text="Numéro de téléphone"/>
-                    <TextField fx:id="fieldUsername" promptText="+243 000 000 000" text="+243"/>
-                    <Label styleClass="login-field-help" text="Utilisez le numéro associé à votre compte ADMIN ou OFFICE." wrapText="true"/>
-                </VBox>
-                <VBox spacing="7">
-                    <Label styleClass="login-field-label" text="Mot de passe"/>
-                    <PasswordField fx:id="fieldPassword" onKeyPressed="#handleKeyPressed" promptText="Saisissez votre mot de passe"/>
-                </VBox>
-                <Label fx:id="errorTitle" styleClass="login-error" text="" visible="false" wrapText="true"/>
-                <Pane fx:id="paneLoading" prefHeight="28" visible="false">
-                    <HBox alignment="CENTER_LEFT" spacing="9">
-                        <ProgressIndicator prefHeight="22" prefWidth="22"/>
-                        <Label styleClass="login-loading" text="Vérification de votre accès..."/>
-                    </HBox>
-                </Pane>
-                <Button fx:id="btnConnexion" maxWidth="Infinity" mnemonicParsing="false" onAction="#onConnexion"
-                        styleClass="login-submit" text="Accéder au back-office"/>
-                <Label styleClass="login-support" text="En cas de blocage, contactez l’administrateur de la plateforme." wrapText="true"/>
-            </VBox>
+                    StackPane.alignment="TOP_RIGHT" styleClass="login-close" text="X">
+                <StackPane.margin>
+                    <Insets bottom="0" left="0" right="8" top="8"/>
+                </StackPane.margin>
+                <tooltip>
+                    <Tooltip text="Fermer"/>
+                </tooltip>
+            </Button>
         </StackPane>
     </center>
 </BorderPane>

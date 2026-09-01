@@ -4,6 +4,9 @@ import com.b2la.dbroffice.dao.LoginRequest;
 import com.b2la.dbroffice.dao.LoginResponse;
 import com.b2la.dbroffice.preference.Storage;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
@@ -45,7 +48,7 @@ public final class ApiClient {
                     "POST", "/users/connexion", GSON.toJson(credentials), "application/json");
         }
         ensureSuccess(response);
-        LoginResponse login = GSON.fromJson(response.body(), LoginResponse.class);
+        LoginResponse login = loginResponse(response.body());
         if (login == null || login.getBearer() == null || login.getBearer().isBlank()) {
             throw new ApiException(response.statusCode(), "Réponse de connexion invalide.", response.body());
         }
@@ -132,6 +135,10 @@ public final class ApiClient {
             if (token != null && !token.isBlank()) {
                 builder.header("Authorization", "Bearer " + token);
             }
+            String deviceCertificate = AppConfig.deviceCertificate();
+            if (!deviceCertificate.isBlank()) {
+                builder.header("X-Device-Certificate", deviceCertificate);
+            }
             if (hasBody) {
                 builder.header("Content-Type", contentType);
             }
@@ -187,7 +194,7 @@ public final class ApiClient {
                 Storage.removeLogin();
                 return false;
             }
-            LoginResponse refreshed = GSON.fromJson(response.body(), LoginResponse.class);
+            LoginResponse refreshed = loginResponse(response.body());
             if (refreshed == null || refreshed.getBearer() == null) {
                 Storage.removeLogin();
                 return false;
@@ -207,6 +214,18 @@ public final class ApiClient {
                     "Erreur API HTTP " + response.statusCode(),
                     response.body());
         }
+    }
+
+    private static LoginResponse loginResponse(String body) {
+        JsonElement root = JsonParser.parseString(body);
+        if (root != null && root.isJsonObject()) {
+            JsonObject object = root.getAsJsonObject();
+            JsonElement data = object.get("data");
+            if (data != null && data.isJsonObject()) {
+                root = data;
+            }
+        }
+        return GSON.fromJson(root, LoginResponse.class);
     }
 
     private static String normalizePath(String path) {

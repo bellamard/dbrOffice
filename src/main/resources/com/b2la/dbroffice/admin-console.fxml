@@ -285,6 +285,9 @@
                             <Label styleClass="panel-title" text="Connexion au service central"/>
                             <Label styleClass="field-label" text="Adresse du service DBR"/>
                             <TextField fx:id="baseUrlField" promptText="https://dbr.b2la.online"/>
+                            <Label styleClass="field-label" text="Certificat numérique PC"/>
+                            <TextField fx:id="deviceCertificateField" promptText="DBR-PC-CERT.certificateId.secret"/>
+                            <Label styleClass="help-text" text="À renseigner si le backend exige X-Device-Certificate. La valeur complète n'est visible qu'au moment de la génération." wrapText="true"/>
                             <Label styleClass="help-text" text="Une adresse incorrecte bloque les opérations. Contactez le support avant toute modification." wrapText="true"/>
                             <HBox alignment="CENTER_RIGHT">
                                 <Button onAction="#saveConfiguration" styleClass="primary" text="Enregistrer les paramètres"/>

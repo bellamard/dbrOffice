@@ -21,7 +21,11 @@ public final class User360Service {
             "idclient", "identite", "idcreator", "id_creator", "idagent",
             "id_agent", "idusers", "id_users");
     private static final Set<String> USER_OBJECT_KEYS = Set.of(
-            "user", "users", "exp", "ben", "client", "entite", "creator", "agent");
+            "user", "users", "exp", "ben", "client", "entite", "creator", "agent",
+            "owner", "holder", "customer", "accountowner", "accountholder");
+    private static final Set<String> COLLECTION_KEYS = Set.of(
+            "acctlist", "accounts", "operations", "conversions", "kycs",
+            "jetonscash", "etablissements", "messages", "gps", "items", "content");
 
     private final ApiClient api = ApiClient.getInstance();
 
@@ -135,11 +139,22 @@ public final class User360Service {
 
     private static JsonElement unwrap(JsonElement root) {
         JsonElement current = root;
-        for (String key : new String[]{"data", "response"}) {
-            if (current.isJsonObject() && current.getAsJsonObject().has(key)) {
-                current = current.getAsJsonObject().get(key);
+        boolean unwrapped;
+        do {
+            unwrapped = false;
+            if (!current.isJsonObject()) {
+                break;
             }
-        }
+            JsonObject object = current.getAsJsonObject();
+            for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
+                String key = normalize(entry.getKey());
+                if ("data".equals(key) || "response".equals(key) || COLLECTION_KEYS.contains(key)) {
+                    current = entry.getValue();
+                    unwrapped = true;
+                    break;
+                }
+            }
+        } while (unwrapped);
         return current;
     }
 

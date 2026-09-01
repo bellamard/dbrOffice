@@ -85,6 +85,7 @@ public class AdminConsoleController {
     @FXML private TableColumn<AuditEntry, String> auditResult;
     @FXML private BarChart<String, Number> operationChart;
     @FXML private TextField baseUrlField;
+    @FXML private TextField deviceCertificateField;
     @FXML private WebView gpsMap;
     @FXML private Label gpsStatusLabel;
     @FXML private Label gpsCountLabel;
@@ -111,6 +112,7 @@ public class AdminConsoleController {
     public void initialize() {
         identityLabel.setText(SessionContext.username() + "  |  " + friendlyRole());
         baseUrlField.setText(AppConfig.baseUrl());
+        deviceCertificateField.setText(AppConfig.deviceCertificate());
         environmentLabel.setText(isLocalEnvironment() ? "LOCAL" : "PRODUCTION");
         configureAuditTable();
         configureRoleVisibility();
@@ -202,7 +204,7 @@ public class AdminConsoleController {
         }
         if ("Services client".equals(module)) {
             return "GET".equals(method)
-                    && Set.of("/services", "/services/{id}", "/document-types", "/convrtiseurs").contains(path);
+                    && Set.of("/services", "/services/{id}", "/document-types", "/convrtiseurs", "/kyc-data").contains(path);
         }
         return !("KYC".equals(module) && "POST".equals(method));
     }
@@ -435,7 +437,8 @@ public class AdminConsoleController {
     private Control typedControl(String name, JsonElement value) {
         String normalized = name.toLowerCase(Locale.ROOT);
         String current = value == null || value.isJsonNull() ? "" : value.getAsString();
-        if (normalized.contains("datebirth") || normalized.equals("date") || normalized.endsWith("date")) {
+        if (normalized.contains("datebirth") || normalized.equals("date") || normalized.endsWith("date")
+                || normalized.equals("expiresat")) {
             DatePicker picker = new DatePicker();
             try {
                 picker.setValue(current.isBlank() ? null : LocalDate.parse(current.substring(0, Math.min(10, current.length()))));
@@ -482,7 +485,7 @@ public class AdminConsoleController {
             return List.of("CDF", "USD", "EUR");
         }
         if (name.equals("typeoperation")) {
-            return List.of("TRANSFERT", "DEPOT", "RETRAIT", "PAIEMENT", "CONVERSION");
+            return List.of("TRANSFERT", "DEPOT", "RETRAIT", "PAIEMENT", "CONVERSION", "SALAIRE");
         }
         if (name.equals("statecarte")) {
             return List.of("VALIDER", "REFUSER", "EN_ATTENTE");
@@ -491,7 +494,7 @@ public class AdminConsoleController {
             return List.of("PASSPORT", "CARTE_IDENTITE", "PERMIS_CONDUIRE");
         }
         if (name.equals("libelle") || name.equals("role")) {
-            return List.of("CLIENT", "AGENT", "OFFICE", "ADMIN", "ENTITES");
+            return List.of("CLIENT", "AGENT", "SUPERVISOR", "OFFICE", "ADMIN", "ENTITES");
         }
         return List.of();
     }
@@ -1097,6 +1100,7 @@ public class AdminConsoleController {
         try {
             AccessControl.require(SessionContext.role(), Permission.CONFIG_WRITE);
             AppConfig.saveBaseUrl(baseUrlField.getText());
+            AppConfig.saveDeviceCertificate(deviceCertificateField.getText());
             audit.record("CONFIGURATION API", AppConfig.baseUrl(), "OK");
             refreshAudit();
             apiStatusKpi.setText("À vérifier");
@@ -1547,7 +1551,9 @@ public class AdminConsoleController {
             case "surname" -> "Prénom";
             case "email" -> "Adresse e-mail";
             case "datebirth" -> "Date de naissance";
+            case "expiresAt" -> "Expiration";
             case "amount", "value" -> "Montant";
+            case "ammount" -> "Montant salaire";
             case "devise", "devices" -> "Devise";
             case "typeOperation" -> "Type d'opération";
             case "operation_ref", "reference", "codeReference" -> "Référence de l'opération";
@@ -1562,6 +1568,20 @@ public class AdminConsoleController {
             case "account_id" -> "Identifiant du compte";
             case "kyc_id" -> "Identifiant du dossier KYC";
             case "message_id" -> "Identifiant du message";
+            case "salaire_id" -> "Identifiant du salaire";
+            case "certificate_id" -> "Identifiant du certificat";
+            case "certificate" -> "Certificat numérique";
+            case "pcName" -> "Nom du poste";
+            case "fingerprint" -> "Empreinte machine";
+            case "userPhone" -> "Téléphone utilisateur";
+            case "phone_agent" -> "Téléphone de l'agent";
+            case "agentPhone" -> "Téléphone de l'agent";
+            case "phoneSuperviseur" -> "Téléphone du superviseur";
+            case "firstnameAgent" -> "Nom de l'agent";
+            case "surnameAgent" -> "Prénom de l'agent";
+            case "firstnameSuperviseur" -> "Nom du superviseur";
+            case "surnameSuperviseur" -> "Prénom du superviseur";
+            case "mounthyears", "month" -> "Mois concerné";
             case "cost_id" -> "Identifiant du tarif";
             case "devise_id" -> "Identifiant de la devise";
             case "etablissement_id" -> "Identifiant de l'établissement";
@@ -1574,10 +1594,13 @@ public class AdminConsoleController {
             case "Authentification" -> "Accès et mots de passe";
             case "Utilisateurs" -> "Clients et personnel";
             case "Comptes" -> "Comptes financiers";
+            case "Certificats PC" -> "Certificats numériques PC";
+            case "Affectations" -> "Affectations superviseurs";
             case "Adresses" -> "Adresses des clients";
             case "Configuration" -> "Tarifs et devises";
             case "Établissements" -> "Partenaires et établissements";
             case "Opérations" -> "Dépôts, retraits et transferts";
+            case "Salaires" -> "Salaires agents";
             case "Conversions" -> "Change de devises";
             case "Jetons cash" -> "Jetons de paiement";
             case "KYC" -> "Contrôle d'identité";
@@ -1634,6 +1657,7 @@ public class AdminConsoleController {
         return switch (SessionContext.role()) {
             case ADMIN -> "Administrateur";
             case OFFICE -> "Agent Office";
+            case SUPERVISOR -> "Superviseur";
         };
     }
 
@@ -1644,6 +1668,9 @@ public class AdminConsoleController {
             case "username" -> "+243810000001";
             case "operation_ref" -> "OP-REFERENCE";
             case "jeton_cash_reference" -> "JC-REFERENCE";
+            case "certificate_id" -> "1";
+            case "phone", "phone_agent" -> "+243810000002";
+            case "month" -> "2026-06-01T00:00:00";
             default -> "1";
         };
     }
