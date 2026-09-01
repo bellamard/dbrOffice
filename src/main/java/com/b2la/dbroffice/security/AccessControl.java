@@ -10,6 +10,11 @@ public final class AccessControl {
             BackOfficeRole.OFFICE, EnumSet.of(
                     Permission.DASHBOARD_READ,
                     Permission.USERS_READ,
+                    Permission.AFFECTATIONS_READ,
+                    Permission.AFFECTATIONS_WRITE,
+                    Permission.SALAIRES_READ,
+                    Permission.DEVICE_CERTIFICATES_READ,
+                    Permission.DEVICE_CERTIFICATES_WRITE,
                     Permission.KYC_READ,
                     Permission.KYC_VALIDATE,
                     Permission.OPERATIONS_READ,
@@ -17,7 +22,11 @@ public final class AccessControl {
                     Permission.REPORTING_READ,
                     Permission.CONFIG_READ,
                     Permission.MESSAGING_READ,
-                    Permission.MESSAGING_WRITE)
+                    Permission.MESSAGING_WRITE),
+            BackOfficeRole.SUPERVISOR, EnumSet.of(
+                    Permission.DASHBOARD_READ,
+                    Permission.AFFECTATIONS_READ,
+                    Permission.SALAIRES_READ)
     );
 
     private AccessControl() {

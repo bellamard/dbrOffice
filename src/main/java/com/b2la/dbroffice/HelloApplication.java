@@ -15,12 +15,17 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        Scene scene = new Scene(fxmlLoader.load(), 920, 560);
+        double width = Math.min(1000, screenBounds.getWidth() * 0.92);
+        double height = Math.min(620, screenBounds.getHeight() * 0.90);
+        Scene scene = new Scene(fxmlLoader.load(), width, height);
         stage.setTitle("DBR Core Finance");
-        stage.centerOnScreen();
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setMinWidth(Math.min(420, width));
+        stage.setMinHeight(Math.min(500, height));
+        stage.setMaxWidth(screenBounds.getWidth());
+        stage.setMaxHeight(screenBounds.getHeight());
+        stage.centerOnScreen();
         stage.show();
     }
 

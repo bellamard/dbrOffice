@@ -13,6 +13,7 @@ import com.b2la.dbroffice.security.SessionContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.concurrent.Task;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,12 +23,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class HelloController {
+    private static final double COMPACT_WIDTH = 780;
+    private static final double SHORT_HEIGHT = 600;
+
     @FXML
     private Label welcomeText, errorTitle;
     @FXML
@@ -38,8 +45,42 @@ public class HelloController {
     private PasswordField fieldPassword;
     @FXML
     private Pane paneLoading;
+    @FXML
+    private BorderPane loginRoot;
+    @FXML
+    private VBox loginHero;
+    @FXML
+    private StackPane loginFormZone;
 
+    @FXML
+    private void initialize() {
+        Platform.runLater(() -> {
+            updateResponsiveLayout(loginRoot.getWidth(), loginRoot.getHeight());
+            loginRoot.widthProperty().addListener((observable, oldValue, width) ->
+                    updateResponsiveLayout(width.doubleValue(), loginRoot.getHeight()));
+            loginRoot.heightProperty().addListener((observable, oldValue, height) ->
+                    updateResponsiveLayout(loginRoot.getWidth(), height.doubleValue()));
+        });
+    }
 
+    private void updateResponsiveLayout(double width, double height) {
+        boolean compact = width < COMPACT_WIDTH;
+        loginHero.setVisible(!compact);
+        loginHero.setManaged(!compact);
+        if (!compact) {
+            loginHero.setPrefWidth(Math.max(360, Math.min(520, width * 0.52)));
+        }
+        setStyleClass(loginRoot, "login-compact", compact);
+        setStyleClass(loginRoot, "login-short", height < SHORT_HEIGHT);
+    }
+
+    private static void setStyleClass(Pane pane, String styleClass, boolean enabled) {
+        if (enabled && !pane.getStyleClass().contains(styleClass)) {
+            pane.getStyleClass().add(styleClass);
+        } else if (!enabled) {
+            pane.getStyleClass().remove(styleClass);
+        }
+    }
 
     @FXML
     protected void onConnexion(){
@@ -93,7 +134,10 @@ public class HelloController {
     @FXML
     protected void onClose() {
         Storage.removeLogin();
-        System.exit(0);
+        if (loginRoot.getScene() != null && loginRoot.getScene().getWindow() instanceof Stage stage) {
+            stage.close();
+        }
+        Platform.exit();
     }
 
     private void onEnterDashboard(){

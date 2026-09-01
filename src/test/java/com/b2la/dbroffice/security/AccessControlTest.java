@@ -15,6 +15,9 @@ class AccessControlTest {
     @Test
     void officeRoleHasOperationalButNotAdministrativePermissions() {
         assertTrue(AccessControl.allows(BackOfficeRole.OFFICE, Permission.KYC_VALIDATE));
+        assertTrue(AccessControl.allows(BackOfficeRole.OFFICE, Permission.AFFECTATIONS_WRITE));
+        assertTrue(AccessControl.allows(BackOfficeRole.OFFICE, Permission.SALAIRES_READ));
+        assertTrue(AccessControl.allows(BackOfficeRole.OFFICE, Permission.DEVICE_CERTIFICATES_WRITE));
         assertTrue(AccessControl.allows(BackOfficeRole.OFFICE, Permission.OPERATIONS_READ));
         assertTrue(AccessControl.allows(BackOfficeRole.OFFICE, Permission.MESSAGING_WRITE));
         assertTrue(AccessControl.allows(BackOfficeRole.OFFICE, Permission.GPS_READ));
@@ -25,9 +28,20 @@ class AccessControlTest {
     }
 
     @Test
+    void supervisorRoleHasOnlySupervisionPermissions() {
+        assertTrue(AccessControl.allows(BackOfficeRole.SUPERVISOR, Permission.AFFECTATIONS_READ));
+        assertTrue(AccessControl.allows(BackOfficeRole.SUPERVISOR, Permission.SALAIRES_READ));
+        assertFalse(AccessControl.allows(BackOfficeRole.SUPERVISOR, Permission.SALAIRES_WRITE));
+        assertFalse(AccessControl.allows(BackOfficeRole.SUPERVISOR, Permission.DEVICE_CERTIFICATES_READ));
+        assertFalse(AccessControl.allows(BackOfficeRole.SUPERVISOR, Permission.USERS_WRITE));
+        assertFalse(AccessControl.allows(BackOfficeRole.SUPERVISOR, Permission.CONFIG_WRITE));
+    }
+
+    @Test
     void backendRolesAreMappedExplicitly() {
         assertEquals(BackOfficeRole.ADMIN, BackOfficeRole.fromBackendRole("ADMIN"));
         assertEquals(BackOfficeRole.OFFICE, BackOfficeRole.fromBackendRole("OFFICE"));
+        assertEquals(BackOfficeRole.SUPERVISOR, BackOfficeRole.fromBackendRole("SUPERVISOR"));
         assertThrows(IllegalArgumentException.class, () -> BackOfficeRole.fromBackendRole("CLIENT"));
         assertThrows(IllegalArgumentException.class, () -> BackOfficeRole.fromBackendRole("ANALYSTE"));
     }
