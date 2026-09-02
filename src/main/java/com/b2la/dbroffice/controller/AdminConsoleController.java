@@ -704,6 +704,7 @@ public class AdminConsoleController {
         dialog.getDialogPane().getStylesheets().add(Objects.requireNonNull(
                 HelloApplication.class.getResource("admin-console.css")).toExternalForm());
         dialog.getDialogPane().getStyleClass().add("overview-dialog");
+        decorateDialogPane(dialog.getDialogPane());
         dialog.getDialogPane().setContent(tabs);
         audit.record("CONSULTATION FICHE 360", "/users/" + snapshot.userId(), "SUCCÈS");
         refreshAudit();
@@ -1269,6 +1270,7 @@ public class AdminConsoleController {
         dialog.getDialogPane().getStylesheets().add(Objects.requireNonNull(
                 HelloApplication.class.getResource("admin-console.css")).toExternalForm());
         dialog.getDialogPane().getStyleClass().add("overview-dialog");
+        decorateDialogPane(dialog.getDialogPane());
         dialog.getDialogPane().setContent(tabs);
         dialog.showAndWait();
     }
@@ -1357,6 +1359,17 @@ public class AdminConsoleController {
         String accentHex = toHex(accent == null ? Color.web(AppConfig.DEFAULT_ACCENT_COLOR) : accent);
         String accentDark = toHex(darker(accent == null ? Color.web(AppConfig.DEFAULT_ACCENT_COLOR) : accent, 0.82));
         rootPane.setStyle("-app-blue: " + accentHex + "; -app-blue-dark: " + accentDark + ";");
+    }
+
+    private void decorateDialogPane(DialogPane pane) {
+        pane.getStyleClass().removeAll("theme-light", "theme-dark", "theme-high-contrast");
+        pane.getStyleClass().add(resolveThemeMode(themeModeValue(themeModeCombo.getValue())).equals(AppConfig.THEME_DARK)
+                ? "theme-dark"
+                : "theme-light");
+        if (highContrastCheckBox.isSelected()) {
+            pane.getStyleClass().add("theme-high-contrast");
+        }
+        pane.setStyle(rootPane == null ? "" : rootPane.getStyle());
     }
 
     private static String resolveThemeMode(String mode) {
