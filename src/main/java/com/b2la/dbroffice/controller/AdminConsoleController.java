@@ -21,6 +21,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -42,7 +43,11 @@ import java.util.regex.Pattern;
 public class AdminConsoleController {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{([a-zA-Z0-9_]+)}");
+    private static final String THEME_SYSTEM_LABEL = "Système";
+    private static final String THEME_LIGHT_LABEL = "Clair";
+    private static final String THEME_DARK_LABEL = "Sombre";
 
+    @FXML private BorderPane rootPane;
     @FXML private Label identityLabel;
     @FXML private Label environmentLabel;
     @FXML private Label liquidityKpi;
@@ -94,6 +99,10 @@ public class AdminConsoleController {
     @FXML private BarChart<String, Number> complianceChart;
     @FXML private TextField baseUrlField;
     @FXML private TextField deviceCertificateField;
+    @FXML private ComboBox<String> themeModeCombo;
+    @FXML private ColorPicker accentColorPicker;
+    @FXML private CheckBox highContrastCheckBox;
+    @FXML private VBox apiSettingsCard;
     @FXML private WebView gpsMap;
     @FXML private Label gpsStatusLabel;
     @FXML private Label gpsCountLabel;
@@ -124,6 +133,8 @@ public class AdminConsoleController {
         baseUrlField.setText(AppConfig.baseUrl());
         deviceCertificateField.setText(AppConfig.deviceCertificate());
         environmentLabel.setText(isLocalEnvironment() ? "LOCAL" : "PRODUCTION");
+        configureAppearanceSettings();
+        applyConfiguredTheme();
         configureAuditTable();
         configureRoleVisibility();
         configureCatalog();
@@ -136,7 +147,22 @@ public class AdminConsoleController {
     private void configureRoleVisibility() {
         boolean auditAllowed = AccessControl.allows(SessionContext.role(), Permission.AUDIT_READ);
         auditTab.setDisable(!auditAllowed);
-        settingsTab.setDisable(!AccessControl.allows(SessionContext.role(), Permission.CONFIG_WRITE));
+        boolean configAllowed = AccessControl.allows(SessionContext.role(), Permission.CONFIG_WRITE);
+        apiSettingsCard.setDisable(!configAllowed);
+        apiSettingsCard.setOpacity(configAllowed ? 1.0 : 0.58);
+    }
+
+    private void configureAppearanceSettings() {
+        themeModeCombo.setItems(FXCollections.observableArrayList(
+                THEME_SYSTEM_LABEL,
+                THEME_LIGHT_LABEL,
+                THEME_DARK_LABEL));
+        themeModeCombo.setValue(themeLabel(AppConfig.themeMode()));
+        accentColorPicker.setValue(Color.web(AppConfig.accentColor()));
+        highContrastCheckBox.setSelected(AppConfig.highContrastEnabled());
+        themeModeCombo.valueProperty().addListener((observable, oldValue, value) -> applyThemePreview());
+        accentColorPicker.valueProperty().addListener((observable, oldValue, value) -> applyThemePreview());
+        highContrastCheckBox.selectedProperty().addListener((observable, oldValue, value) -> applyThemePreview());
     }
 
     private void configureRecordActions() {
@@ -1286,6 +1312,102 @@ public class AdminConsoleController {
         } catch (RuntimeException exception) {
             showError(exception.getMessage());
         }
+    }
+
+    @FXML
+    private void saveAppearanceConfiguration() {
+        try {
+            AppConfig.saveThemeMode(themeModeValue(themeModeCombo.getValue()));
+            AppConfig.saveAccentColor(toHex(accentColorPicker.getValue()));
+            AppConfig.saveHighContrastEnabled(highContrastCheckBox.isSelected());
+            applyConfiguredTheme();
+            audit.record("APPARENCE", themeModeCombo.getValue(), "OK");
+            refreshAudit();
+        } catch (RuntimeException exception) {
+            showError(exception.getMessage());
+        }
+    }
+
+    @FXML
+    private void resetAppearanceConfiguration() {
+        themeModeCombo.setValue(THEME_SYSTEM_LABEL);
+        accentColorPicker.setValue(Color.web(AppConfig.DEFAULT_ACCENT_COLOR));
+        highContrastCheckBox.setSelected(false);
+        saveAppearanceConfiguration();
+    }
+
+    private void applyConfiguredTheme() {
+        applyTheme(AppConfig.themeMode(), Color.web(AppConfig.accentColor()), AppConfig.highContrastEnabled());
+    }
+
+    private void applyThemePreview() {
+        applyTheme(themeModeValue(themeModeCombo.getValue()), accentColorPicker.getValue(), highContrastCheckBox.isSelected());
+    }
+
+    private void applyTheme(String mode, Color accent, boolean highContrast) {
+        if (rootPane == null) {
+            return;
+        }
+        rootPane.getStyleClass().removeAll("theme-light", "theme-dark", "theme-high-contrast");
+        String resolved = resolveThemeMode(mode);
+        rootPane.getStyleClass().add("dark".equals(resolved) ? "theme-dark" : "theme-light");
+        if (highContrast) {
+            rootPane.getStyleClass().add("theme-high-contrast");
+        }
+        String accentHex = toHex(accent == null ? Color.web(AppConfig.DEFAULT_ACCENT_COLOR) : accent);
+        String accentDark = toHex(darker(accent == null ? Color.web(AppConfig.DEFAULT_ACCENT_COLOR) : accent, 0.82));
+        rootPane.setStyle("-app-blue: " + accentHex + "; -app-blue-dark: " + accentDark + ";");
+    }
+
+    private static String resolveThemeMode(String mode) {
+        if (AppConfig.THEME_DARK.equals(mode) || AppConfig.THEME_LIGHT.equals(mode)) {
+            return mode;
+        }
+        return systemPrefersDark() ? AppConfig.THEME_DARK : AppConfig.THEME_LIGHT;
+    }
+
+    private static boolean systemPrefersDark() {
+        String explicit = System.getProperty("dbr.ui.dark");
+        if (explicit == null || explicit.isBlank()) {
+            explicit = System.getenv("DBR_UI_DARK");
+        }
+        return explicit != null && Set.of("1", "true", "yes", "dark").contains(explicit.trim().toLowerCase(Locale.ROOT));
+    }
+
+    private static String themeLabel(String value) {
+        return switch (value) {
+            case AppConfig.THEME_LIGHT -> THEME_LIGHT_LABEL;
+            case AppConfig.THEME_DARK -> THEME_DARK_LABEL;
+            default -> THEME_SYSTEM_LABEL;
+        };
+    }
+
+    private static String themeModeValue(String label) {
+        if (THEME_LIGHT_LABEL.equals(label)) {
+            return AppConfig.THEME_LIGHT;
+        }
+        if (THEME_DARK_LABEL.equals(label)) {
+            return AppConfig.THEME_DARK;
+        }
+        return AppConfig.THEME_SYSTEM;
+    }
+
+    private static Color darker(Color color, double factor) {
+        return Color.color(
+                clamp(color.getRed() * factor),
+                clamp(color.getGreen() * factor),
+                clamp(color.getBlue() * factor));
+    }
+
+    private static double clamp(double value) {
+        return Math.max(0, Math.min(1, value));
+    }
+
+    private static String toHex(Color color) {
+        return String.format("#%02X%02X%02X",
+                Math.round(color.getRed() * 255),
+                Math.round(color.getGreen() * 255),
+                Math.round(color.getBlue() * 255));
     }
 
     @FXML
