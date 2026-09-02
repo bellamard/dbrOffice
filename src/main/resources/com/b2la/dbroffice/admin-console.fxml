@@ -38,6 +38,7 @@
         <TabPane side="LEFT" styleClass="banking-navigation" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="Pilotage">
+                    <ScrollPane fitToWidth="true">
                     <VBox spacing="16" styleClass="workspace">
                         <padding><Insets bottom="22" left="24" right="24" top="22"/></padding>
                         <HBox alignment="CENTER_LEFT">
@@ -58,15 +59,14 @@
                             <VBox HBox.hgrow="ALWAYS" styleClass="kpi"><Label styleClass="kpi-label" text="VOLUME SUR 24 HEURES"/><Label fx:id="volumeKpi" styleClass="kpi-value" text="-"/><Label styleClass="help-text" text="Montants traités par devise"/></VBox>
                             <VBox HBox.hgrow="ALWAYS" styleClass="kpi"><Label styleClass="kpi-label" text="TICKETS OUVERTS"/><Label fx:id="ticketsKpi" styleClass="kpi-value" text="-"/><Label styleClass="help-text" text="Messages non lus à traiter"/></VBox>
                         </HBox>
-                        <Label styleClass="panel-title" text="Activité globale de la plateforme"/>
+                        <Label styleClass="panel-title" text="Services suivis"/>
                         <GridPane hgap="12" vgap="12">
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="16.66"/>
-                                <ColumnConstraints percentWidth="16.66"/>
-                                <ColumnConstraints percentWidth="16.66"/>
-                                <ColumnConstraints percentWidth="16.66"/>
-                                <ColumnConstraints percentWidth="16.66"/>
-                                <ColumnConstraints percentWidth="16.66"/>
+                                <ColumnConstraints percentWidth="20"/>
+                                <ColumnConstraints percentWidth="20"/>
+                                <ColumnConstraints percentWidth="20"/>
+                                <ColumnConstraints percentWidth="20"/>
+                                <ColumnConstraints percentWidth="20"/>
                             </columnConstraints>
                             <VBox styleClass="module-stat" GridPane.columnIndex="0">
                                 <Label styleClass="module-stat-title" text="CLIENTS &amp; AGENTS"/>
@@ -93,21 +93,66 @@
                                 <Label fx:id="establishmentsOverviewKpi" styleClass="module-stat-value" text="-"/>
                                 <Button onAction="#openBillingOverview" styleClass="link-button" text="Voir les services"/>
                             </VBox>
-                            <VBox styleClass="module-stat" GridPane.columnIndex="5">
+                            <VBox styleClass="module-stat" GridPane.columnIndex="0" GridPane.rowIndex="1">
                                 <Label styleClass="module-stat-title" text="JETON CASH"/>
                                 <Label fx:id="cashTokensOverviewKpi" styleClass="module-stat-value" text="-"/>
                                 <Button onAction="#openCashTokensOverview" styleClass="link-button" text="Gérer Jeton Cash"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label styleClass="module-stat-title" text="KYC"/>
+                                <Label fx:id="kycOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openKycOverview" styleClass="link-button" text="Voir les dossiers"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                <Label styleClass="module-stat-title" text="MESSAGERIE"/>
+                                <Label fx:id="messagesOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openMessagesOverview" styleClass="link-button" text="Voir les messages"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                <Label styleClass="module-stat-title" text="SALAIRES"/>
+                                <Label fx:id="salariesOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openSalariesOverview" styleClass="link-button" text="Voir les salaires"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                                <Label styleClass="module-stat-title" text="AFFECTATIONS"/>
+                                <Label fx:id="affectationsOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openAffectationsOverview" styleClass="link-button" text="Voir les affectations"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                <Label styleClass="module-stat-title" text="CERTIFICATS PC"/>
+                                <Label fx:id="certificatesOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openCertificatesOverview" styleClass="link-button" text="Voir les certificats"/>
+                            </VBox>
+                            <VBox styleClass="module-stat" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <Label styleClass="module-stat-title" text="DEVISES"/>
+                                <Label fx:id="currenciesOverviewKpi" styleClass="module-stat-value" text="-"/>
+                                <Button onAction="#openCurrenciesOverview" styleClass="link-button" text="Voir les devises"/>
                             </VBox>
                         </GridPane>
                         <HBox spacing="10" styleClass="workflow-banner">
                             <Label styleClass="workflow-title" text="Contrôle Maker-Checker"/>
                             <Label text="Une opération initiée doit être contrôlée par un autre agent : En attente → Validée ou Refusée." wrapText="true"/>
                         </HBox>
-                        <BarChart fx:id="operationChart" animated="false" title="Répartition des opérations par statut" VBox.vgrow="ALWAYS">
-                            <xAxis><CategoryAxis label="Type"/></xAxis>
-                            <yAxis><NumberAxis label="Nombre"/></yAxis>
-                        </BarChart>
+                        <GridPane hgap="14" vgap="14">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+                            <BarChart fx:id="serviceVolumeChart" animated="false" legendVisible="false" prefHeight="320" title="Vue globale par service" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <xAxis><CategoryAxis label="Service"/></xAxis>
+                                <yAxis><NumberAxis label="Total"/></yAxis>
+                            </BarChart>
+                            <BarChart fx:id="operationChart" animated="false" legendVisible="false" prefHeight="320" title="Opérations par statut" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <xAxis><CategoryAxis label="Statut"/></xAxis>
+                                <yAxis><NumberAxis label="Nombre"/></yAxis>
+                            </BarChart>
+                            <BarChart fx:id="complianceChart" animated="false" legendVisible="false" prefHeight="300" title="Conformité, support et sécurité" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                <xAxis><CategoryAxis label="Domaine"/></xAxis>
+                                <yAxis><NumberAxis label="À suivre"/></yAxis>
+                            </BarChart>
+                        </GridPane>
                     </VBox>
+                    </ScrollPane>
                 </Tab>
                 <Tab fx:id="servicesTab" text="Services métiers">
                     <VBox spacing="0" styleClass="workspace">

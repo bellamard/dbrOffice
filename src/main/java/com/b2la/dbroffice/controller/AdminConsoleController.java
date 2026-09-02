@@ -56,6 +56,12 @@ public class AdminConsoleController {
     @FXML private Label conversionsOverviewKpi;
     @FXML private Label establishmentsOverviewKpi;
     @FXML private Label cashTokensOverviewKpi;
+    @FXML private Label kycOverviewKpi;
+    @FXML private Label messagesOverviewKpi;
+    @FXML private Label salariesOverviewKpi;
+    @FXML private Label affectationsOverviewKpi;
+    @FXML private Label certificatesOverviewKpi;
+    @FXML private Label currenciesOverviewKpi;
     @FXML private Label previewTitleLabel;
     @FXML private Label previewModuleLabel;
     @FXML private Label previewMethodLabel;
@@ -84,6 +90,8 @@ public class AdminConsoleController {
     @FXML private TableColumn<AuditEntry, String> auditTarget;
     @FXML private TableColumn<AuditEntry, String> auditResult;
     @FXML private BarChart<String, Number> operationChart;
+    @FXML private BarChart<String, Number> serviceVolumeChart;
+    @FXML private BarChart<String, Number> complianceChart;
     @FXML private TextField baseUrlField;
     @FXML private TextField deviceCertificateField;
     @FXML private WebView gpsMap;
@@ -103,6 +111,8 @@ public class AdminConsoleController {
     private final AuditService audit = AuditService.getInstance();
     private final List<EndpointDefinition> authorizedEndpoints = new ArrayList<>();
     private final ObservableList<Map<String, String>> resultRows = FXCollections.observableArrayList();
+    private final Map<Map<String, String>, Map<String, String>> resultFullRows = new IdentityHashMap<>();
+    private final Map<Map<String, String>, String> resultRawRows = new IdentityHashMap<>();
     private final Map<String, TextField> variableFields = new LinkedHashMap<>();
     private final List<FormBinding> formBindings = new ArrayList<>();
     private JsonObject formBody;
@@ -137,6 +147,15 @@ public class AdminConsoleController {
                     updateRecordActions();
                     showSelectedPreview(selected);
                 });
+        resultTable.setRowFactory(table -> {
+            TableRow<Map<String, String>> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    showRowDetails(row.getItem());
+                }
+            });
+            return row;
+        });
         showSelectedPreview(null);
     }
 
@@ -351,6 +370,31 @@ public class AdminConsoleController {
     @FXML
     private void openKycOverview() {
         openBusinessAction("KYC", "Lister les KYC");
+    }
+
+    @FXML
+    private void openMessagesOverview() {
+        openBusinessAction("Messagerie", "Lister les messages");
+    }
+
+    @FXML
+    private void openSalariesOverview() {
+        openBusinessAction("Salaires", "Lister les salaires");
+    }
+
+    @FXML
+    private void openAffectationsOverview() {
+        openBusinessAction("Affectations", "Lister les affectations");
+    }
+
+    @FXML
+    private void openCertificatesOverview() {
+        openBusinessAction("Certificats PC", "Lister les certificats PC");
+    }
+
+    @FXML
+    private void openCurrenciesOverview() {
+        openBusinessAction("Configuration", "Lister les devises");
     }
 
     private boolean openBusinessAction(String module, String actionName) {
@@ -816,8 +860,9 @@ public class AdminConsoleController {
     private void fillFormFromSelection(Map<String, String> selected) {
         String id = selectedId(selected);
         variableFields.values().stream().findFirst().ifPresent(field -> field.setText(id));
+        Map<String, String> lookup = selectedFullRow(selected);
         for (FormBinding binding : formBindings) {
-            String value = selected.getOrDefault(binding.key(), selected.getOrDefault("response." + binding.key(), ""));
+            String value = lookup.getOrDefault(binding.key(), lookup.getOrDefault("response." + binding.key(), ""));
             if (value.isBlank()) continue;
             if (binding.control() instanceof TextInputControl input) input.setText(value);
             else if (binding.control() instanceof ComboBox<?> combo) ((ComboBox<String>) combo).setValue(value);
@@ -829,9 +874,10 @@ public class AdminConsoleController {
         }
     }
 
-    private static String selectedId(Map<String, String> selected) {
+    private String selectedId(Map<String, String> selected) {
+        Map<String, String> lookup = selectedFullRow(selected);
         for (String key : List.of("id", "Id", "response.id", "reference", "codeReference")) {
-            String value = selected.get(key);
+            String value = lookup.get(key);
             if (value != null && !value.isBlank()) return value;
         }
         throw new IllegalArgumentException("Cette ligne ne contient aucun identifiant exploitable.");
@@ -892,14 +938,18 @@ public class AdminConsoleController {
         Task<DashboardData> task = new Task<>() {
             @Override
             protected DashboardData call() {
-                String accountsBody = fetchBody("/accounts", Permission.DASHBOARD_READ);
-                String operationsBody = fetchBody("/operations", Permission.OPERATIONS_READ);
+                String accountsBody = fetchOptionalBody("/accounts", Permission.USERS_READ);
+                String operationsBody = fetchOptionalBody("/operations", Permission.OPERATIONS_READ);
                 String kycBody = fetchOptionalBody("/kyc/list", Permission.KYC_READ);
                 String messagesBody = fetchOptionalBody("/messagerie", Permission.MESSAGING_READ);
                 String usersBody = fetchOptionalBody("/users", Permission.USERS_READ);
                 String conversionsBody = fetchOptionalBody("/conversions", Permission.OPERATIONS_READ);
                 String establishmentsBody = fetchOptionalBody("/etablissements", Permission.DASHBOARD_READ);
                 String cashTokensBody = fetchOptionalBody("/jetons-cash", Permission.OPERATIONS_READ);
+                String salariesBody = fetchOptionalBody("/salaires", Permission.SALAIRES_READ);
+                String affectationsBody = fetchOptionalBody("/affectations", Permission.AFFECTATIONS_READ);
+                String certificatesBody = fetchOptionalBody("/certificats-pc", Permission.DEVICE_CERTIFICATES_READ);
+                String currenciesBody = fetchOptionalBody("/devises", Permission.CONFIG_READ);
                 return new DashboardData(
                         totalsByCurrency(accountsBody),
                         pendingKycCount(kycBody),
@@ -911,7 +961,16 @@ public class AdminConsoleController {
                         itemCount(conversionsBody),
                         itemCount(establishmentsBody),
                         itemCount(cashTokensBody),
-                        operationsBody);
+                        itemCount(kycBody),
+                        itemCount(messagesBody),
+                        itemCount(salariesBody),
+                        itemCount(affectationsBody),
+                        itemCount(certificatesBody),
+                        itemCount(currenciesBody),
+                        operationsBody,
+                        kycBody,
+                        messagesBody,
+                        certificatesBody);
             }
         };
         task.setOnSucceeded(event -> {
@@ -926,8 +985,16 @@ public class AdminConsoleController {
             conversionsOverviewKpi.setText(displayCount(data.conversions()));
             establishmentsOverviewKpi.setText(displayCount(data.establishments()));
             cashTokensOverviewKpi.setText(displayCount(data.cashTokens()));
+            kycOverviewKpi.setText(displayCount(data.kyc()));
+            messagesOverviewKpi.setText(displayCount(data.messages()));
+            salariesOverviewKpi.setText(displayCount(data.salaries()));
+            affectationsOverviewKpi.setText(displayCount(data.affectations()));
+            certificatesOverviewKpi.setText(displayCount(data.certificates()));
+            currenciesOverviewKpi.setText(displayCount(data.currencies()));
             apiStatusKpi.setText("Opérationnel");
             renderOperationChart(data.operationsBody());
+            renderServiceVolumeChart(data);
+            renderComplianceChart(data);
             setBusy(false);
         });
         task.setOnFailed(event -> {
@@ -991,10 +1058,45 @@ public class AdminConsoleController {
         }
     }
 
+    private void renderServiceVolumeChart(DashboardData data) {
+        serviceVolumeChart.getData().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        addChartPoint(series, "Utilisateurs", data.users());
+        addChartPoint(series, "Comptes", data.accounts());
+        addChartPoint(series, "Opérations", data.operations());
+        addChartPoint(series, "Conversions", data.conversions());
+        addChartPoint(series, "Partenaires", data.establishments());
+        addChartPoint(series, "Jetons", data.cashTokens());
+        addChartPoint(series, "Salaires", data.salaries());
+        addChartPoint(series, "Affectations", data.affectations());
+        addChartPoint(series, "Devises", data.currencies());
+        serviceVolumeChart.getData().add(series);
+    }
+
+    private void renderComplianceChart(DashboardData data) {
+        complianceChart.getData().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        addChartPoint(series, "KYC total", data.kyc());
+        addChartPoint(series, "KYC attente", data.pendingKyc());
+        addChartPoint(series, "Messages", data.messages());
+        addChartPoint(series, "Non lus", data.unreadMessages());
+        addChartPoint(series, "Certificats", data.certificates());
+        addChartPoint(series, "Cert. actifs", activeCertificateCount(data.certificatesBody()));
+        complianceChart.getData().add(series);
+    }
+
+    private static void addChartPoint(XYChart.Series<String, Number> series, String name, int value) {
+        if (value >= 0) {
+            series.getData().add(new XYChart.Data<>(name, value));
+        }
+    }
+
     private void populateResultTable(String body) {
         resultTable.getColumns().clear();
         resultTable.getItems().clear();
         resultRows.clear();
+        resultFullRows.clear();
+        resultRawRows.clear();
         resultFilterField.clear();
         showSelectedPreview(null);
         try {
@@ -1012,18 +1114,33 @@ public class AdminConsoleController {
             if (objects.isEmpty()) {
                 return;
             }
-            LinkedHashSet<String> keys = new LinkedHashSet<>();
-            List<Map<String, String>> flattenedRows = objects.stream()
-                    .map(AdminConsoleController::flattenObject)
-                    .toList();
-            flattenedRows.forEach(row -> keys.addAll(row.keySet()));
-            for (String key : keys) {
-                TableColumn<Map<String, String>, String> column = new TableColumn<>(friendlyColumnName(key));
+            EndpointDefinition endpoint = endpointCombo.getValue();
+            List<ColumnSpec> profile = columnProfile(endpoint);
+            LinkedHashSet<String> visibleKeys = new LinkedHashSet<>();
+            List<Map<String, String>> compactRows = new ArrayList<>();
+
+            for (JsonObject object : objects) {
+                Map<String, String> fullRow = flattenObject(object);
+                Map<String, String> compactRow = compactResultRow(profile, fullRow);
+                if (compactRow.isEmpty()) {
+                    fullRow.entrySet().stream()
+                            .limit(6)
+                            .forEach(entry -> compactRow.put(entry.getKey(), entry.getValue()));
+                }
+                compactRows.add(compactRow);
+                visibleKeys.addAll(compactRow.keySet());
+                resultFullRows.put(compactRow, fullRow);
+                resultRawRows.put(compactRow, GSON.toJson(object));
+            }
+
+            for (String key : visibleKeys) {
+                TableColumn<Map<String, String>, String> column = new TableColumn<>(columnLabel(profile, key));
                 column.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getOrDefault(key, "")));
                 column.setPrefWidth(preferredColumnWidth(key));
                 resultTable.getColumns().add(column);
             }
-            resultRows.setAll(flattenedRows);
+            resultTable.getColumns().add(detailsColumn());
+            resultRows.setAll(compactRows);
             resultTable.setItems(resultRows);
             updateResultCount(resultRows.size());
             updateRecordActions();
@@ -1061,15 +1178,77 @@ public class AdminConsoleController {
         selectedPreview.setManaged(visible);
         selectedPreviewContent.getChildren().clear();
         if (!visible) {
-            selectedPreviewTitle.setText("Détail de la sélection");
+            selectedPreviewTitle.setText("Aperçu de la sélection");
             return;
         }
 
         String identifier = firstSelectedValue(selected, "id", "reference", "codeReference", "phone", "name");
         selectedPreviewTitle.setText(identifier.isBlank()
-                ? "Détail de la sélection"
-                : "Détail · " + identifier);
+                ? "Aperçu de la sélection"
+                : "Aperçu · " + identifier);
         selectedPreviewContent.getChildren().add(detailGrid(selected));
+    }
+
+    private TableColumn<Map<String, String>, String> detailsColumn() {
+        TableColumn<Map<String, String>, String> column = new TableColumn<>("Détails");
+        column.setCellValueFactory(cell -> new ReadOnlyStringWrapper(""));
+        column.setSortable(false);
+        column.setPrefWidth(110);
+        column.setCellFactory(tableColumn -> new TableCell<>() {
+            private final Button button = new Button("Ouvrir");
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() < 0 || getIndex() >= getTableView().getItems().size()) {
+                    setGraphic(null);
+                    return;
+                }
+                Map<String, String> row = getTableView().getItems().get(getIndex());
+                button.setOnAction(event -> showRowDetails(row));
+                setGraphic(button);
+            }
+        });
+        return column;
+    }
+
+    private void showRowDetails(Map<String, String> row) {
+        if (row == null) {
+            return;
+        }
+        Map<String, String> fullValues = selectedFullRow(row);
+        String rawJson = resultRawRows.getOrDefault(row, GSON.toJson(fullValues));
+        String identifier = firstSelectedValue(fullValues, "id", "reference", "codeReference", "phone", "name");
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Détails de l'enregistrement");
+        dialog.setHeaderText(identifier.isBlank() ? "Vue complète" : "Vue complète · " + identifier);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+        ScrollPane businessScroll = new ScrollPane(detailGrid(fullValues));
+        businessScroll.setFitToWidth(true);
+
+        TextArea json = new TextArea(prettyJson(rawJson));
+        json.setEditable(false);
+        json.setWrapText(true);
+
+        TabPane tabs = new TabPane();
+        Tab business = new Tab("Données métier", businessScroll);
+        business.setClosable(false);
+        Tab technical = new Tab("JSON technique", json);
+        technical.setClosable(false);
+        tabs.getTabs().addAll(business, technical);
+        tabs.setPrefSize(980, 640);
+
+        dialog.getDialogPane().getStylesheets().add(Objects.requireNonNull(
+                HelloApplication.class.getResource("admin-console.css")).toExternalForm());
+        dialog.getDialogPane().getStyleClass().add("overview-dialog");
+        dialog.getDialogPane().setContent(tabs);
+        dialog.showAndWait();
+    }
+
+    private Map<String, String> selectedFullRow(Map<String, String> selected) {
+        return resultFullRows.getOrDefault(selected, selected);
     }
 
     @FXML
@@ -1257,7 +1436,10 @@ public class AdminConsoleController {
             return payload;
         }
         JsonObject object = payload.getAsJsonObject();
-        for (String key : List.of("acctList", "operations", "users", "kycs", "messages", "items", "content")) {
+        for (String key : List.of(
+                "acctList", "operations", "users", "kycs", "messages", "salaires",
+                "affectations", "certificates", "certificats", "devises", "response",
+                "items", "content")) {
             JsonElement value = object.get(key);
             if (value != null && value.isJsonArray()) {
                 return value;
@@ -1270,6 +1452,153 @@ public class AdminConsoleController {
         Map<String, String> row = new LinkedHashMap<>();
         flattenInto(row, "", object);
         return row;
+    }
+
+    private static List<ColumnSpec> columnProfile(EndpointDefinition endpoint) {
+        if (endpoint == null) {
+            return List.of();
+        }
+        String module = endpoint.module();
+        return switch (module) {
+            case "Utilisateurs" -> List.of(
+                    col("id", "Identifiant", "id", "userId", "customerId"),
+                    col("phone", "Téléphone", "phone", "phoneNumber", "username", "customerPhone"),
+                    col("name", "Nom", "name", "fullName", "nom", "firstName", "lastName"),
+                    col("type", "Type", "type", "userType", "customerType", "customerCategory", "role"),
+                    col("status", "Statut", "status", "state", "stateCarte", "active", "enabled"),
+                    col("email", "E-mail", "email", "emailAddress"));
+            case "Comptes" -> List.of(
+                    col("id", "Identifiant", "id", "accountId", "acct.id", "iban"),
+                    col("owner", "Propriétaire", "owner", "customerName", "name", "fullName", "phone", "phoneNumber"),
+                    col("currency", "Devise", "currency", "devise", "signe", "acct.currency"),
+                    col("balance", "Solde", "balance", "availableBalance", "solde", "amount"),
+                    col("type", "Type", "type", "accountType", "acct.type", "libelle"),
+                    col("status", "Statut", "status", "state", "active", "enabled"));
+            case "Opérations" -> List.of(
+                    col("reference", "Référence", "reference", "codeReference", "endToEndId", "operationId", "id"),
+                    col("type", "Type", "typeOperation", "operationType", "type", "libelle"),
+                    col("amount", "Montant", "amount", "montant", "instructedAmount", "transactionAmount"),
+                    col("currency", "Devise", "currency", "devise", "signe"),
+                    col("status", "État", "status", "state", "etat", "state.libelle"),
+                    col("date", "Date", "dateoperation", "dateOperation", "createdAt", "updatedAt", "date"));
+            case "KYC" -> List.of(
+                    col("id", "Identifiant", "id", "kycId", "customerId"),
+                    col("user", "Utilisateur", "username", "phone", "phoneNumber", "customerPhone", "userId"),
+                    col("documentType", "Document", "documentType", "typeFile", "type", "libelle"),
+                    col("status", "Statut", "status", "state", "etat"),
+                    col("date", "Date", "uploadDate", "createdAt", "updatedAt", "date"));
+            case "Jetons cash" -> List.of(
+                    col("reference", "Référence", "reference", "codeReference", "token", "id"),
+                    col("amount", "Montant", "amount", "montant"),
+                    col("currency", "Devise", "currency", "devise", "signe"),
+                    col("status", "Statut", "status", "state", "etat"),
+                    col("phone", "Téléphone", "phone", "phoneNumber", "beneficiaryPhone", "receiverPhone"));
+            case "Salaires" -> List.of(
+                    col("id", "Identifiant", "id", "salaryId", "reference"),
+                    col("agent", "Agent", "agent", "agentName", "agentPhone", "phone", "phoneNumber"),
+                    col("amount", "Montant", "amount", "montant", "salaryAmount"),
+                    col("currency", "Devise", "currency", "devise", "signe"),
+                    col("month", "Mois", "month", "periode", "period", "salaryMonth"),
+                    col("status", "Statut", "status", "state", "etat"));
+            case "Affectations" -> List.of(
+                    col("agentPhone", "Téléphone agent", "agentPhone", "phoneAgent", "agent.phone", "phone"),
+                    col("agent", "Agent", "agent", "agentName", "agent.name", "user.name"),
+                    col("supervisorPhone", "Téléphone superviseur", "supervisorPhone", "phoneSuperviseur", "superviseur.phone"),
+                    col("supervisor", "Superviseur", "supervisor", "superviseur", "supervisorName", "superviseur.name"));
+            case "Certificats PC" -> List.of(
+                    col("id", "Identifiant", "id", "certificateId"),
+                    col("pcName", "Poste", "pcName", "deviceName", "machineName", "hostname"),
+                    col("userPhone", "Utilisateur", "userPhone", "phone", "phoneNumber", "username"),
+                    col("active", "Actif", "active", "enabled", "valid"),
+                    col("expiresAt", "Expiration", "expiresAt", "expirationDate", "validUntil"));
+            case "Messagerie" -> List.of(
+                    col("id", "Identifiant", "id", "messageId"),
+                    col("sender", "Expéditeur", "sender", "expediteur", "from", "senderPhone"),
+                    col("recipient", "Bénéficiaire", "recipient", "beneficiary", "destinataire", "to", "receiverPhone"),
+                    col("status", "État", "status", "state", "etat", "read"),
+                    col("date", "Date", "datemessage", "dateMessage", "createdAt", "date"));
+            case "Reporting" -> List.of(
+                    col("date", "Date", "date", "createdAt", "timestamp"),
+                    col("username", "Utilisateur", "username", "user", "phone"),
+                    col("method", "Méthode", "method", "httpMethod"),
+                    col("path", "Chemin", "path", "endpoint", "url"),
+                    col("status", "Statut", "status", "responseStatus", "result"));
+            case "Établissements" -> List.of(
+                    col("id", "Identifiant", "id", "establishmentId"),
+                    col("name", "Nom", "name", "nom", "libelle"),
+                    col("phone", "Téléphone", "phone", "phoneNumber"),
+                    col("email", "E-mail", "email", "emailAddress"),
+                    col("type", "Type", "type", "category", "libelle"));
+            case "Conversions" -> List.of(
+                    col("reference", "Référence", "reference", "codeReference", "id"),
+                    col("amount", "Montant", "amount", "montant"),
+                    col("currency", "Devise", "currency", "devise", "signe"),
+                    col("targetCurrency", "Devise cible", "targetCurrency", "deviseDestination", "currencyTo"),
+                    col("status", "Statut", "status", "state", "etat"),
+                    col("date", "Date", "createdAt", "dateOperation", "date"));
+            default -> List.of(
+                    col("id", "Identifiant", "id", "reference", "codeReference"),
+                    col("name", "Nom", "name", "nom", "libelle"),
+                    col("type", "Type", "type", "category", "typeCode"),
+                    col("status", "Statut", "status", "state", "active"),
+                    col("date", "Date", "createdAt", "updatedAt", "date"));
+        };
+    }
+
+    private static ColumnSpec col(String key, String label, String... candidates) {
+        return new ColumnSpec(key, label, List.of(candidates));
+    }
+
+    private static Map<String, String> compactResultRow(List<ColumnSpec> profile, Map<String, String> fullRow) {
+        Map<String, String> compact = new LinkedHashMap<>();
+        for (ColumnSpec spec : profile) {
+            String value = firstAvailableValue(fullRow, spec.candidates());
+            if (!value.isBlank()) {
+                compact.put(spec.key(), value);
+            }
+        }
+        return compact;
+    }
+
+    private static String firstAvailableValue(Map<String, String> row, List<String> candidates) {
+        for (String candidate : candidates) {
+            String value = matchingValue(row, candidate);
+            if (!value.isBlank()) {
+                return value;
+            }
+        }
+        return "";
+    }
+
+    private static String matchingValue(Map<String, String> row, String candidate) {
+        String normalizedCandidate = normalizeKey(candidate);
+        for (Map.Entry<String, String> entry : row.entrySet()) {
+            String key = entry.getKey();
+            if (key.equalsIgnoreCase(candidate)
+                    || key.toLowerCase(Locale.ROOT).endsWith("." + candidate.toLowerCase(Locale.ROOT))
+                    || normalizeKey(key).equals(normalizedCandidate)) {
+                String value = entry.getValue();
+                if (value != null && !value.isBlank()) {
+                    return value;
+                }
+            }
+        }
+        return "";
+    }
+
+    private static String normalizeKey(String value) {
+        return value.replace(".", "")
+                .replace("_", "")
+                .replace("-", "")
+                .toLowerCase(Locale.ROOT);
+    }
+
+    private static String columnLabel(List<ColumnSpec> profile, String key) {
+        return profile.stream()
+                .filter(spec -> spec.key().equals(key))
+                .map(ColumnSpec::label)
+                .findFirst()
+                .orElseGet(() -> friendlyColumnName(key));
     }
 
     private static void flattenInto(Map<String, String> target, String prefix, JsonObject object) {
@@ -1294,19 +1623,32 @@ public class AdminConsoleController {
         return switch (leaf) {
             case "id", "otherId", "customerId" -> "Identifiant";
             case "name" -> "Nom";
-            case "phone", "phoneNumber" -> "Téléphone";
+            case "phone", "phoneNumber", "agentPhone", "supervisorPhone", "userPhone" -> "Téléphone";
             case "email", "emailAddress" -> "E-mail";
-            case "amount" -> "Montant";
+            case "amount", "balance" -> "Montant";
             case "currency", "signe" -> "Devise";
             case "typeCode", "libelle", "typeOperation" -> "Type";
-            case "state", "stateCarte", "active" -> "Statut";
+            case "state", "stateCarte", "active", "status" -> "Statut";
             case "codereference", "reference" -> "Référence";
-            case "dateoperation", "datemessage", "uploadDate" -> "Date";
+            case "dateoperation", "datemessage", "uploadDate", "createdAt", "updatedAt" -> "Date";
             case "message" -> "Message";
             case "customerType", "customerCategory" -> "Catégorie";
+            case "owner" -> "Propriétaire";
+            case "agent" -> "Agent";
+            case "supervisor" -> "Superviseur";
+            case "sender" -> "Expéditeur";
+            case "recipient" -> "Bénéficiaire";
+            case "documentType" -> "Document";
+            case "pcName" -> "Poste";
+            case "expiresAt" -> "Expiration";
+            case "method" -> "Méthode";
+            case "path" -> "Chemin";
+            case "month" -> "Mois";
             default -> splitCamelCase(leaf);
         };
     }
+
+    private record ColumnSpec(String key, String label, List<String> candidates) {}
 
     private static String splitCamelCase(String value) {
         String label = value.replace('_', ' ').replaceAll("([a-z])([A-Z])", "$1 $2");
@@ -1429,7 +1771,9 @@ public class AdminConsoleController {
             if (payload.isJsonObject()) {
                 for (String key : List.of(
                         "acctList", "response", "users", "operations", "conversions",
-                        "etablissements", "jetons", "items", "content")) {
+                        "etablissements", "jetons", "jetonsCash", "kycs", "messages",
+                        "salaires", "affectations", "certificates", "certificats",
+                        "devises", "items", "content")) {
                     JsonElement value = payload.getAsJsonObject().get(key);
                     if (value != null && value.isJsonArray()) {
                         return value.getAsJsonArray().size();
@@ -1438,6 +1782,31 @@ public class AdminConsoleController {
                 return 1;
             }
             return 0;
+        } catch (JsonParseException exception) {
+            return -1;
+        }
+    }
+
+    private static int activeCertificateCount(String body) {
+        if (body == null || body.isBlank()) {
+            return -1;
+        }
+        try {
+            JsonElement payload = displayPayload(JsonParser.parseString(body));
+            if (!payload.isJsonArray()) {
+                return 0;
+            }
+            int active = 0;
+            for (JsonElement item : payload.getAsJsonArray()) {
+                if (!item.isJsonObject()) {
+                    continue;
+                }
+                JsonElement value = item.getAsJsonObject().get("active");
+                if (value != null && value.isJsonPrimitive() && value.getAsBoolean()) {
+                    active++;
+                }
+            }
+            return active;
         } catch (JsonParseException exception) {
             return -1;
         }
@@ -1863,7 +2232,16 @@ public class AdminConsoleController {
             int conversions,
             int establishments,
             int cashTokens,
-            String operationsBody) {
+            int kyc,
+            int messages,
+            int salaries,
+            int affectations,
+            int certificates,
+            int currencies,
+            String operationsBody,
+            String kycBody,
+            String messagesBody,
+            String certificatesBody) {
     }
 
     private record FormBinding(
