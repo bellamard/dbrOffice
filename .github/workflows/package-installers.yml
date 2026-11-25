@@ -38,9 +38,14 @@ jobs:
         if: matrix.platform == 'windows'
         shell: pwsh
         run: |
-          choco install wixtoolset --version=3.14.1 --yes --no-progress
           $wix = Join-Path ${env:ProgramFiles(x86)} "WiX Toolset v3.14\bin"
-          if (Test-Path $wix) { Add-Content $env:GITHUB_PATH $wix }
+          if (-not (Test-Path (Join-Path $wix "candle.exe"))) {
+            choco install wixtoolset --yes --no-progress
+          }
+          if (-not (Test-Path (Join-Path $wix "candle.exe"))) {
+            throw "WiX Toolset 3 n'a pas été trouvé après l'installation."
+          }
+          Add-Content $env:GITHUB_PATH $wix
 
       - name: Build Windows installer
         if: matrix.platform == 'windows'
