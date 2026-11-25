@@ -52,6 +52,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label text="Service central :"/>
                             <Label fx:id="apiStatusKpi" styleClass="service-status" text="Vérification"/>
+                            <Label fx:id="dashboardUpdatedLabel" styleClass="help-text" text="Actualisation en cours…"/>
                         </HBox>
                         <HBox spacing="16">
                             <VBox HBox.hgrow="ALWAYS" styleClass="kpi"><Label styleClass="kpi-label" text="LIQUIDITÉS TOTALES"/><Label fx:id="liquidityKpi" styleClass="kpi-value kpi-money" text="-"/><Label styleClass="help-text" text="Soldes disponibles par devise"/></VBox>
@@ -130,8 +131,8 @@
                             </VBox>
                         </GridPane>
                         <HBox spacing="10" styleClass="workflow-banner">
-                            <Label styleClass="workflow-title" text="Contrôle Maker-Checker"/>
-                            <Label text="Une opération initiée doit être contrôlée par un autre agent : En attente → Validée ou Refusée." wrapText="true"/>
+                            <Label styleClass="workflow-title" text="Double validation serveur"/>
+                            <Label text="Cette console ne met pas en œuvre de second approbateur. Une confirmation transmet directement la demande au service central. Un véritable circuit à deux personnes doit être imposé par le backend." wrapText="true"/>
                         </HBox>
                         <GridPane hgap="14" vgap="14">
                             <columnConstraints>
@@ -217,7 +218,7 @@
                                 <Separator/>
                                 <Label styleClass="panel-title" text="Données de l'instruction"/>
                                 <VBox fx:id="actionForm" spacing="9"/>
-                                <TitledPane animated="false" expanded="false" text="Options techniques">
+                                <TitledPane fx:id="technicalOptionsPane" animated="false" expanded="false" text="Options techniques (administrateur)">
                                     <content>
                                         <VBox spacing="8">
                                             <Label text="Chemin du service"/>
@@ -308,6 +309,7 @@
                             <Label styleClass="page-title" text="Journal des activités"/>
                             <Label styleClass="page-subtitle" text="Traçabilité des actions réalisées dans le back-office"/>
                         </VBox>
+                    <Label fx:id="auditPersistenceStatus" styleClass="audit-storage-ok" text="Journal local à ce poste; aucune copie centrale n'est disponible." wrapText="true"/>
                     <TableView fx:id="auditTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="auditDate" prefWidth="220" text="Date"/>

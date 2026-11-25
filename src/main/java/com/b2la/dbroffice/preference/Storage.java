@@ -1,28 +1,31 @@
 package com.b2la.dbroffice.preference;
 
 import com.b2la.dbroffice.dao.LoginResponse;
-import com.google.gson.Gson;
 
 import java.util.prefs.Preferences;
 
 public class Storage {
-    private static final Preferences prefs =Preferences.userNodeForPackage(Storage.class);
-    private static Gson gson=new Gson();
+    private static final Preferences legacyPreferences = Preferences.userNodeForPackage(Storage.class);
+    private static volatile LoginResponse activeLogin;
+
+    static {
+        // Remove tokens persisted by older builds. Sessions now live only for this process.
+        try {
+            legacyPreferences.remove("token");
+        } catch (SecurityException ignored) {
+            // The persisted value is never read by this version.
+        }
+    }
 
     public static void saveLogin(LoginResponse response){
-        String json= gson.toJson(response);
-        prefs.put("token", json);
+        activeLogin = response;
     }
 
     public static LoginResponse loadLogin(){
-        String json= prefs.get("token", null);
-        if(json!=null){
-            return gson.fromJson(json, LoginResponse.class);
-        }
-        return null;
+        return activeLogin;
     }
 
     public static void removeLogin(){
-        prefs.remove("token");
+        activeLogin = null;
     }
 }

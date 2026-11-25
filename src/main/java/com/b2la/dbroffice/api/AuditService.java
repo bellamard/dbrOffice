@@ -16,6 +16,7 @@ public final class AuditService {
     private static final AuditService INSTANCE = new AuditService();
     private final List<AuditEntry> entries = Collections.synchronizedList(new ArrayList<>());
     private final Path auditFile = Path.of(System.getProperty("user.home"), ".dbr-office", "audit.csv");
+    private volatile String persistenceError;
 
     private AuditService() {
         load();
@@ -41,9 +42,14 @@ public final class AuditService {
                     StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND);
-        } catch (IOException ignored) {
-            // The in-memory audit remains available if the local disk is read-only.
+            persistenceError = null;
+        } catch (IOException | SecurityException exception) {
+            persistenceError = "Le journal local n'a pas pu être enregistré sur ce poste.";
         }
+    }
+
+    public String persistenceError() {
+        return persistenceError;
     }
 
     public List<AuditEntry> entries() {
@@ -62,8 +68,9 @@ public final class AuditService {
                     .filter(parts -> parts.length == 5)
                     .map(parts -> new AuditEntry(parts[0], parts[1], parts[2], parts[3], parts[4]))
                     .forEach(entries::add);
-        } catch (IOException ignored) {
+        } catch (IOException | SecurityException exception) {
             entries.clear();
+            persistenceError = "Le journal local existant n'a pas pu être lu sur ce poste.";
         }
     }
 

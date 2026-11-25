@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,6 +68,8 @@ public class AdminConsoleController {
     @FXML private Label affectationsOverviewKpi;
     @FXML private Label certificatesOverviewKpi;
     @FXML private Label currenciesOverviewKpi;
+    @FXML private Label dashboardUpdatedLabel;
+    @FXML private Label auditPersistenceStatus;
     @FXML private Label previewTitleLabel;
     @FXML private Label previewModuleLabel;
     @FXML private Label previewMethodLabel;
@@ -79,6 +82,7 @@ public class AdminConsoleController {
     @FXML private TextField pathField;
     @FXML private TextArea variablesArea;
     @FXML private TextArea bodyArea;
+    @FXML private TitledPane technicalOptionsPane;
     @FXML private TextArea responseArea;
     @FXML private Label actionDescriptionLabel;
     @FXML private Label resultSummaryLabel;
@@ -126,6 +130,7 @@ public class AdminConsoleController {
     private final List<FormBinding> formBindings = new ArrayList<>();
     private JsonObject formBody;
     private String lastResponse = "";
+    private Path selectedKycFile;
 
     @FXML
     public void initialize() {
@@ -150,6 +155,11 @@ public class AdminConsoleController {
         boolean configAllowed = AccessControl.allows(SessionContext.role(), Permission.CONFIG_WRITE);
         apiSettingsCard.setDisable(!configAllowed);
         apiSettingsCard.setOpacity(configAllowed ? 1.0 : 0.58);
+        boolean technicalAccess = SessionContext.role() == com.b2la.dbroffice.security.BackOfficeRole.ADMIN;
+        technicalOptionsPane.setVisible(technicalAccess);
+        technicalOptionsPane.setManaged(technicalAccess);
+        technicalOptionsPane.setExpanded(false);
+        pathField.setEditable(false);
     }
 
     private void configureAppearanceSettings() {
@@ -301,6 +311,7 @@ public class AdminConsoleController {
         if (endpoint == null) {
             return;
         }
+        selectedKycFile = null;
         pathField.setText(endpoint.path());
         bodyArea.setText(endpoint.sampleBody());
         Map<String, String> variables = new LinkedHashMap<>();
@@ -499,9 +510,51 @@ public class AdminConsoleController {
             } else {
                 control = typedControl(entry.getKey(), value);
             }
+            Node formControl = control;
+            if ("filepath".equalsIgnoreCase(entry.getKey())) {
+                TextField fileField = formField(value == null || value.isJsonNull() ? "" : value.getAsString());
+                fileField.setEditable(false);
+                fileField.setPromptText("Choisir un document KYC");
+                Button browseButton = new Button("Parcourir…");
+                browseButton.getStyleClass().add("secondary-button");
+                browseButton.setOnAction(event -> chooseKycFile(fileField));
+                HBox chooserRow = new HBox(8, fileField, browseButton);
+                HBox.setHgrow(fileField, Priority.ALWAYS);
+                control = fileField;
+                formControl = chooserRow;
+            }
             formBindings.add(new FormBinding(object, entry.getKey(), control, value));
-            addFormControl(friendlyFieldName(entry.getKey()), control);
+            addFormControl("filepath".equalsIgnoreCase(entry.getKey()) ? "Document KYC" : friendlyFieldName(entry.getKey()), formControl);
         }
+    }
+
+    private void chooseKycFile(TextField fileField) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choisir le document d'identité");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(
+                "Documents PDF ou image", "*.pdf", "*.jpg", "*.jpeg", "*.png"));
+        File selected = chooser.showOpenDialog(rootPane.getScene().getWindow());
+        if (selected == null) return;
+
+        Path candidate = selected.toPath().toAbsolutePath().normalize();
+        String filename = candidate.getFileName().toString().toLowerCase(Locale.ROOT);
+        boolean acceptedExtension = List.of(".pdf", ".jpg", ".jpeg", ".png").stream().anyMatch(filename::endsWith);
+        if (!acceptedExtension) {
+            showError("Format refusé. Choisissez un document PDF, JPG ou PNG.");
+            return;
+        }
+        try {
+            long size = Files.size(candidate);
+            if (size <= 0 || size > 5L * 1024 * 1024) {
+                showError("Le document doit peser entre 1 octet et 5 Mo.");
+                return;
+            }
+        } catch (IOException exception) {
+            showError("Impossible de vérifier la taille du document sélectionné.");
+            return;
+        }
+        selectedKycFile = candidate;
+        fileField.setText(candidate.toString());
     }
 
     private Control typedControl(String name, JsonElement value) {
@@ -575,7 +628,7 @@ public class AdminConsoleController {
         return field;
     }
 
-    private void addFormControl(String labelText, Control control) {
+    private void addFormControl(String labelText, Node control) {
         Label label = new Label(labelText);
         label.getStyleClass().add("field-label");
         actionForm.getChildren().addAll(label, control);
@@ -589,12 +642,15 @@ public class AdminConsoleController {
             return;
         }
         try {
+            if (!authorizedEndpoints.contains(endpoint)) {
+                throw new SecurityException("Cette action n'est pas autorisée pour votre profil.");
+            }
             AccessControl.require(SessionContext.role(), endpoint.permission());
             if ("DELETE".equals(endpoint.method()) && !confirmDeletion(endpoint.name())) {
                 return;
             }
             synchronizeAdministrativeForm();
-            String resolvedPath = resolvePath(pathField.getText(), variablesArea.getText());
+            String resolvedPath = resolvePath(endpoint.path(), variablesArea.getText());
             String body = bodyArea.getText();
             setBusy(true);
             runAsync(
@@ -954,9 +1010,15 @@ public class AdminConsoleController {
             return api.send(endpoint.method(), resolvedPath, body, endpoint.contentType());
         }
         JsonObject multipart = JsonParser.parseString(body).getAsJsonObject();
+        if (multipart.get("typeFile") == null || multipart.get("filePath") == null || selectedKycFile == null) {
+            throw new IllegalArgumentException("Sélectionnez le type de document et choisissez le fichier KYC avec le bouton Parcourir.");
+        }
         String typeFile = multipart.get("typeFile").getAsString();
-        Path file = Path.of(multipart.get("filePath").getAsString());
-        return api.sendMultipart(endpoint.method(), resolvedPath, Map.of("typeFile", typeFile), file);
+        Path submittedPath = Path.of(multipart.get("filePath").getAsString()).toAbsolutePath().normalize();
+        if (!submittedPath.equals(selectedKycFile)) {
+            throw new IllegalArgumentException("Le document doit être choisi dans le sélecteur de fichiers de cette session.");
+        }
+        return api.sendMultipart(endpoint.method(), resolvedPath, Map.of("typeFile", typeFile), selectedKycFile);
     }
 
     @FXML
@@ -965,18 +1027,26 @@ public class AdminConsoleController {
         Task<DashboardData> task = new Task<>() {
             @Override
             protected DashboardData call() {
-                String accountsBody = fetchOptionalBody("/accounts", Permission.USERS_READ);
-                String operationsBody = fetchOptionalBody("/operations", Permission.OPERATIONS_READ);
-                String kycBody = fetchOptionalBody("/kyc/list", Permission.KYC_READ);
-                String messagesBody = fetchOptionalBody("/messagerie", Permission.MESSAGING_READ);
-                String usersBody = fetchOptionalBody("/users", Permission.USERS_READ);
-                String conversionsBody = fetchOptionalBody("/conversions", Permission.OPERATIONS_READ);
-                String establishmentsBody = fetchOptionalBody("/etablissements", Permission.DASHBOARD_READ);
-                String cashTokensBody = fetchOptionalBody("/jetons-cash", Permission.OPERATIONS_READ);
-                String salariesBody = fetchOptionalBody("/salaires", Permission.SALAIRES_READ);
-                String affectationsBody = fetchOptionalBody("/affectations", Permission.AFFECTATIONS_READ);
-                String certificatesBody = fetchOptionalBody("/certificats-pc", Permission.DEVICE_CERTIFICATES_READ);
-                String currenciesBody = fetchOptionalBody("/devises", Permission.CONFIG_READ);
+                List<String> restricted = new ArrayList<>();
+                List<String> failures = new ArrayList<>();
+                String accountsBody = fetchOptionalBody("/accounts", Permission.USERS_READ, restricted, failures);
+                String operationsBody = fetchOptionalBody("/operations", Permission.OPERATIONS_READ, restricted, failures);
+                String kycBody = fetchOptionalBody("/kyc/list", Permission.KYC_READ, restricted, failures);
+                String messagesBody = fetchOptionalBody("/messagerie", Permission.MESSAGING_READ, restricted, failures);
+                String usersBody = fetchOptionalBody("/users", Permission.USERS_READ, restricted, failures);
+                String conversionsBody = fetchOptionalBody("/conversions", Permission.OPERATIONS_READ, restricted, failures);
+                String establishmentsBody = fetchOptionalBody("/etablissements", Permission.DASHBOARD_READ, restricted, failures);
+                String cashTokensBody = fetchOptionalBody("/jetons-cash", Permission.OPERATIONS_READ, restricted, failures);
+                String salariesBody = fetchOptionalBody("/salaires", Permission.SALAIRES_READ, restricted, failures);
+                String affectationsBody = fetchOptionalBody("/affectations", Permission.AFFECTATIONS_READ, restricted, failures);
+                String certificatesBody = fetchOptionalBody("/certificats-pc", Permission.DEVICE_CERTIFICATES_READ, restricted, failures);
+                String currenciesBody = fetchOptionalBody("/devises", Permission.CONFIG_READ, restricted, failures);
+                int authorizedReads = 12 - restricted.size();
+                String apiStatus = !failures.isEmpty()
+                        ? (authorizedReads > 0 && failures.size() >= authorizedReads ? "Indisponible" : "Partiel")
+                        : (restricted.isEmpty() ? "À jour" : "Données limitées par profil");
+                String statusDetails = "Échecs de lecture: " + (failures.isEmpty() ? "aucun" : String.join(", ", failures))
+                        + ". Routes limitées par le rôle: " + (restricted.isEmpty() ? "aucune" : String.join(", ", restricted));
                 return new DashboardData(
                         totalsByCurrency(accountsBody),
                         pendingKycCount(kycBody),
@@ -994,6 +1064,9 @@ public class AdminConsoleController {
                         itemCount(affectationsBody),
                         itemCount(certificatesBody),
                         itemCount(currenciesBody),
+                        apiStatus,
+                        statusDetails,
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
                         operationsBody,
                         kycBody,
                         messagesBody,
@@ -1018,14 +1091,28 @@ public class AdminConsoleController {
             affectationsOverviewKpi.setText(displayCount(data.affectations()));
             certificatesOverviewKpi.setText(displayCount(data.certificates()));
             currenciesOverviewKpi.setText(displayCount(data.currencies()));
-            apiStatusKpi.setText("Opérationnel");
+            apiStatusKpi.setText(data.apiStatus());
+            apiStatusKpi.setTooltip(new Tooltip(data.apiStatusDetails()));
+            dashboardUpdatedLabel.setText("Actualisé le " + data.refreshedAt());
+            apiStatusKpi.getStyleClass().removeAll("service-status-partial", "service-status-error");
+            if ("Indisponible".equals(data.apiStatus())) {
+                apiStatusKpi.getStyleClass().add("service-status-error");
+            } else if (!"À jour".equals(data.apiStatus())) {
+                apiStatusKpi.getStyleClass().add("service-status-partial");
+            }
             renderOperationChart(data.operationsBody());
             renderServiceVolumeChart(data);
             renderComplianceChart(data);
             setBusy(false);
         });
         task.setOnFailed(event -> {
-            apiStatusKpi.setText("Hors service");
+            apiStatusKpi.setText("Indisponible");
+            apiStatusKpi.setTooltip(new Tooltip(apiErrorMessage(task.getException())));
+            dashboardUpdatedLabel.setText("Échec de l'actualisation");
+            apiStatusKpi.getStyleClass().remove("service-status-partial");
+            if (!apiStatusKpi.getStyleClass().contains("service-status-error")) {
+                apiStatusKpi.getStyleClass().add("service-status-error");
+            }
             setBusy(false);
             showError(apiErrorMessage(task.getException()));
         });
@@ -1046,13 +1133,20 @@ public class AdminConsoleController {
         return api.send("GET", path, "").body();
     }
 
-    private String fetchOptionalBody(String path, Permission permission) {
+    private String fetchOptionalBody(String path, Permission permission, List<String> restricted, List<String> failures) {
         if (!AccessControl.allows(SessionContext.role(), permission)) {
+            restricted.add(path);
             return "";
         }
         try {
-            return api.send("GET", path, "").body();
+            String body = api.send("GET", path, "").body();
+            if (body == null || body.isBlank()) {
+                failures.add(path);
+                return "";
+            }
+            return body;
         } catch (RuntimeException exception) {
+            failures.add(path);
             return "";
         }
     }
@@ -1460,6 +1554,14 @@ public class AdminConsoleController {
         if (auditTable != null) {
             auditTable.setItems(FXCollections.observableArrayList(audit.entries()));
         }
+        if (auditPersistenceStatus != null) {
+            String error = audit.persistenceError();
+            auditPersistenceStatus.setText(error == null
+                    ? "Journal local à ce poste; aucune copie centrale n'est disponible."
+                    : error + " Les événements en mémoire ne sont pas tous persistés.");
+            auditPersistenceStatus.getStyleClass().removeAll("audit-storage-ok", "audit-storage-error");
+            auditPersistenceStatus.getStyleClass().add(error == null ? "audit-storage-ok" : "audit-storage-error");
+        }
     }
 
     private String resolvePath(String path, String variablesJson) {
@@ -1475,9 +1577,16 @@ public class AdminConsoleController {
             if (value == null || value.isBlank()) {
                 throw new IllegalArgumentException("Valeur manquante: " + matcher.group(1));
             }
-            matcher.appendReplacement(resolved, Matcher.quoteReplacement(value));
+            String safeValue = value.trim();
+            if (safeValue.matches(".*[/\\\\?#&=].*")) {
+                throw new IllegalArgumentException("La valeur de " + matcher.group(1) + " contient un caractère réservé.");
+            }
+            matcher.appendReplacement(resolved, Matcher.quoteReplacement(safeValue));
         }
         matcher.appendTail(resolved);
+        if (VARIABLE_PATTERN.matcher(resolved).find()) {
+            throw new IllegalArgumentException("Le chemin contient encore un paramètre non résolu.");
+        }
         return resolved.toString();
     }
 
@@ -1860,7 +1969,7 @@ public class AdminConsoleController {
 
     private static int pendingKycCount(String body) {
         if (body == null || body.isBlank()) {
-            return 0;
+            return -1;
         }
         try {
             JsonElement payload = businessPayload(JsonParser.parseString(body));
@@ -2373,6 +2482,9 @@ public class AdminConsoleController {
             int affectations,
             int certificates,
             int currencies,
+            String apiStatus,
+            String apiStatusDetails,
+            String refreshedAt,
             String operationsBody,
             String kycBody,
             String messagesBody,

@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 public final class ApiClient {
     private static final ApiClient INSTANCE = new ApiClient();
     private static final Gson GSON = new Gson();
+    private static final long MAX_KYC_FILE_SIZE = 5L * 1024 * 1024;
+    private static final java.util.Set<String> KYC_EXTENSIONS = java.util.Set.of("pdf", "jpg", "jpeg", "png");
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(15))
@@ -82,6 +84,21 @@ public final class ApiClient {
     public ApiResponse sendMultipart(String method, String path, Map<String, String> fields, Path file) {
         if (file == null || !Files.isRegularFile(file)) {
             throw new IllegalArgumentException("Le fichier KYC est introuvable.");
+        }
+        String filename = file.getFileName().toString();
+        String extension = filename.contains(".")
+                ? filename.substring(filename.lastIndexOf('.') + 1).toLowerCase(java.util.Locale.ROOT)
+                : "";
+        try {
+            long size = Files.size(file);
+            if (size <= 0 || size > MAX_KYC_FILE_SIZE) {
+                throw new IllegalArgumentException("Le document doit peser entre 1 octet et 5 Mo.");
+            }
+        } catch (IOException exception) {
+            throw new ApiException("Lecture du document KYC impossible.", exception);
+        }
+        if (!KYC_EXTENSIONS.contains(extension)) {
+            throw new IllegalArgumentException("Format refusé. Utilisez un fichier PDF, JPG ou PNG.");
         }
         String boundary = "----DbrOffice" + UUID.randomUUID();
         byte[] payload = multipartPayload(boundary, fields, file);
@@ -165,8 +182,9 @@ public final class ApiClient {
                 output.write("\r\n".getBytes(StandardCharsets.UTF_8));
             }
             output.write(("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8));
+            String safeFilename = file.getFileName().toString().replaceAll("[\\r\\n\\\"]", "_");
             output.write(("Content-Disposition: form-data; name=\"file\"; filename=\"" +
-                    file.getFileName() + "\"\r\n").getBytes(StandardCharsets.UTF_8));
+                    safeFilename + "\"\r\n").getBytes(StandardCharsets.UTF_8));
             output.write("Content-Type: application/octet-stream\r\n\r\n".getBytes(StandardCharsets.UTF_8));
             output.write(Files.readAllBytes(file));
             output.write(("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));

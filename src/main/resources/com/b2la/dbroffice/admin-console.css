@@ -108,6 +108,21 @@
     -fx-text-fill: #1f7a3a;
 }
 
+.service-status-partial {
+    -fx-background-color: #fff4d6;
+    -fx-text-fill: #8a5a00;
+}
+
+.service-status-error,
+.audit-storage-error {
+    -fx-background-color: #fde8e7;
+    -fx-text-fill: #a12622;
+}
+
+.audit-storage-ok {
+    -fx-text-fill: #1f7a3a;
+}
+
 .step-badge,
 .count-badge {
     -fx-background-color: #eef6ff;
@@ -645,6 +660,21 @@
 
 .theme-dark .service-status {
     -fx-background-color: rgba(48, 209, 88, 0.18);
+    -fx-text-fill: #30d158;
+}
+
+.theme-dark .service-status-partial {
+    -fx-background-color: rgba(255, 180, 0, 0.18);
+    -fx-text-fill: #ffd166;
+}
+
+.theme-dark .service-status-error,
+.theme-dark .audit-storage-error {
+    -fx-background-color: rgba(255, 69, 58, 0.18);
+    -fx-text-fill: #ff6961;
+}
+
+.theme-dark .audit-storage-ok {
     -fx-text-fill: #30d158;
 }
 

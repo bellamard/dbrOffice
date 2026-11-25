@@ -12,7 +12,7 @@ public final class EndpointCatalog {
 
     public static List<EndpointDefinition> all() {
         return List.of(
-                e("Authentification", "Connexion", "POST", "/auth/login", "{\"username\":\"+243895127236\",\"password\":\"Admin@123\"}", Permission.DASHBOARD_READ),
+                e("Authentification", "Connexion", "POST", "/auth/login", "{\"username\":\"utilisateur@example.invalid\",\"password\":\"NOT_A_REAL_PASSWORD\"}", Permission.DASHBOARD_READ),
                 e("Authentification", "Créer un compte public", "POST", "/auth/signup", "{\"firstname\":\"Jean\",\"lastname\":\"Mputu\",\"surname\":\"Jean\",\"phone\":\"+243810000001\",\"email\":\"jean@example.com\",\"password\":\"Password@123\",\"datebirth\":\"1995-01-15\"}", Permission.USERS_WRITE),
                 e("Authentification", "Envoyer un code de récupération", "POST", "/auth/recovery/send-code", "{\"username\":\"+243810000001\"}", Permission.USERS_WRITE),
                 e("Authentification", "Vérifier un code de récupération", "POST", "/auth/recovery/verify-code", "{\"username\":\"+243810000001\",\"code\":\"123456\"}", Permission.USERS_WRITE),
@@ -34,7 +34,6 @@ public final class EndpointCatalog {
                 e("Utilisateurs", "Vérifier un username", "POST", "/users/check", "+243810000001", "text/plain", Permission.USERS_READ),
                 e("Utilisateurs", "Vérifier les contacts", "POST", "/users/check-contacts", "[\"+243810000001\",\"+243810000002\"]", Permission.USERS_READ),
                 e("Utilisateurs", "Rafraîchir la session", "POST", "/users/refresh-token", "{\"refresh\":\"REFRESH_TOKEN\"}", Permission.DASHBOARD_READ),
-                e("Utilisateurs", "Connexion historique", "POST", "/users/connexion", "{\"username\":\"+243895127236\",\"password\":\"Admin@123\"}", Permission.DASHBOARD_READ),
                 e("Utilisateurs", "Déconnexion", "POST", "/users/deconnexion", "", Permission.DASHBOARD_READ),
 
                 e("Comptes", "Créer un compte", "POST", "/accounts", "{\"id\":1,\"name\":\"Dollar americain\",\"signe\":\"USD\"}", Permission.CONFIG_WRITE),
@@ -113,8 +112,8 @@ public final class EndpointCatalog {
                 e("KYC", "KYC de l'utilisateur courant", "GET", "/kyc", "", Permission.KYC_READ),
                 e("KYC", "Lister les KYC", "GET", "/kyc/list", "", Permission.KYC_READ),
                 e("KYC", "Lister les KYC par statut", "GET", "/kyc/list/valider", "", Permission.KYC_READ),
-                e("KYC", "Déposer un document KYC", "POST", "/kyc", "{\"typeFile\":\"PASSPORT\",\"filePath\":\"C:\\\\tmp\\\\document.pdf\"}", "multipart/form-data", Permission.KYC_VALIDATE),
-                e("KYC", "Modifier un document KYC", "PUT", "/kyc/{kyc_id}", "{\"typeFile\":\"PASSPORT\",\"filePath\":\"C:\\\\tmp\\\\document.pdf\"}", "multipart/form-data", Permission.KYC_VALIDATE),
+                e("KYC", "Déposer un document KYC", "POST", "/kyc", "{\"typeFile\":\"PASSPORT\",\"filePath\":\"\"}", "multipart/form-data", Permission.KYC_VALIDATE),
+                e("KYC", "Modifier un document KYC", "PUT", "/kyc/{kyc_id}", "{\"typeFile\":\"PASSPORT\",\"filePath\":\"\"}", "multipart/form-data", Permission.KYC_VALIDATE),
                 e("KYC", "Valider ou refuser un KYC", "PUT", "/kyc/check/{kyc_id}", "{\"stateCarte\":\"VALIDER\",\"typeFile\":\"PASSPORT\",\"reasonCancel\":null}", Permission.KYC_VALIDATE),
                 e("KYC", "Supprimer un KYC", "DELETE", "/kyc/{kyc_id}", "", Permission.KYC_VALIDATE),
 
@@ -138,15 +137,15 @@ public final class EndpointCatalog {
                 e("Services client", "Transactions", "GET", "/transactions", "", Permission.OPERATIONS_READ),
                 e("Services client", "Historiques", "GET", "/historiques", "", Permission.OPERATIONS_READ),
                 e("Services client", "Détail d'une opération", "GET", "/insights/{operation_ref}", "", Permission.OPERATIONS_READ),
-                e("Services client", "Créer un transfert", "POST", "/transfers", "{\"amount\":100,\"devise\":\"USD\",\"phone\":\"+243895127236\"}", Permission.OPERATIONS_WRITE),
-                e("Services client", "Créer un paiement", "POST", "/payments", "{\"amount\":100,\"devise\":\"USD\",\"phone\":\"+243895127236\"}", Permission.OPERATIONS_WRITE),
+                e("Services client", "Créer un transfert", "POST", "/transfers", "{\"amount\":100,\"devise\":\"USD\",\"phone\":\"+243810000001\"}", Permission.OPERATIONS_WRITE),
+                e("Services client", "Créer un paiement", "POST", "/payments", "{\"amount\":100,\"devise\":\"USD\",\"phone\":\"+243810000001\"}", Permission.OPERATIONS_WRITE),
                 e("Services client", "Confirmer un paiement", "POST", "/payments/confirm", "{\"codeReference\":\"OP-REFERENCE\",\"clef\":\"123456\"}", Permission.OPERATIONS_WRITE),
                 e("Services client", "Modifier le mot de passe client", "POST", "/update-password", "{\"username\":\"+243810000001\",\"code\":\"123456\",\"password\":\"NewPassword@123\"}", Permission.USERS_WRITE),
                 e("Services client", "Notifications", "GET", "/notifications", "", Permission.MESSAGING_READ),
                 e("Services client", "Marquer une notification", "POST", "/state-notification", "{\"id\":\"1\",\"state\":\"READ\"}", Permission.MESSAGING_WRITE),
                 e("Services client", "Supprimer une notification", "DELETE", "/notifications/{message_id}", "", Permission.MESSAGING_WRITE),
                 e("Services client", "Données KYC client", "GET", "/kyc-data", "", Permission.KYC_READ),
-                e("Services client", "Soumettre le KYC client", "POST", "/submit-kyc", "{\"typeFile\":\"PASSPORT\",\"filePath\":\"C:\\\\tmp\\\\document.pdf\"}", "multipart/form-data", Permission.KYC_VALIDATE),
+                e("Services client", "Soumettre le KYC client", "POST", "/submit-kyc", "{\"typeFile\":\"PASSPORT\",\"filePath\":\"\"}", "multipart/form-data", Permission.KYC_VALIDATE),
                 e("Services client", "Types de documents", "GET", "/document-types", "", Permission.KYC_READ),
                 e("Services client", "Lister les services", "GET", "/services", "", Permission.CONFIG_READ),
                 e("Services client", "Afficher un service", "GET", "/services/{etablissement_id}", "", Permission.CONFIG_READ),
