@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -79,6 +80,10 @@ public class DashboardController implements Initializable {
     private AreaChart<String, Number> diagram;
     @FXML
     private BarChart<String, Number> chartOpera;
+    @FXML private Canvas paretoCanvas;
+    @FXML private Canvas activityLineCanvas;
+    @FXML private Canvas sagittalCanvas;
+    @FXML private Canvas mosaicCanvas;
     @FXML
     private ComboBox comboMonth;
 
@@ -265,48 +270,47 @@ public class DashboardController implements Initializable {
     private void chart(){
         LoginResponse clef=Storage.loadLogin();
         assert clef != null;
-        runLater(()->{
-            try{
-                List<Operation> operaList=operationList(clef);
-                assert operaList != null;
+        runAsync(() -> {
+            try {
+                List<Operation> operaList = Optional.ofNullable(operationList(clef)).orElseGet(List::of);
+                Map<LocalDate, int[]> countsByDate = new TreeMap<>();
+                LocalDate today = LocalDate.now();
+                LocalDate firstDay = today.minusDays(13);
+                for (int offset = 0; offset < 14; offset++) countsByDate.put(firstDay.plusDays(offset), new int[2]);
+                for (Operation operation : operaList) {
+                    if (operation == null || operation.getState() == null
+                            || operation.getState().getLibelle() != StateOper.VALIDER
+                            || operation.getDateoperation() == null) continue;
+                    try {
+                        LocalDate day = OffsetDateTime.parse(operation.getDateoperation()).toLocalDate();
+                        int[] counts = countsByDate.get(day);
+                        if (counts == null) continue;
+                        if ("cdf".equalsIgnoreCase(operation.getDevice())) counts[0]++;
+                        if ("usd".equalsIgnoreCase(operation.getDevice())) counts[1]++;
+                    } catch (RuntimeException ignored) {
+                        // An invalid date should not prevent the dashboard from showing the remaining data.
+                    }
+                }
 
-                XYChart.Series<String, Number> xyC= new XYChart.Series<>();
-                xyC.setName("CDF");
-                XYChart.Series<String, Number> xyU= new XYChart.Series<>();
-                xyU.setName("USD");
-
-                Map<String, List<Operation>> groupeDate=operaList.stream()
-                        .collect(Collectors.groupingBy(Oper->LocalDate.parse(Oper.getDateoperation(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toString()
-                        ));
-
-                groupeDate.forEach((date,liste)->{
-                    AtomicInteger nombreUSD= new AtomicInteger();
-                    AtomicInteger nombreCDF= new AtomicInteger();
-                    liste.forEach(op->{
-                        if(op.getState().getLibelle()==StateOper.VALIDER){
-                            if(op.getDevice().equals("usd")){
-                                nombreUSD.getAndIncrement();
-                            }
-                            if(op.getDevice().equals("cdf")){
-                                nombreCDF.getAndIncrement();
-                            }
-                        }
+                runLater(() -> {
+                    XYChart.Series<String, Number> cdfSeries = new XYChart.Series<>();
+                    cdfSeries.setName("CDF");
+                    XYChart.Series<String, Number> usdSeries = new XYChart.Series<>();
+                    usdSeries.setName("USD");
+                    countsByDate.forEach((date, counts) -> {
+                        String category = date.format(DateTimeFormatter.ofPattern("dd/MM"));
+                        cdfSeries.getData().add(new XYChart.Data<>(category, counts[0]));
+                        usdSeries.getData().add(new XYChart.Data<>(category, counts[1]));
                     });
-
-                    xyC.getData().add(new XYChart.Data<>(date, nombreCDF));
-                    xyU.getData().add(new XYChart.Data<>(date, nombreUSD));
+                    diagram.getData().setAll(cdfSeries, usdSeries);
+                    DashboardChartRenderer.renderAll(paretoCanvas, activityLineCanvas, sagittalCanvas, mosaicCanvas, operaList);
+                    chargement.setVisible(false);
                 });
-
-
-                xyC.chartProperty();
-                xyU.chartProperty();
-                diagram.getData().clear();
-                diagram.getData().add(xyC);
-                diagram.getData().add(xyU);
-                chargement.setVisible(false);
             } catch (Exception e) {
-                chargement.setVisible(false);
-                throw new RuntimeException(e);
+                runLater(() -> {
+                    DashboardChartRenderer.renderAll(paretoCanvas, activityLineCanvas, sagittalCanvas, mosaicCanvas, List.of());
+                    chargement.setVisible(false);
+                });
             }
         });
 
